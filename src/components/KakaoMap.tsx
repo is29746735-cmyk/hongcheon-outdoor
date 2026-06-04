@@ -150,44 +150,54 @@ export default function KakaoMap({
           markersRef.current.push({ overlay, category: place.category });
         };
 
-        let pending = places.length;
-        const done = () => {
-          pending -= 1;
-          if (pending <= 0 && !cancelled) {
+        const buildMarkers = () => {
+          if (places.length === 0) {
             setStatus("ready");
-            applyFilter(activeCategory);
-          }
-        };
-
-        if (places.length === 0) {
-          setStatus("ready");
-          return;
-        }
-
-        places.forEach((place) => {
-          // 1) 검증된 좌표 우선
-          if (place.location) {
-            addMarker(place, place.location.lat, place.location.lng);
-            done();
             return;
           }
-          // 2) 장소명 검색
-          ps.keywordSearch(place.mapQuery, (data: any[], st: string) => {
-            if (st === kakao.maps.services.Status.OK && data[0]) {
-              addMarker(place, parseFloat(data[0].y), parseFloat(data[0].x));
+          let pending = places.length;
+          const done = () => {
+            pending -= 1;
+            if (pending <= 0 && !cancelled) {
+              setStatus("ready");
+              applyFilter(activeCategory);
+            }
+          };
+          places.forEach((place) => {
+            // 1) 검증된 좌표 우선
+            if (place.location) {
+              addMarker(place, place.location.lat, place.location.lng);
               done();
               return;
             }
-            // 3) 주소 검색(괄호 보조설명 제거)
-            const addr = place.region.replace(/\s*\(.*\)\s*$/, "");
-            geocoder.addressSearch(addr, (res: any[], st2: string) => {
-              if (st2 === kakao.maps.services.Status.OK && res[0]) {
-                addMarker(place, parseFloat(res[0].y), parseFloat(res[0].x));
+            // 2) 장소명 검색
+            ps.keywordSearch(place.mapQuery, (data: any[], st: string) => {
+              if (st === kakao.maps.services.Status.OK && data[0]) {
+                addMarker(place, parseFloat(data[0].y), parseFloat(data[0].x));
+                done();
+                return;
               }
-              done();
+              // 3) 주소 검색(괄호 보조설명 제거)
+              const addr = place.region.replace(/\s*\(.*\)\s*$/, "");
+              geocoder.addressSearch(addr, (res: any[], st2: string) => {
+                if (st2 === kakao.maps.services.Status.OK && res[0]) {
+                  addMarker(place, parseFloat(res[0].y), parseFloat(res[0].x));
+                }
+                done();
+              });
             });
           });
-        });
+        };
+
+        // 지도 타일이 로드(레이아웃 완료)된 뒤 마커를 추가해야 CustomOverlay가 확실히 렌더된다.
+        let built = false;
+        const onReady = () => {
+          if (built || cancelled) return;
+          built = true;
+          buildMarkers();
+        };
+        kakao.maps.event.addListener(map, "tilesloaded", onReady);
+        setTimeout(onReady, 1500); // 안전장치
       })
       .catch(() => {
         if (!cancelled) setStatus("error");
