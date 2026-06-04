@@ -1,6 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ShieldCheck,
+  TriangleAlert,
+  OctagonAlert,
+  RefreshCw,
+  type LucideIcon,
+} from "lucide-react";
 import type {
   OutdoorIndexLevel,
   RiverStatusResponse,
@@ -9,22 +16,25 @@ import type {
 /** 지수 레벨별 스타일 */
 const LEVEL_STYLES: Record<
   OutdoorIndexLevel,
-  { container: string; badge: string; emoji: string }
+  { container: string; badge: string; icon: LucideIcon; iconColor: string }
 > = {
   safe: {
     container: "border-emerald-200 bg-emerald-50",
     badge: "bg-emerald-600",
-    emoji: "🟢",
+    icon: ShieldCheck,
+    iconColor: "text-emerald-600",
   },
   caution: {
     container: "border-amber-200 bg-amber-50",
     badge: "bg-amber-500",
-    emoji: "🟡",
+    icon: TriangleAlert,
+    iconColor: "text-amber-500",
   },
   danger: {
     container: "border-red-200 bg-red-50",
     badge: "bg-red-600",
-    emoji: "🔴",
+    icon: OctagonAlert,
+    iconColor: "text-red-600",
   },
 };
 
@@ -138,7 +148,7 @@ export default function OutdoorIndexWidget({
         오늘의 홍천강 아웃도어 지수
       </p>
       <div className="mt-2 flex items-center gap-3">
-        <span className="text-3xl">{style.emoji}</span>
+        <style.icon className={`h-7 w-7 ${style.iconColor}`} strokeWidth={2.2} />
         <span
           className={`rounded-full px-4 py-1.5 text-xl font-bold text-white ${style.badge}`}
         >
@@ -179,7 +189,7 @@ export default function OutdoorIndexWidget({
             type="button"
             onClick={load}
             disabled={refreshing}
-            className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium hover:text-forest-600 disabled:opacity-60"
+            className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium hover:text-forest-600 disabled:opacity-60"
             aria-label="새로고침"
             title={
               lastUpdated
@@ -187,7 +197,11 @@ export default function OutdoorIndexWidget({
                 : "새로고침"
             }
           >
-            {refreshing ? "갱신 중…" : "↻ 새로고침"}
+            <RefreshCw
+              className={`h-3 w-3 ${refreshing ? "animate-spin" : ""}`}
+              strokeWidth={2.2}
+            />
+            {refreshing ? "갱신 중…" : "새로고침"}
           </button>
         </div>
       </div>

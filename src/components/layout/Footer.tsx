@@ -1,3 +1,4 @@
+import { Mountain } from "lucide-react";
 import { SITE } from "@/constants";
 
 export default function Footer() {
@@ -5,8 +6,8 @@ export default function Footer() {
     <footer className="mt-16 border-t border-neutral-200 bg-forest-800 text-forest-50">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-white/15 text-sm">
-            ⛰️
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-white/15">
+            <Mountain size={18} strokeWidth={2.2} />
           </span>
           <p className="text-base font-extrabold">{SITE.name}</p>
         </div>

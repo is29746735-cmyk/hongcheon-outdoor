@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fish } from "lucide-react";
 import { getAllPlaces, getPlaceById } from "@/data/places";
 import { CATEGORY_LABELS } from "@/constants";
 import { formatRating } from "@/lib/utils";
@@ -71,8 +72,9 @@ export default function PlaceDetailPage({ params }: PageProps) {
             </span>
           )}
           {place.connectedFishing && (
-            <span className="rounded-full bg-sky-600 px-3 py-1 text-xs font-semibold text-white">
-              🎣 캠핑+낚시
+            <span className="inline-flex items-center gap-1 rounded-full bg-sky-600 px-3 py-1 text-xs font-semibold text-white">
+              <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
+              캠핑+낚시
             </span>
           )}
           {place.rating != null && (
@@ -94,8 +96,9 @@ export default function PlaceDetailPage({ params }: PageProps) {
       {/* 캠핑 ↔ 낚시 연계 강조 */}
       {place.connectedFishing && place.connectionNote && (
         <section className="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-5">
-          <h2 className="text-sm font-bold text-sky-800">
-            🎣 캠핑 + 낚시 연계 포인트
+          <h2 className="flex items-center gap-1.5 text-sm font-bold text-sky-800">
+            <Fish className="h-4 w-4" strokeWidth={2} />
+            캠핑 + 낚시 연계 포인트
           </h2>
           <p className="mt-2 text-sm text-neutral-700">{place.connectionNote}</p>
         </section>

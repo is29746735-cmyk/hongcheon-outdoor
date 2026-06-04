@@ -1,7 +1,8 @@
 "use client";
 
 import type { CategoryFilter, PlaceCategory } from "@/types/place";
-import { CATEGORY_ICONS, CATEGORY_LABELS } from "@/constants";
+import { CATEGORY_LABELS } from "@/constants";
+import { CategoryIcon } from "@/components/icons";
 
 /**
  * 장소 목록 필터 바 — 검증 가능한 기준(카테고리 + 키워드)만 제공합니다.
@@ -36,7 +37,8 @@ export default function PlaceFilterBar({
             active={category === c}
             onClick={() => onCategoryChange(c)}
           >
-            {CATEGORY_ICONS[c]} {CATEGORY_LABELS[c]}
+            <CategoryIcon category={c} className="h-4 w-4" />
+            {CATEGORY_LABELS[c]}
           </Chip>
         ))}
       </div>
@@ -65,7 +67,7 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
         active
           ? "border-forest-600 bg-forest-600 text-white"
           : "border-neutral-300 bg-white text-neutral-700 hover:border-forest-500 hover:text-forest-600"

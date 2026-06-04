@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowDown } from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import { SITE } from "@/constants";
@@ -26,16 +27,17 @@ export default function HomePage() {
           <div className="mt-7 flex justify-center">
             <Link
               href="#list"
-              className="rounded-full bg-white px-6 py-3 text-sm font-bold text-forest-700 shadow-lg shadow-forest-900/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white px-6 py-3 text-sm font-bold text-forest-700 shadow-lg shadow-forest-900/20 transition hover:-translate-y-0.5 hover:shadow-xl"
             >
-              장소 둘러보기 ↓
+              장소 둘러보기
+              <ArrowDown className="h-4 w-4" strokeWidth={2.5} />
             </Link>
           </div>
         </div>
       </section>
 
       {/* 오늘의 아웃도어 지수 — 히어로 위로 살짝 겹치는 카드 */}
-      <div className="mx-auto -mt-20 max-w-6xl px-4">
+      <div className="relative z-10 mx-auto -mt-20 max-w-6xl px-4">
         <div className="rounded-2xl shadow-card">
           <OutdoorIndexWidget />
         </div>

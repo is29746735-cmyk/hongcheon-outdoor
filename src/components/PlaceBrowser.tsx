@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import { getAllPlaces } from "@/data/places";
 import { filterPlaces, groupByCategory, getConnectedPlaces } from "@/lib/search";
-import { CATEGORY_ICONS, CATEGORY_LABELS } from "@/constants";
+import { CATEGORY_LABELS } from "@/constants";
+import { CategoryIcon } from "@/components/icons";
+import { Fish } from "lucide-react";
 import type { CategoryFilter } from "@/types/place";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
@@ -51,8 +53,9 @@ export default function PlaceBrowser() {
       {/* 캠핑 + 낚시 연계 강조 */}
       {showConnectedSection && connected.length > 0 && (
         <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50 p-5">
-          <h2 className="text-lg font-bold text-neutral-900">
-            🎣 캠핑하며 낚시까지 — 연계 추천
+          <h2 className="flex items-center gap-2 text-lg font-bold text-neutral-900">
+            <Fish className="h-5 w-5 text-sky-600" strokeWidth={2} />
+            캠핑하며 낚시까지 — 연계 추천
           </h2>
           <p className="mt-1 text-sm text-neutral-600">
             캠핑·차박을 베이스로 홍천강 낚시를 함께 즐길 수 있는 검증된
@@ -75,7 +78,9 @@ export default function PlaceBrowser() {
         groups.map((group) => (
           <section key={group.category} className="mt-12">
             <h2 className="mb-5 flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-neutral-900">
-              <span className="text-2xl">{CATEGORY_ICONS[group.category]}</span>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
+                <CategoryIcon category={group.category} className="h-5 w-5" />
+              </span>
               {CATEGORY_LABELS[group.category]}
               <span className="rounded-full bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
                 {group.items.length}곳

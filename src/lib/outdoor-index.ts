@@ -25,7 +25,7 @@ export function computeOutdoorIndex(status: RiverStatus): OutdoorIndex {
     return {
       level: "caution",
       label: "주의",
-      reason: "기상·수위 변화가 있습니다. 안전 수칙을 지키며 활동하세요.",
+      reason: "비 또는 기온 변화가 있습니다. 안전 수칙을 지키며 활동하세요.",
     };
   }
 

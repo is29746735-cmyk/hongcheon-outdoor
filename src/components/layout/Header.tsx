@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mountain } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/constants";
 
 export default function Header() {
@@ -6,8 +7,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-neutral-200/70 bg-sand-50/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-600 text-sm text-white shadow-sm">
-            ⛰️
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-600 text-white shadow-sm">
+            <Mountain size={18} strokeWidth={2.2} />
           </span>
           <span className="text-base font-extrabold tracking-tight text-forest-800">
             {SITE.name}

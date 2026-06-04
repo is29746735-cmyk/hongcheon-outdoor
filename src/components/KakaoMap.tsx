@@ -4,10 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { CategoryFilter, Place, PlaceCategory } from "@/types/place";
 import {
   CATEGORY_COLORS,
-  CATEGORY_ICONS,
   CATEGORY_LABELS,
   HONGCHEON_RIVER_CENTER,
 } from "@/constants";
+import { CategoryIcon, categoryMarkerSvg } from "@/components/icons";
 
 /**
  * 카카오맵 동적 지도 컴포넌트.
@@ -127,11 +127,19 @@ export default function KakaoMap({
           const el = document.createElement("div");
           el.title = place.name;
           el.style.cssText = `cursor:pointer;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
-          el.innerHTML = `<span style="transform:rotate(45deg);font-size:14px;line-height:1;">${CATEGORY_ICONS[place.category]}</span>`;
+          el.innerHTML = `<span style="display:flex;transform:rotate(45deg);">${categoryMarkerSvg(
+            place.category,
+            "#fff",
+            15
+          )}</span>`;
           el.addEventListener("click", () => {
             infoRef.current.setContent(
               `<div style="padding:8px 10px;min-width:160px;font-size:13px;font-family:system-ui;">
-                 <b>${CATEGORY_ICONS[place.category]} ${place.name}</b>
+                 <b style="display:inline-flex;align-items:center;gap:5px;">${categoryMarkerSvg(
+                   place.category,
+                   CATEGORY_COLORS[place.category],
+                   14
+                 )}${place.name}</b>
                  <div style="margin-top:3px;color:#666;font-size:12px;">${place.region}</div>
                </div>`
             );
@@ -247,10 +255,12 @@ export default function KakaoMap({
               (c) => (
                 <div key={c} className="flex items-center gap-1.5">
                   <span
-                    className="inline-block h-3 w-3 rounded-full border border-white"
+                    className="grid h-4 w-4 place-items-center rounded-full text-white"
                     style={{ background: CATEGORY_COLORS[c] }}
-                  />
-                  {CATEGORY_ICONS[c]} {CATEGORY_LABELS[c]}
+                  >
+                    <CategoryIcon category={c} className="h-2.5 w-2.5" />
+                  </span>
+                  {CATEGORY_LABELS[c]}
                 </div>
               )
             )}

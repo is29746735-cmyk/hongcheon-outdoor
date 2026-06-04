@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Fish, MapPin } from "lucide-react";
 import type { Place } from "@/types/place";
 import { CATEGORY_LABELS } from "@/constants";
 import PlaceImage from "@/components/PlaceImage";
@@ -19,8 +20,9 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           {CATEGORY_LABELS[place.category]}
         </span>
         {place.connectedFishing && (
-          <span className="absolute right-3 top-3 rounded-full bg-sky-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
-            🎣 캠핑+낚시
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-sky-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+            <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
+            캠핑+낚시
           </span>
         )}
       </Link>
@@ -37,7 +39,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
           </h3>
         </Link>
         <p className="mt-1.5 flex items-center gap-1 text-xs text-neutral-500">
-          <span className="text-forest-500">📍</span>
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
           <span className="truncate">{place.region}</span>
         </p>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-600">

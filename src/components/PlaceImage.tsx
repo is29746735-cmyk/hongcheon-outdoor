@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Place } from "@/types/place";
-import { CATEGORY_ICONS } from "@/constants";
+import { CategoryIcon } from "@/components/icons";
 
 /**
  * 장소 이미지 슬롯.
@@ -36,9 +36,10 @@ export default function PlaceImage({
     <div className={`relative overflow-hidden bg-neutral-100 ${className}`}>
       {!url || isPlaceholder(url) ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 bg-sand-100 text-neutral-400">
-          <span className="text-3xl opacity-50">
-            {CATEGORY_ICONS[place.category]}
-          </span>
+          <CategoryIcon
+            category={place.category}
+            className="h-8 w-8 opacity-40"
+          />
           <span className="text-xs font-medium tracking-tight">
             (업로드 예정)
           </span>
