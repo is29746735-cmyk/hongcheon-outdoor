@@ -7,6 +7,7 @@ import { CATEGORY_LABELS } from "@/constants";
 import type { CategoryFilter } from "@/types/place";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
+import KakaoMap from "@/components/KakaoMap";
 
 /**
  * 장소 목록 브라우저 — 카테고리/키워드 필터 + 캠핑↔낚시 연계 추천 +
@@ -37,6 +38,15 @@ export default function PlaceBrowser() {
         onQueryChange={setQuery}
         onCategoryChange={setCategory}
       />
+
+      {/* 동적 지도 — 상단 카테고리 버튼이 마커를 실시간 필터링 */}
+      <div className="mt-5">
+        <KakaoMap
+          places={allPlaces}
+          activeCategory={category}
+          className="h-[440px]"
+        />
+      </div>
 
       {/* 캠핑 + 낚시 연계 강조 */}
       {showConnectedSection && connected.length > 0 && (
