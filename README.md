@@ -66,21 +66,16 @@ hongcheon-tour/
 | `/map`        | `src/app/map/page.tsx`            | 지도 페이지 |
 | `/places/:id` | `src/app/places/[id]/page.tsx`    | 상세 페이지 |
 
-## 이미지 출처 (라이선스)
+## 이미지 정책
 
-`public/images`의 대표 이미지는 **분위기 컷**으로, 실제 장소 사진이 아닙니다.
-구글·네이버·카카오 리뷰 사진은 저작권상 사용할 수 없어, 라이선스가 명확한
-**위키미디어 공용(Wikimedia Commons, CC)** 사진을 사용했습니다. 실제 장소
-사진(운영자 제공/공공누리 개방사진)으로 교체하려면 각 장소의 `thumbnail`/`images`
-경로만 바꾸면 됩니다.
+각 장소의 사진은 현재 **"(업로드 예정)" 플레이스홀더**로 표시됩니다.
 
-- `gangwon-river.jpg` — Nakdong River, Gangwon Province (© James St. John, Flickr, **CC BY 2.0**)
-- `lake-bomun.jpg` — Bomun Lake in autumn, Gyeongju (© Grete Howard, Flickr, **CC BY 3.0**)
-- `river-gapyeong.jpg` — Bukhan River flowing through Gapyeong (Wikimedia Commons)
-- `river-han.jpg` — Korea-Seoul-Han River (Wikimedia Commons)
-- `camp-1.jpg` — Big Meadows Campground, Shenandoah (Wikimedia Commons)
-- `camp-2.jpg` — Camping tent trailer (Wikimedia Commons)
+- 구글·네이버·카카오 리뷰 사진은 **저작권/약관상 사용할 수 없습니다.**
+- 실제 현장 사진은 **운영자 제공 사진** 또는 **공공누리 개방사진(한국관광공사
+  TourAPI, 출처표시)** 으로만 합법적으로 넣을 수 있습니다.
+- 사진이 준비되면 `src/data/places.ts` 의 해당 장소에 `thumbnail: "/images/파일명"`
+  (또는 외부 URL)을 추가하면 자동으로 표시됩니다. (`public/images`에 파일 저장)
 
-> CC BY 라이선스 이미지는 저작자 표시가 필요합니다(위 출처). 실제 장소 사진으로
-> 교체하면 해당 표기는 제거하면 됩니다.
+> 공공누리/CC 사진을 쓰는 경우 출처표시가 필요합니다. 실제 사진으로 교체 시 함께
+> 표기하세요.
 ```
