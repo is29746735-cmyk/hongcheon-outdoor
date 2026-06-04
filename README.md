@@ -74,9 +74,13 @@ hongcheon-tour/
 사진(운영자 제공/공공누리 개방사진)으로 교체하려면 각 장소의 `thumbnail`/`images`
 경로만 바꾸면 됩니다.
 
+- `gangwon-river.jpg` — Nakdong River, Gangwon Province (© James St. John, Flickr, **CC BY 2.0**)
+- `lake-bomun.jpg` — Bomun Lake in autumn, Gyeongju (© Grete Howard, Flickr, **CC BY 3.0**)
 - `river-gapyeong.jpg` — Bukhan River flowing through Gapyeong (Wikimedia Commons)
 - `river-han.jpg` — Korea-Seoul-Han River (Wikimedia Commons)
 - `camp-1.jpg` — Big Meadows Campground, Shenandoah (Wikimedia Commons)
 - `camp-2.jpg` — Camping tent trailer (Wikimedia Commons)
-- `fishing-1.jpg` — Tylihul River fishing (Wikimedia Commons)
+
+> CC BY 라이선스 이미지는 저작자 표시가 필요합니다(위 출처). 실제 장소 사진으로
+> 교체하면 해당 표기는 제거하면 됩니다.
 ```
