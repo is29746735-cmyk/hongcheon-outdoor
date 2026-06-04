@@ -7,12 +7,8 @@ import { SITE } from "@/constants";
 export default function HomePage() {
   return (
     <div className="pb-16">
-      {/* Hero — 자연 그라디언트 배경 */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-forest-800 via-forest-700 to-forest-500">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-20 [background:radial-gradient(60%_60%_at_20%_0%,#fff_0%,transparent_60%)]"
-        />
+      {/* Hero — 단색 녹색 배경 */}
+      <section className="relative overflow-hidden bg-forest-700">
         <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-16 text-center sm:pt-20">
           <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/90 ring-1 ring-white/20">
             강원 홍천 · 캠핑 · 낚시 · 차박 큐레이션

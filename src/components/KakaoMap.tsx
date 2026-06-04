@@ -116,6 +116,11 @@ export default function KakaoMap({
         mapRef.current = map;
         infoRef.current = new kakao.maps.InfoWindow({ removable: true });
 
+        // 지도 빈 곳을 클릭하면 열린 설명창을 닫는다 (X 버튼은 그대로 유지)
+        kakao.maps.event.addListener(map, "click", () => {
+          infoRef.current?.close?.();
+        });
+
         const geocoder = new kakao.maps.services.Geocoder();
         const ps = new kakao.maps.services.Places();
 
@@ -134,13 +139,13 @@ export default function KakaoMap({
           )}</span>`;
           el.addEventListener("click", () => {
             infoRef.current.setContent(
-              `<div style="padding:8px 10px;min-width:160px;font-size:13px;font-family:system-ui;">
-                 <b style="display:inline-flex;align-items:center;gap:5px;">${categoryMarkerSvg(
+              `<div style="padding:9px 12px;width:200px;font-size:13px;font-family:system-ui;line-height:1.45;word-break:keep-all;white-space:normal;">
+                 <b style="display:flex;align-items:center;gap:5px;">${categoryMarkerSvg(
                    place.category,
                    CATEGORY_COLORS[place.category],
                    14
-                 )}${place.name}</b>
-                 <div style="margin-top:3px;color:#666;font-size:12px;">${place.region}</div>
+                 )}<span>${place.name}</span></b>
+                 <div style="margin-top:3px;color:#666;font-size:12px;word-break:keep-all;">${place.region}</div>
                </div>`
             );
             infoRef.current.setPosition(pos);
