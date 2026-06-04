@@ -37,7 +37,7 @@ const PLACES: Place[] = [
     summary: "1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.",
     description:
       "텐트·차박·캠핑카가 가능한 19개 사이트로, 전 사이트에서 마운틴뷰와 리버뷰를 함께 볼 수 있습니다. 도보 3분 거리의 1급수 홍천강에서 아이들과 다슬기 채집·물고기 낚시·물놀이를 즐길 수 있고, 다슬기 채집통·튜브 등 물놀이 용품도 대여합니다.",
-    region: "강원특별자치도 홍천군 (홍천강 인근)",
+    region: "강원특별자치도 홍천군 서면 개야리",
     mapQuery: "홍천 도담캠핑장",
     location: { lat: 37.691955, lng: 127.6398379 },
     connectedFishing: true,
@@ -232,24 +232,6 @@ const PLACES: Place[] = [
     sourceUrl: "https://campweek.co.kr/detail_info_1.php?detail_id=1000421",
     tags: ["유원지", "차박", "카약", "낚시"],
     activities: ["lure", "bonfire"],
-  },
-  {
-    id: "handeok-bridge-noji",
-    name: "한덕교 노지",
-    category: "carcamping",
-    summary: "홍천강변 무료 노지 차박지. 넓은 자리에 불멍·물놀이·낚시.",
-    description:
-      "홍천강 한덕교 인근의 무료 노지 차박지로, 부지가 넓어 주말에도 자리 확보가 비교적 수월합니다. 불멍·물놀이·낚시가 가능하지만 개수대가 없고 이동식 화장실만 있어 물과 장비를 미리 준비해야 합니다. 강 바로 옆이라 비가 오면 침수 위험이 있으니, 춘천시 재난안전대책본부의 '한덕교 CCTV'로 수위를 확인하고 방문하는 것이 좋습니다. (무료 노지라 공식 도로명 주소가 없어 지도에서 '한덕교'로 검색해 확인하세요.)",
-    region: "강원특별자치도 홍천군 (홍천강 한덕교 일대 노지)",
-    mapQuery: "홍천강 한덕교",
-    location: { lat: 37.675674, lng: 127.611353 },
-    connectedFishing: true,
-    connectionNote:
-      "강변 노지라 차박과 함께 홍천강에서 물놀이·낚시를 즐길 수 있습니다.",
-    sourceName: "차박 정보(블로그)",
-    sourceUrl: "https://twinsweb.net/blog/2",
-    tags: ["무료노지", "차박", "불멍", "수위주의"],
-    activities: ["bonfire"],
   },
 ];
 
