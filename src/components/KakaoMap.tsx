@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CategoryFilter, Place, PlaceCategory } from "@/types/place";
-import { CATEGORY_ICONS, CATEGORY_LABELS, HONGCHEON_RIVER_CENTER } from "@/constants";
+import {
+  CATEGORY_COLORS,
+  CATEGORY_ICONS,
+  CATEGORY_LABELS,
+  HONGCHEON_RIVER_CENTER,
+} from "@/constants";
 
 /**
  * 카카오맵 동적 지도 컴포넌트.
@@ -66,7 +71,7 @@ export default function KakaoMap({
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const infoRef = useRef<any>(null);
-  const markersRef = useRef<{ marker: any; category: PlaceCategory }[]>([]);
+  const markersRef = useRef<{ overlay: any; category: PlaceCategory }[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading"
   );
@@ -77,11 +82,11 @@ export default function KakaoMap({
     if (!map || !window.kakao) return;
     const bounds = new window.kakao.maps.LatLngBounds();
     let any = false;
-    markersRef.current.forEach(({ marker, category }) => {
+    markersRef.current.forEach(({ overlay, category }) => {
       const visible = cat === "all" || category === cat;
-      marker.setMap(visible ? map : null);
+      overlay.setMap(visible ? map : null);
       if (visible) {
-        bounds.extend(marker.getPosition());
+        bounds.extend(overlay.getPosition());
         any = true;
       }
     });
@@ -116,21 +121,33 @@ export default function KakaoMap({
 
         const addMarker = (place: Place, lat: number, lng: number) => {
           const pos = new kakao.maps.LatLng(lat, lng);
-          const marker = new kakao.maps.Marker({
-            position: pos,
-            map,
-            title: place.name,
-          });
-          kakao.maps.event.addListener(marker, "click", () => {
+          const color = CATEGORY_COLORS[place.category];
+
+          // 카테고리 색상 핀 (HTML 커스텀 오버레이)
+          const el = document.createElement("div");
+          el.title = place.name;
+          el.style.cssText = `cursor:pointer;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
+          el.innerHTML = `<span style="transform:rotate(45deg);font-size:14px;line-height:1;">${CATEGORY_ICONS[place.category]}</span>`;
+          el.addEventListener("click", () => {
             infoRef.current.setContent(
               `<div style="padding:8px 10px;min-width:160px;font-size:13px;font-family:system-ui;">
                  <b>${CATEGORY_ICONS[place.category]} ${place.name}</b>
                  <div style="margin-top:3px;color:#666;font-size:12px;">${place.region}</div>
                </div>`
             );
-            infoRef.current.open(map, marker);
+            infoRef.current.setPosition(pos);
+            infoRef.current.open(map);
           });
-          markersRef.current.push({ marker, category: place.category });
+
+          const overlay = new kakao.maps.CustomOverlay({
+            position: pos,
+            content: el,
+            xAnchor: 0.5,
+            yAnchor: 1,
+            clickable: true,
+          });
+          overlay.setMap(map);
+          markersRef.current.push({ overlay, category: place.category });
         };
 
         let pending = places.length;
@@ -213,11 +230,28 @@ export default function KakaoMap({
         </div>
       )}
       {status === "ready" && (
-        <div className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-white/85 px-3 py-1 text-xs text-neutral-600 shadow">
-          {activeCategory === "all"
-            ? "전체 스팟"
-            : `${CATEGORY_LABELS[activeCategory]} 만 표시 중`}
-        </div>
+        <>
+          {/* 색상 범례 */}
+          <div className="pointer-events-none absolute right-3 top-3 flex flex-col gap-1 rounded-xl bg-white/90 px-3 py-2 text-xs text-neutral-700 shadow">
+            {(["camping", "fishing", "carcamping"] as PlaceCategory[]).map(
+              (c) => (
+                <div key={c} className="flex items-center gap-1.5">
+                  <span
+                    className="inline-block h-3 w-3 rounded-full border border-white"
+                    style={{ background: CATEGORY_COLORS[c] }}
+                  />
+                  {CATEGORY_ICONS[c]} {CATEGORY_LABELS[c]}
+                </div>
+              )
+            )}
+          </div>
+          {/* 현재 필터 배지 */}
+          <div className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-white/85 px-3 py-1 text-xs text-neutral-600 shadow">
+            {activeCategory === "all"
+              ? "전체 스팟"
+              : `${CATEGORY_LABELS[activeCategory]} 만 표시 중`}
+          </div>
+        </>
       )}
     </div>
   );

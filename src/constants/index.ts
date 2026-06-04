@@ -31,6 +31,13 @@ export const CATEGORY_ICONS: Record<PlaceCategory, string> = {
   carcamping: "🚐",
 };
 
+/** 카테고리별 지도 마커 색상 */
+export const CATEGORY_COLORS: Record<PlaceCategory, string> = {
+  camping: "#2f7d4f", // 초록
+  fishing: "#2563eb", // 파랑
+  carcamping: "#f59e0b", // 주황
+};
+
 export const ACTIVITY_LABELS: Record<Activity, string> = {
   gyeonji: "견지낚시",
   lure: "루어",
