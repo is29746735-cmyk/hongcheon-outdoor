@@ -66,10 +66,17 @@ hongcheon-tour/
 | `/map`        | `src/app/map/page.tsx`            | 지도 페이지 |
 | `/places/:id` | `src/app/places/[id]/page.tsx`    | 상세 페이지 |
 
-## 다음 단계
+## 이미지 출처 (라이선스)
 
-- [ ] 지도 SDK 연동 (Kakao Map / Naver Map / Leaflet) — `src/app/map/page.tsx`
-- [ ] 실제 큐레이션 데이터 연결 — `src/data/places.ts`
-- [ ] 카테고리별 필터/검색 기능
-- [ ] 이미지 업로드 및 `next/image` 적용
+`public/images`의 대표 이미지는 **분위기 컷**으로, 실제 장소 사진이 아닙니다.
+구글·네이버·카카오 리뷰 사진은 저작권상 사용할 수 없어, 라이선스가 명확한
+**위키미디어 공용(Wikimedia Commons, CC)** 사진을 사용했습니다. 실제 장소
+사진(운영자 제공/공공누리 개방사진)으로 교체하려면 각 장소의 `thumbnail`/`images`
+경로만 바꾸면 됩니다.
+
+- `river-gapyeong.jpg` — Bukhan River flowing through Gapyeong (Wikimedia Commons)
+- `river-han.jpg` — Korea-Seoul-Han River (Wikimedia Commons)
+- `camp-1.jpg` — Big Meadows Campground, Shenandoah (Wikimedia Commons)
+- `camp-2.jpg` — Camping tent trailer (Wikimedia Commons)
+- `fishing-1.jpg` — Tylihul River fishing (Wikimedia Commons)
 ```

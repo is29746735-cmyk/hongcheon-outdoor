@@ -11,6 +11,7 @@ const PLACES: Place[] = [
   // ── 캠핑장 ─────────────────────────────────────────────
   {
     id: "hongcheongang-auto-camping",
+    thumbnail: "/images/camp-1.jpg",
     name: "홍천강오토캠핑장",
     category: "camping",
     summary: "홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.",
@@ -32,6 +33,7 @@ const PLACES: Place[] = [
   },
   {
     id: "dodam-camping",
+    thumbnail: "/images/river-han.jpg",
     name: "도담캠핑장",
     category: "camping",
     summary: "1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.",
@@ -51,6 +53,7 @@ const PLACES: Place[] = [
   },
   {
     id: "mogok-bambeol",
+    thumbnail: "/images/camp-2.jpg",
     name: "모곡밤벌유원지",
     category: "camping",
     summary: "캠핑·차박·낚시·물놀이를 한 곳에서. 홍천강 대표 유원지.",
@@ -72,6 +75,7 @@ const PLACES: Place[] = [
   },
   {
     id: "jarabawi-auto-camping",
+    thumbnail: "/images/river-gapyeong.jpg",
     name: "자라바위오토캠핑장",
     category: "camping",
     summary: "팔봉산 자락, 굽이치는 홍천강을 마주한 군 공식 오토캠핑장.",
@@ -92,6 +96,7 @@ const PLACES: Place[] = [
   },
   {
     id: "sagehill-camping",
+    thumbnail: "/images/camp-1.jpg",
     name: "세이지힐 캠핑장",
     category: "camping",
     summary: "남노일 홍천강변의 자동차야영장·카라반 캠핑장.",
@@ -114,6 +119,7 @@ const PLACES: Place[] = [
   // ── 낚시터 ─────────────────────────────────────────────
   {
     id: "gulji-ri-fishing",
+    thumbnail: "/images/fishing-1.jpg",
     name: "굴지리 홍천강 노지 낚시터",
     category: "fishing",
     summary: "붕어·잉어·쏘가리가 두루 나오는 홍천강 노지 포인트.",
@@ -132,6 +138,7 @@ const PLACES: Place[] = [
   },
   {
     id: "mogok-sogari-spot",
+    thumbnail: "/images/river-gapyeong.jpg",
     name: "서면 모곡 쏘가리 여울",
     category: "fishing",
     summary: "여울이 발달해 쏘가리 루어 낚시로 이름난 구간.",
@@ -150,6 +157,7 @@ const PLACES: Place[] = [
   },
   {
     id: "gulun-fishing",
+    thumbnail: "/images/river-han.jpg",
     name: "굴운낚시터(굴운지)",
     category: "fishing",
     summary: "향어·붕어가 굵게 낚이는 홍천 대표 대물 저수지.",
@@ -166,6 +174,7 @@ const PLACES: Place[] = [
   },
   {
     id: "yuchi-fishing",
+    thumbnail: "/images/fishing-1.jpg",
     name: "유치지(유치 낚시터)",
     category: "fishing",
     summary: "수심 깊은 3만여 평 대형지. 겨울 얼음낚시로 인기.",
@@ -180,6 +189,7 @@ const PLACES: Place[] = [
   },
   {
     id: "sidong-fishing",
+    thumbnail: "/images/river-han.jpg",
     name: "시동낚시터",
     category: "fishing",
     summary: "남면 시동리 홍천강변에 자리한 낚시터.",
@@ -196,6 +206,7 @@ const PLACES: Place[] = [
   // ── 차박지 ─────────────────────────────────────────────
   {
     id: "namnoil-riverside",
+    thumbnail: "/images/river-gapyeong.jpg",
     name: "남노일강변 유원지",
     category: "carcamping",
     summary: "넓은 백사장의 홍천강 상류 강변. 견지낚시·물놀이·차박 명소.",
@@ -217,6 +228,7 @@ const PLACES: Place[] = [
   },
   {
     id: "magok-resort",
+    thumbnail: "/images/camp-2.jpg",
     name: "마곡유원지",
     category: "carcamping",
     summary: "남이섬 상류 홍천강변. 카약·캠핑·낚시를 즐기는 노지 유원지.",

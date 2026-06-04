@@ -44,6 +44,12 @@ export default function PlaceDetailPage({ params }: PageProps) {
         className="mt-4 aspect-[16/9] rounded-2xl"
         sizes="(max-width: 768px) 100vw, 768px"
       />
+      {place.thumbnail && (
+        <p className="mt-2 text-right text-xs text-neutral-400">
+          대표 이미지는 분위기 컷(위키미디어 공용, CC)으로 실제 현장과 다를 수
+          있습니다.
+        </p>
+      )}
 
       {/* 추가 이미지 갤러리 (place.images 에 실제 URL을 넣으면 표시) */}
       {place.images && place.images.length > 0 && (

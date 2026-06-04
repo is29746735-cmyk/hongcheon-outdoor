@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { SITE } from "@/constants";
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "800"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -18,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
-      <body className="flex min-h-screen flex-col">
+    <html lang="ko" className={notoSansKr.variable}>
+      <body className="flex min-h-screen flex-col bg-sand-50 text-neutral-800 antialiased">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

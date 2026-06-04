@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { getAllPlaces } from "@/data/places";
 import { filterPlaces, groupByCategory, getConnectedPlaces } from "@/lib/search";
-import { CATEGORY_LABELS } from "@/constants";
+import { CATEGORY_ICONS, CATEGORY_LABELS } from "@/constants";
 import type { CategoryFilter } from "@/types/place";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
@@ -73,10 +73,11 @@ export default function PlaceBrowser() {
         </div>
       ) : (
         groups.map((group) => (
-          <section key={group.category} className="mt-10">
-            <h2 className="mb-4 text-xl font-bold text-neutral-900">
+          <section key={group.category} className="mt-12">
+            <h2 className="mb-5 flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-neutral-900">
+              <span className="text-2xl">{CATEGORY_ICONS[group.category]}</span>
               {CATEGORY_LABELS[group.category]}
-              <span className="ml-2 text-sm font-normal text-neutral-400">
+              <span className="rounded-full bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
                 {group.items.length}곳
               </span>
             </h2>

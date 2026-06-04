@@ -3,17 +3,22 @@ import { NAV_LINKS, SITE } from "@/constants";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-neutral-200/70 bg-sand-50/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="text-lg font-bold text-forest-600">
-          🏕️ {SITE.name}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-600 text-sm text-white shadow-sm">
+            ⛰️
+          </span>
+          <span className="text-base font-extrabold tracking-tight text-forest-800">
+            {SITE.name}
+          </span>
         </Link>
-        <nav className="flex gap-6 text-sm font-medium">
+        <nav className="flex items-center gap-1 text-sm font-semibold">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-neutral-700 transition-colors hover:text-forest-600"
+              className="rounded-full px-3.5 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
             >
               {link.label}
             </Link>
