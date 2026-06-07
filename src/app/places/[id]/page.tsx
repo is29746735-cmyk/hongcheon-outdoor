@@ -7,6 +7,7 @@ import { CATEGORY_LABELS } from "@/constants";
 import { formatRating } from "@/lib/utils";
 import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
+import CourseMap from "@/components/CourseMap";
 
 interface PageProps {
   params: { id: string };
@@ -124,6 +125,9 @@ export default function PlaceDetailPage({ params }: PageProps) {
         </h2>
         <MapLinkButtons place={place} />
       </section>
+
+      {/* AI 추천 코스 (주변 맛집·관광지·카페 동선) */}
+      <CourseMap place={place} />
 
       <div className="mt-6 flex flex-wrap gap-2">
         {place.tags.map((tag) => (

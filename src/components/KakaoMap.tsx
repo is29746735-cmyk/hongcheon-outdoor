@@ -15,6 +15,7 @@ import {
   EV_COLOR,
 } from "@/components/icons";
 import { EV_CHARGERS } from "@/data/ev-chargers";
+import { KAKAO_KEY, loadKakaoSdk } from "@/lib/kakao";
 
 /**
  * 카카오맵 동적 지도 컴포넌트.
@@ -25,43 +26,6 @@ import { EV_CHARGERS } from "@/data/ev-chargers";
  * 사용 전: 카카오 개발자센터(developers.kakao.com)에서 JavaScript 키를 발급받아
  *   .env.local 의 NEXT_PUBLIC_KAKAO_MAP_KEY 에 넣고, 플랫폼 도메인을 등록해야 합니다.
  */
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
-
-const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
-const SCRIPT_ID = "kakao-maps-sdk";
-
-/** Kakao SDK(services 라이브러리 포함)를 한 번만 로드 */
-function loadKakaoSdk(key: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (typeof window === "undefined") return;
-    if (window.kakao?.maps) {
-      resolve();
-      return;
-    }
-    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener("load", () =>
-        window.kakao.maps.load(() => resolve())
-      );
-      existing.addEventListener("error", () =>
-        reject(new Error("Kakao SDK load failed"))
-      );
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = SCRIPT_ID;
-    script.async = true;
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
-    script.onload = () => window.kakao.maps.load(() => resolve());
-    script.onerror = () => reject(new Error("Kakao SDK load failed"));
-    document.head.appendChild(script);
-  });
-}
 
 interface KakaoMapProps {
   places: Place[];
