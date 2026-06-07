@@ -1,88 +1,135 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { getAllPlaces } from "@/data/places";
 import {
-  filterPlaces,
   groupByCategory,
   getConnectedPlaces,
   getAllFilterTags,
+  FISHING_TYPES,
 } from "@/lib/search";
 import { CATEGORY_LABELS } from "@/constants";
 import { CategoryIcon } from "@/components/icons";
 import { Fish, X } from "lucide-react";
-import type { CategoryFilter } from "@/types/place";
+import { usePlaceFilters } from "@/lib/usePlaceFilters";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
 import KakaoMap from "@/components/KakaoMap";
 
+const ISOLATION_OPTIONS = [
+  { value: 1, label: "전체" },
+  { value: 3, label: "3점+" },
+  { value: 4, label: "4점+" },
+  { value: 5, label: "5점" },
+];
+
 /**
- * 장소 목록 브라우저 — 카테고리/키워드 필터 + 캠핑↔낚시 연계 추천 +
- * 카테고리별 그룹 목록. 메인 화면에 바로 노출해 한 화면에서 고를 수 있게 한다.
+ * 장소 목록 브라우저 — 사이드바/필터 메뉴(카테고리·태그·고립도·낚시종류·키워드)에
+ * 맞춰 하단 카드 리스트가 실시간으로 필터링된다. (usePlaceFilters 훅 사용)
  */
 export default function PlaceBrowser() {
   const allPlaces = useMemo(() => getAllPlaces(), []);
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<CategoryFilter>("all");
-  const [tags, setTags] = useState<string[]>([]);
   const allTags = useMemo(() => getAllFilterTags(allPlaces), [allPlaces]);
+  const f = usePlaceFilters(allPlaces);
 
-  const toggleTag = (t: string) =>
-    setTags((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
-    );
-
-  const filtered = useMemo(
-    () => filterPlaces(allPlaces, { query, category, tags }),
-    [allPlaces, query, category, tags]
-  );
-  const groups = useMemo(() => groupByCategory(filtered), [filtered]);
+  const groups = useMemo(() => groupByCategory(f.filtered), [f.filtered]);
   const connected = useMemo(
     () => getConnectedPlaces(allPlaces).slice(0, 6),
     [allPlaces]
   );
 
-  const showConnectedSection =
-    category === "all" && query.trim() === "" && tags.length === 0;
+  const showConnectedSection = f.activeCount === 0;
 
   return (
     <div id="list" className="scroll-mt-20">
       <PlaceFilterBar
-        query={query}
-        category={category}
-        onQueryChange={setQuery}
-        onCategoryChange={setCategory}
+        query={f.query}
+        category={f.category}
+        onQueryChange={f.setQuery}
+        onCategoryChange={f.setCategory}
       />
 
-      {/* 태그 기반 필터 (검증된 속성 태그) */}
-      <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-xs font-semibold text-neutral-400">
-          태그
-        </span>
-        {allTags.map((t) => {
-          const on = tags.includes(t);
-          return (
-            <button
-              key={t}
-              type="button"
-              onClick={() => toggleTag(t)}
-              className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
-                on
-                  ? "bg-forest-600 text-white"
-                  : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
-              }`}
-            >
-              #{t}
-            </button>
-          );
-        })}
-        {tags.length > 0 && (
+      {/* 상세 필터 메뉴 */}
+      <div className="mt-3 space-y-2.5 rounded-2xl border border-neutral-200 bg-white/60 p-3.5">
+        {/* 한적함(고립도) */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
+            한적함
+          </span>
+          {ISOLATION_OPTIONS.map((o) => {
+            const on = f.minIsolation === o.value;
+            return (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => f.setMinIsolation(o.value)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  on
+                    ? "bg-forest-600 text-white"
+                    : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
+                }`}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 낚시 종류 */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
+            낚시 종류
+          </span>
+          {FISHING_TYPES.map((ft) => {
+            const on = f.fishingTypes.includes(ft.value);
+            return (
+              <button
+                key={ft.value}
+                type="button"
+                onClick={() => f.toggleFishingType(ft.value)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  on
+                    ? "bg-sky-600 text-white"
+                    : "bg-sand-100 text-neutral-600 hover:bg-sky-50 hover:text-sky-700"
+                }`}
+              >
+                {ft.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 속성 태그 */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
+            태그
+          </span>
+          {allTags.map((t) => {
+            const on = f.tags.includes(t);
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => f.toggleTag(t)}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                  on
+                    ? "bg-forest-600 text-white"
+                    : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
+                }`}
+              >
+                #{t}
+              </button>
+            );
+          })}
+        </div>
+
+        {f.activeCount > 0 && (
           <button
             type="button"
-            onClick={() => setTags([])}
-            className="inline-flex items-center gap-0.5 rounded-full px-2 py-1 text-xs font-medium text-neutral-500 hover:text-forest-700"
+            onClick={f.reset}
+            className="inline-flex items-center gap-0.5 text-xs font-medium text-neutral-500 hover:text-forest-700"
           >
-            <X className="h-3 w-3" /> 초기화
+            <X className="h-3 w-3" /> 필터 초기화 ({f.activeCount})
           </button>
         )}
       </div>
@@ -91,7 +138,7 @@ export default function PlaceBrowser() {
       <div className="mt-4">
         <KakaoMap
           places={allPlaces}
-          activeCategory={category}
+          activeCategory={f.category}
           className="h-[440px]"
         />
       </div>

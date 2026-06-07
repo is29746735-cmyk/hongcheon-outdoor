@@ -55,17 +55,59 @@ function placeTagSet(place: Place): Set<string> {
   return new Set([...(place.filterTags ?? []), ...place.tags]);
 }
 
-/** 키워드 + 카테고리 + 태그로 필터링 (태그는 모두 만족 AND) */
-export function filterPlaces(
-  places: Place[],
-  opts: { query?: string; category?: CategoryFilter; tags?: string[] }
-): Place[] {
-  const { query = "", category = "all", tags = [] } = opts;
+/** 낚시 종류 옵션 (검증된 activities/태그 기반) */
+export const FISHING_TYPES = [
+  { value: "lure", label: "루어낚시" },
+  { value: "gyeonji", label: "견지낚시" },
+  { value: "ice", label: "얼음낚시" },
+] as const;
+
+/** 한 장소가 제공하는 낚시 종류 집합 (검증된 사실에서 도출) */
+export function fishingMethods(place: Place): Set<string> {
+  const s = new Set<string>();
+  const acts = place.activities ?? [];
+  const ft = place.filterTags ?? [];
+  if (acts.includes("lure") || ft.includes("루어낚시")) s.add("lure");
+  if (acts.includes("gyeonji")) s.add("gyeonji");
+  if (ft.includes("얼음낚시")) s.add("ice");
+  return s;
+}
+
+export interface PlaceFilterOpts {
+  query?: string;
+  category?: CategoryFilter;
+  tags?: string[];
+  /** 한적함(고립도) 최소값 — 1이면 제한 없음 */
+  minIsolation?: number;
+  /** 낚시 종류(OR 조건) */
+  fishingTypes?: string[];
+}
+
+/**
+ * 키워드 + 카테고리 + 태그(AND) + 고립도(이상) + 낚시종류(OR)로 실시간 필터링.
+ * Array.prototype.filter 로 구현.
+ */
+export function filterPlaces(places: Place[], opts: PlaceFilterOpts): Place[] {
+  const {
+    query = "",
+    category = "all",
+    tags = [],
+    minIsolation = 1,
+    fishingTypes = [],
+  } = opts;
+
   return places.filter((place) => {
     if (category !== "all" && place.category !== category) return false;
     if (tags.length > 0) {
       const set = placeTagSet(place);
       if (!tags.every((t) => set.has(t))) return false;
+    }
+    if (minIsolation > 1 && (place.isolationScore ?? 0) < minIsolation) {
+      return false;
+    }
+    if (fishingTypes.length > 0) {
+      const methods = fishingMethods(place);
+      if (!fishingTypes.some((t) => methods.has(t))) return false;
     }
     return matchesQuery(place, query);
   });

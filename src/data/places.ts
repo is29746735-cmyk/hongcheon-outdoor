@@ -13,6 +13,7 @@ const PLACES: Place[] = [
     id: "hongcheongang-auto-camping",
     filterTags: ["오토캠핑", "카라반", "강변", "공공운영", "편의시설", "수상레저"],
     name: "홍천강오토캠핑장",
+    isolationScore: 2,
     category: "camping",
     summary: "홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.",
     description:
@@ -35,6 +36,7 @@ const PLACES: Place[] = [
     id: "dodam-camping",
     filterTags: ["강변", "리버뷰", "차박가능", "가족", "물놀이", "낚시가능"],
     name: "도담캠핑장",
+    isolationScore: 3,
     category: "camping",
     summary: "1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.",
     description:
@@ -55,6 +57,7 @@ const PLACES: Place[] = [
     id: "mogok-bambeol",
     filterTags: ["차박가능", "강변", "물놀이", "낚시가능", "편의시설"],
     name: "모곡밤벌유원지",
+    isolationScore: 2,
     category: "camping",
     summary: "캠핑·차박·낚시·물놀이를 한 곳에서. 홍천강 대표 유원지.",
     description:
@@ -77,6 +80,7 @@ const PLACES: Place[] = [
     id: "jarabawi-auto-camping",
     filterTags: ["오토캠핑", "공공운영", "강변", "편의시설", "낚시가능"],
     name: "자라바위오토캠핑장",
+    isolationScore: 3,
     category: "camping",
     summary: "팔봉산 자락, 굽이치는 홍천강을 마주한 군 공식 오토캠핑장.",
     description:
@@ -98,6 +102,7 @@ const PLACES: Place[] = [
     id: "sagehill-camping",
     filterTags: ["오토캠핑", "카라반", "장비대여", "강변"],
     name: "세이지힐 캠핑장",
+    isolationScore: 3,
     category: "camping",
     summary: "남노일 홍천강변의 자동차야영장·카라반 캠핑장.",
     description:
@@ -121,6 +126,7 @@ const PLACES: Place[] = [
     id: "gulji-ri-fishing",
     filterTags: ["강변", "무료", "노지"],
     name: "굴지리 홍천강 노지 낚시터",
+    isolationScore: 4,
     category: "fishing",
     summary: "붕어·잉어·쏘가리가 두루 나오는 홍천강 노지 포인트.",
     description:
@@ -140,6 +146,7 @@ const PLACES: Place[] = [
     id: "mogok-sogari-spot",
     filterTags: ["강변", "루어낚시", "노지"],
     name: "서면 모곡 쏘가리 여울",
+    isolationScore: 3,
     category: "fishing",
     summary: "여울이 발달해 쏘가리 루어 낚시로 이름난 구간.",
     description:
@@ -159,6 +166,7 @@ const PLACES: Place[] = [
     id: "gulun-fishing",
     filterTags: ["저수지", "유료낚시"],
     name: "굴운낚시터(굴운지)",
+    isolationScore: 5,
     category: "fishing",
     summary: "향어·붕어가 굵게 낚이는 홍천 대표 대물 저수지.",
     description:
@@ -176,6 +184,7 @@ const PLACES: Place[] = [
     id: "yuchi-fishing",
     filterTags: ["저수지", "얼음낚시"],
     name: "유치지(유치 낚시터)",
+    isolationScore: 4,
     category: "fishing",
     summary: "수심 깊은 3만여 평 대형지. 겨울 얼음낚시로 인기.",
     description:
@@ -191,6 +200,7 @@ const PLACES: Place[] = [
     id: "sidong-fishing",
     filterTags: ["강변", "저수지"],
     name: "시동낚시터",
+    isolationScore: 3,
     category: "fishing",
     summary: "남면 시동리 홍천강변에 자리한 낚시터.",
     description:
@@ -208,6 +218,7 @@ const PLACES: Place[] = [
     id: "namnoil-riverside",
     filterTags: ["차박가능", "강변", "물놀이", "가족", "낚시가능"],
     name: "남노일강변 유원지",
+    isolationScore: 2,
     category: "carcamping",
     summary: "넓은 백사장의 홍천강 상류 강변. 견지낚시·물놀이·차박 명소.",
     description:
@@ -230,6 +241,7 @@ const PLACES: Place[] = [
     id: "magok-resort",
     filterTags: ["차박가능", "강변", "수상레저", "낚시가능"],
     name: "마곡유원지",
+    isolationScore: 2,
     category: "carcamping",
     summary: "남이섬 상류 홍천강변. 카약·캠핑·낚시를 즐기는 노지 유원지.",
     description:

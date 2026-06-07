@@ -30,6 +30,11 @@ export interface Place {
   tags: string[];
   /** 필터용 속성 태그 (검증된 설명/사실에서만 도출 — 리뷰 임의 생성 X) */
   filterTags?: string[];
+  /**
+   * 한적함(고립도) 추정치 1~5 (5=가장 한적).
+   * 리뷰가 아닌 검증된 입지 특성(노지/유원지/편의시설 유무 등)에서 도출한 편집 추정치.
+   */
+  isolationScore?: number;
   activities?: Activity[];
   phone?: string;
   /** 공공/공식 운영 시설 여부 */
