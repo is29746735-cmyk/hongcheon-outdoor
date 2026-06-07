@@ -1,5 +1,18 @@
-import { Tent, Fish, Caravan, type LucideIcon } from "lucide-react";
+import { Tent, Fish, Caravan, Zap, type LucideIcon } from "lucide-react";
 import type { PlaceCategory } from "@/types/place";
+
+/** 전기차 충전소 마커 색상 */
+export const EV_COLOR = "#7c3aed";
+
+/** 전기차 충전소 아이콘 (lucide Zap) */
+export function EvIcon({ className }: { className?: string }) {
+  return <Zap className={className} strokeWidth={2} aria-hidden />;
+}
+
+/** 카카오 지도 마커용 번개 SVG 문자열(흰색 채움) */
+export function evMarkerSvg(color = "#fff", size = 14): string {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>`;
+}
 
 /** 카테고리별 라인 아이콘 (lucide) */
 export const CATEGORY_LUCIDE: Record<PlaceCategory, LucideIcon> = {

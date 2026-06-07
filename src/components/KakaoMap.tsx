@@ -7,7 +7,14 @@ import {
   CATEGORY_LABELS,
   HONGCHEON_RIVER_CENTER,
 } from "@/constants";
-import { CategoryIcon, categoryMarkerSvg } from "@/components/icons";
+import {
+  CategoryIcon,
+  categoryMarkerSvg,
+  evMarkerSvg,
+  EvIcon,
+  EV_COLOR,
+} from "@/components/icons";
+import { EV_CHARGERS } from "@/data/ev-chargers";
 
 /**
  * 카카오맵 동적 지도 컴포넌트.
@@ -72,6 +79,7 @@ export default function KakaoMap({
   const mapRef = useRef<any>(null);
   const infoRef = useRef<any>(null);
   const markersRef = useRef<{ overlay: any; category: PlaceCategory }[]>([]);
+  const evMarkersRef = useRef<any[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading"
   );
@@ -86,6 +94,15 @@ export default function KakaoMap({
       const visible = cat === "all" || category === cat;
       overlay.setMap(visible ? map : null);
       if (visible) {
+        bounds.extend(overlay.getPosition());
+        any = true;
+      }
+    });
+    // 차박지 선택 시에만 전기차 충전소도 함께 표시
+    const showEv = cat === "carcamping";
+    evMarkersRef.current.forEach((overlay) => {
+      overlay.setMap(showEv ? map : null);
+      if (showEv) {
         bounds.extend(overlay.getPosition());
         any = true;
       }
@@ -166,7 +183,41 @@ export default function KakaoMap({
           markersRef.current.push({ overlay, category: place.category });
         };
 
+        // 전기차 충전소 마커 (초기엔 숨김, 차박지 선택 시 표시)
+        const addEvMarker = (charger: (typeof EV_CHARGERS)[number]) => {
+          const pos = new kakao.maps.LatLng(charger.lat, charger.lng);
+          const el = document.createElement("div");
+          el.title = charger.name;
+          el.style.cssText = `cursor:pointer;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${EV_COLOR};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
+          el.innerHTML = `<span style="display:flex;transform:rotate(45deg);">${evMarkerSvg(
+            "#fff",
+            14
+          )}</span>`;
+          el.addEventListener("click", () => {
+            infoRef.current.setContent(
+              `<div style="padding:9px 12px;width:200px;font-size:13px;font-family:system-ui;line-height:1.45;word-break:keep-all;">
+                 <b style="display:flex;align-items:center;gap:5px;">${evMarkerSvg(
+                   EV_COLOR,
+                   14
+                 )}<span>${charger.name}</span></b>
+                 <div style="margin-top:3px;color:#666;font-size:12px;">${charger.region}</div>
+               </div>`
+            );
+            infoRef.current.setPosition(pos);
+            infoRef.current.open(map);
+          });
+          const overlay = new kakao.maps.CustomOverlay({
+            position: pos,
+            content: el,
+            xAnchor: 0.5,
+            yAnchor: 1,
+            clickable: true,
+          });
+          evMarkersRef.current.push(overlay);
+        };
+
         const buildMarkers = () => {
+          EV_CHARGERS.forEach(addEvMarker);
           if (places.length === 0) {
             setStatus("ready");
             return;
@@ -271,6 +322,17 @@ export default function KakaoMap({
                   {CATEGORY_LABELS[c]}
                 </div>
               )
+            )}
+            {activeCategory === "carcamping" && (
+              <div className="mt-0.5 flex items-center gap-1.5 border-t border-neutral-200 pt-1">
+                <span
+                  className="grid h-4 w-4 place-items-center rounded-full text-white"
+                  style={{ background: EV_COLOR }}
+                >
+                  <EvIcon className="h-2.5 w-2.5" />
+                </span>
+                전기차 충전소
+              </div>
             )}
           </div>
           {/* 현재 필터 배지 */}
