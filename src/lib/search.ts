@@ -50,16 +50,36 @@ function matchesQuery(place: Place, query: string): boolean {
   return false;
 }
 
-/** 키워드 + 카테고리로 필터링 */
+/** 한 장소의 전체 태그(속성 태그 + 일반 태그) */
+function placeTagSet(place: Place): Set<string> {
+  return new Set([...(place.filterTags ?? []), ...place.tags]);
+}
+
+/** 키워드 + 카테고리 + 태그로 필터링 (태그는 모두 만족 AND) */
 export function filterPlaces(
   places: Place[],
-  opts: { query?: string; category?: CategoryFilter }
+  opts: { query?: string; category?: CategoryFilter; tags?: string[] }
 ): Place[] {
-  const { query = "", category = "all" } = opts;
+  const { query = "", category = "all", tags = [] } = opts;
   return places.filter((place) => {
     if (category !== "all" && place.category !== category) return false;
+    if (tags.length > 0) {
+      const set = placeTagSet(place);
+      if (!tags.every((t) => set.has(t))) return false;
+    }
     return matchesQuery(place, query);
   });
+}
+
+/** 필터용 속성 태그 목록 (빈도순) */
+export function getAllFilterTags(places: Place[]): string[] {
+  const count = new Map<string, number>();
+  places.forEach((p) =>
+    (p.filterTags ?? []).forEach((t) => count.set(t, (count.get(t) ?? 0) + 1))
+  );
+  return [...count.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ko"))
+    .map(([t]) => t);
 }
 
 /** 카테고리별로 묶어 반환 (해당 장소가 있는 카테고리만) */

@@ -2,10 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { getAllPlaces } from "@/data/places";
-import { filterPlaces, groupByCategory, getConnectedPlaces } from "@/lib/search";
+import {
+  filterPlaces,
+  groupByCategory,
+  getConnectedPlaces,
+  getAllFilterTags,
+} from "@/lib/search";
 import { CATEGORY_LABELS } from "@/constants";
 import { CategoryIcon } from "@/components/icons";
-import { Fish } from "lucide-react";
+import { Fish, X } from "lucide-react";
 import type { CategoryFilter } from "@/types/place";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
@@ -19,10 +24,17 @@ export default function PlaceBrowser() {
   const allPlaces = useMemo(() => getAllPlaces(), []);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
+  const [tags, setTags] = useState<string[]>([]);
+  const allTags = useMemo(() => getAllFilterTags(allPlaces), [allPlaces]);
+
+  const toggleTag = (t: string) =>
+    setTags((prev) =>
+      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
+    );
 
   const filtered = useMemo(
-    () => filterPlaces(allPlaces, { query, category }),
-    [allPlaces, query, category]
+    () => filterPlaces(allPlaces, { query, category, tags }),
+    [allPlaces, query, category, tags]
   );
   const groups = useMemo(() => groupByCategory(filtered), [filtered]);
   const connected = useMemo(
@@ -30,7 +42,8 @@ export default function PlaceBrowser() {
     [allPlaces]
   );
 
-  const showConnectedSection = category === "all" && query.trim() === "";
+  const showConnectedSection =
+    category === "all" && query.trim() === "" && tags.length === 0;
 
   return (
     <div id="list" className="scroll-mt-20">
@@ -40,6 +53,39 @@ export default function PlaceBrowser() {
         onQueryChange={setQuery}
         onCategoryChange={setCategory}
       />
+
+      {/* 태그 기반 필터 (검증된 속성 태그) */}
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-xs font-semibold text-neutral-400">
+          태그
+        </span>
+        {allTags.map((t) => {
+          const on = tags.includes(t);
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => toggleTag(t)}
+              className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                on
+                  ? "bg-forest-600 text-white"
+                  : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
+              }`}
+            >
+              #{t}
+            </button>
+          );
+        })}
+        {tags.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setTags([])}
+            className="inline-flex items-center gap-0.5 rounded-full px-2 py-1 text-xs font-medium text-neutral-500 hover:text-forest-700"
+          >
+            <X className="h-3 w-3" /> 초기화
+          </button>
+        )}
+      </div>
 
       {/* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */}
       <div className="mt-4">

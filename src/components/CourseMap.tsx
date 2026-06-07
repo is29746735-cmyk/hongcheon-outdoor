@@ -5,8 +5,10 @@ import {
   UtensilsCrossed,
   Landmark,
   Coffee,
+  Store,
   Route as RouteIcon,
   MapPin,
+  Navigation,
   type LucideIcon,
 } from "lucide-react";
 import type { Place } from "@/types/place";
@@ -30,8 +32,9 @@ interface Stop {
 
 const PLACE_COLOR = "#206e47";
 const CATS: {
-  code: string;
+  code?: string;
   fallback?: string;
+  keyword?: string;
   label: string;
   color: string;
   Icon: LucideIcon;
@@ -39,6 +42,7 @@ const CATS: {
   { code: "FD6", label: "맛집", color: "#e2562a", Icon: UtensilsCrossed },
   { code: "AT4", fallback: "CT1", label: "관광지", color: "#2563eb", Icon: Landmark },
   { code: "CE7", label: "카페", color: "#7c3aed", Icon: Coffee },
+  { keyword: "전통시장", label: "전통시장", color: "#0891b2", Icon: Store },
 ];
 
 const SEARCH_RADIUS = 7000; // m — 이 안에서만 "가까운" 연계로 인정
@@ -113,54 +117,64 @@ export default function CourseMap({ place }: { place: Place }) {
         const ps = new kakao.maps.services.Places();
         const info = new kakao.maps.InfoWindow({ removable: true });
 
-        // 카테고리별 가장 가까운 장소 1곳 검색 (없으면 fallback 코드 시도)
-        const searchOne = (
-          code: string,
-          label: string,
-          color: string,
-          fallback?: string
-        ): Promise<Stop | null> =>
+        const opts = {
+          location: center,
+          radius: SEARCH_RADIUS,
+          sort: "distance",
+          size: 5,
+        };
+        // 출발 장소 자신(같은 위치/이름)은 제외하고 가장 가까운 곳 선택
+        const pickNearest = (data: any[], st: string, label: string, color: string) => {
+          if (st !== kakao.maps.services.Status.OK) return null;
+          const d = data.find((x: any) => {
+            const p = { lat: +x.y, lng: +x.x };
+            const n: string = x.place_name || "";
+            return !(
+              distanceM(loc, p) < 120 ||
+              n.includes(place.name) ||
+              place.name.includes(n)
+            );
+          });
+          return d
+            ? {
+                label,
+                name: d.place_name,
+                address: d.road_address_name || d.address_name || "",
+                lat: +d.y,
+                lng: +d.x,
+                color,
+              }
+            : null;
+        };
+
+        // 카테고리(코드) 또는 키워드로 가장 가까운 1곳 검색
+        const searchOne = (cat: (typeof CATS)[number]): Promise<Stop | null> =>
           new Promise((resolve) => {
+            const { label, color } = cat;
+            if (cat.keyword) {
+              ps.keywordSearch(
+                cat.keyword,
+                (data: any[], st: string) =>
+                  resolve(pickNearest(data, st, label, color)),
+                opts
+              );
+              return;
+            }
             const run = (c: string, retry: boolean) =>
               ps.categorySearch(
                 c,
                 (data: any[], st: string) => {
-                  // 출발 장소 자신(같은 위치/이름)은 제외하고 가장 가까운 곳 선택
-                  const d =
-                    st === kakao.maps.services.Status.OK
-                      ? data.find((x: any) => {
-                          const p = { lat: +x.y, lng: +x.x };
-                          const n: string = x.place_name || "";
-                          const same =
-                            distanceM(loc, p) < 120 ||
-                            n.includes(place.name) ||
-                            place.name.includes(n);
-                          return !same;
-                        })
-                      : null;
-                  if (d) {
-                    resolve({
-                      label,
-                      name: d.place_name,
-                      address: d.road_address_name || d.address_name || "",
-                      lat: +d.y,
-                      lng: +d.x,
-                      color,
-                    });
-                  } else if (fallback && retry) {
-                    run(fallback, false);
-                  } else {
-                    resolve(null);
-                  }
+                  const stop = pickNearest(data, st, label, color);
+                  if (stop) resolve(stop);
+                  else if (cat.fallback && retry) run(cat.fallback, false);
+                  else resolve(null);
                 },
-                { location: center, radius: SEARCH_RADIUS, sort: "distance", size: 5 }
+                opts
               );
-            run(code, true);
+            run(cat.code as string, true);
           });
 
-        Promise.all(
-          CATS.map((c) => searchOne(c.code, c.label, c.color, c.fallback))
-        ).then((results) => {
+        Promise.all(CATS.map((c) => searchOne(c))).then((results) => {
           if (cancelled) return;
           const seen = new Set<string>();
           const found = results.filter((r): r is Stop => {
@@ -321,11 +335,24 @@ export default function CourseMap({ place }: { place: Place }) {
                         {s.address}
                       </p>
                     </div>
-                    {feasible && (
-                      <span className="shrink-0 text-xs font-medium text-neutral-400">
-                        ~{fmtKm(dist)}
-                      </span>
-                    )}
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      {feasible && (
+                        <span className="text-xs font-medium text-neutral-400">
+                          ~{fmtKm(dist)}
+                        </span>
+                      )}
+                      <a
+                        href={`https://map.kakao.com/?sName=${encodeURIComponent(
+                          place.name
+                        )}&eName=${encodeURIComponent(s.name)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 rounded-full bg-forest-50 px-2 py-0.5 text-[11px] font-semibold text-forest-700 hover:bg-forest-100"
+                      >
+                        <Navigation className="h-3 w-3" strokeWidth={2.2} />
+                        길찾기
+                      </a>
+                    </div>
                   </li>
                 );
               })}

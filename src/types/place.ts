@@ -28,6 +28,8 @@ export interface Place {
   /** 외부 지도 검색에 사용할 정확한 명칭/키워드 */
   mapQuery: string;
   tags: string[];
+  /** 필터용 속성 태그 (검증된 설명/사실에서만 도출 — 리뷰 임의 생성 X) */
+  filterTags?: string[];
   activities?: Activity[];
   phone?: string;
   /** 공공/공식 운영 시설 여부 */
