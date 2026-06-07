@@ -28,7 +28,19 @@ export interface RiverStatus {
   source: "live" | "mock";
 }
 
+/** 오늘의 날씨 예보 */
+export interface DailyForecast {
+  /** 비/눈 등 강수 예보 여부 */
+  willPrecipitate: boolean;
+  /** 강수확률(%) — 없으면 null */
+  precipProbability: number | null;
+  /** 예보 요약 문구 (예: "오늘 비 예보가 있습니다 (강수확률 69%)") */
+  message: string;
+}
+
 /** API 라우트가 반환하는 최종 응답 형태 */
 export interface RiverStatusResponse extends RiverStatus {
   index: OutdoorIndex;
+  /** 오늘의 예보 (없으면 null) */
+  forecast: DailyForecast | null;
 }

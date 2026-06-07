@@ -113,6 +113,9 @@ export default function KakaoMap({
           ),
           level: 9,
         });
+        // 지도 확대/축소·이동 잠금 (마커 클릭은 가능)
+        map.setZoomable(false);
+        map.setDraggable(false);
         mapRef.current = map;
         infoRef.current = new kakao.maps.InfoWindow({ removable: true });
 
@@ -233,7 +236,7 @@ export default function KakaoMap({
         className ?? "h-[60vh]"
       }`}
     >
-      <div ref={elRef} className="h-full w-full" />
+      <div ref={elRef} className="isolate h-full w-full" />
       {status !== "ready" && (
         <div className="absolute inset-0 flex items-center justify-center bg-neutral-50/90 px-4 text-center text-sm text-neutral-500 backdrop-blur-sm">
           {status === "loading" ? (
@@ -254,8 +257,8 @@ export default function KakaoMap({
       )}
       {status === "ready" && (
         <>
-          {/* 색상 범례 */}
-          <div className="pointer-events-none absolute right-3 top-3 flex flex-col gap-1 rounded-xl bg-white/90 px-3 py-2 text-xs text-neutral-700 shadow">
+          {/* 색상 범례 (항상 표시) */}
+          <div className="pointer-events-none absolute right-3 top-3 z-10 flex flex-col gap-1 rounded-xl bg-white/95 px-3 py-2 text-xs text-neutral-700 shadow-md ring-1 ring-black/5">
             {(["camping", "fishing", "carcamping"] as PlaceCategory[]).map(
               (c) => (
                 <div key={c} className="flex items-center gap-1.5">
@@ -271,7 +274,7 @@ export default function KakaoMap({
             )}
           </div>
           {/* 현재 필터 배지 */}
-          <div className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-white/85 px-3 py-1 text-xs text-neutral-600 shadow">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs text-neutral-600 shadow-md ring-1 ring-black/5">
             {activeCategory === "all"
               ? "전체 스팟"
               : `${CATEGORY_LABELS[activeCategory]} 만 표시 중`}

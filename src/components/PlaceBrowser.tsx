@@ -34,23 +34,20 @@ export default function PlaceBrowser() {
 
   return (
     <div id="list" className="scroll-mt-20">
-      {/* 필터 + 지도를 상단에 고정(sticky) — 목록을 스크롤해도 항상 보인다 */}
-      <div className="sticky top-16 z-30 -mx-4 border-b border-neutral-200/60 bg-sand-50/95 px-4 pb-4 pt-3 backdrop-blur">
-        <PlaceFilterBar
-          query={query}
-          category={category}
-          onQueryChange={setQuery}
-          onCategoryChange={setCategory}
-        />
+      <PlaceFilterBar
+        query={query}
+        category={category}
+        onQueryChange={setQuery}
+        onCategoryChange={setCategory}
+      />
 
-        {/* 동적 지도 — 상단 카테고리 버튼이 마커를 실시간 필터링, 범례는 우상단 고정 */}
-        <div className="mt-4">
-          <KakaoMap
-            places={allPlaces}
-            activeCategory={category}
-            className="h-[clamp(260px,40vh,400px)]"
-          />
-        </div>
+      {/* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */}
+      <div className="mt-4">
+        <KakaoMap
+          places={allPlaces}
+          activeCategory={category}
+          className="h-[440px]"
+        />
       </div>
 
       {/* 캠핑 + 낚시 연계 강조 */}

@@ -6,6 +6,8 @@ import {
   TriangleAlert,
   OctagonAlert,
   RefreshCw,
+  CloudRain,
+  Sun,
   type LucideIcon,
 } from "lucide-react";
 import type {
@@ -159,8 +161,26 @@ export default function OutdoorIndexWidget({
         {data.index.reason}
       </p>
 
+      {/* 오늘의 예보 */}
+      {data.forecast && (
+        <div
+          className={`mt-3 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ${
+            data.forecast.willPrecipitate
+              ? "bg-sky-100 text-sky-800"
+              : "bg-white/70 text-neutral-600"
+          }`}
+        >
+          {data.forecast.willPrecipitate ? (
+            <CloudRain className="h-4 w-4 shrink-0" strokeWidth={2} />
+          ) : (
+            <Sun className="h-4 w-4 shrink-0" strokeWidth={2} />
+          )}
+          <span>오늘의 예보 · {data.forecast.message}</span>
+        </div>
+      )}
+
       {/* 관측 수치 */}
-      <dl className="mt-4 grid grid-cols-2 gap-2.5">
+      <dl className="mt-3 grid grid-cols-2 gap-2.5">
         <div className="rounded-xl bg-white/70 px-3 py-3 text-center">
           <dt className="text-xs font-medium text-neutral-500">기온</dt>
           <dd className="mt-1 text-lg font-bold text-neutral-900">
@@ -168,7 +188,7 @@ export default function OutdoorIndexWidget({
           </dd>
         </div>
         <div className="rounded-xl bg-white/70 px-3 py-3 text-center">
-          <dt className="text-xs font-medium text-neutral-500">강수</dt>
+          <dt className="text-xs font-medium text-neutral-500">현재 강수</dt>
           <dd className="mt-1 text-lg font-bold text-neutral-900">
             {data.rainfall1h != null ? `${data.rainfall1h}mm` : "—"}
           </dd>

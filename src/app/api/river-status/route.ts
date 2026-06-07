@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { computeOutdoorIndex } from "@/lib/outdoor-index";
 import { HONGCHEON_RIVER_CENTER } from "@/constants";
-import type { RiverStatus, RiverStatusResponse } from "@/types/river";
+import type {
+  DailyForecast,
+  RiverStatus,
+  RiverStatusResponse,
+} from "@/types/river";
 
 /**
  * GET /api/river-status
@@ -43,14 +47,58 @@ interface OpenMeteoResponse {
     precipitation?: number;
     weather_code?: number;
   };
+  daily?: {
+    weather_code?: number[];
+    precipitation_probability_max?: number[];
+    precipitation_sum?: number[];
+  };
 }
 
-/** Open-Meteo 호출 후 RiverStatus 로 정규화 */
-async function fetchFromOpenMeteo(): Promise<RiverStatus> {
+/** WMO 코드가 눈 계열인지 */
+function isSnowCode(code: number | undefined): boolean {
+  return code != null && [71, 73, 75, 77, 85, 86].includes(code);
+}
+
+/** 오늘의 예보 요약 생성 */
+function buildForecast(daily: OpenMeteoResponse["daily"]): DailyForecast | null {
+  if (!daily) return null;
+  const code = daily.weather_code?.[0];
+  const prob = daily.precipitation_probability_max?.[0] ?? null;
+  const sum = daily.precipitation_sum?.[0] ?? 0;
+
+  const snow = isSnowCode(code);
+  const willPrecipitate =
+    snow ||
+    (code != null && code >= 51) || // 이슬비 이상
+    (prob != null && prob >= 50) ||
+    sum >= 0.5;
+
+  const probText = prob != null ? ` (강수확률 ${prob}%)` : "";
+  let message: string;
+  if (snow) {
+    message = `오늘 눈 예보가 있습니다${probText}`;
+  } else if (willPrecipitate) {
+    message = `오늘 비 예보가 있습니다${probText}`;
+  } else if (code != null && code <= 1) {
+    message = "오늘은 대체로 맑겠습니다";
+  } else {
+    message = "오늘은 비 예보가 없습니다";
+  }
+
+  return { willPrecipitate, precipProbability: prob, message };
+}
+
+/** Open-Meteo 호출 후 현재 상태 + 오늘 예보로 정규화 */
+async function fetchFromOpenMeteo(): Promise<{
+  status: RiverStatus;
+  forecast: DailyForecast | null;
+}> {
   const params = new URLSearchParams({
     latitude: String(HONGCHEON_RIVER_CENTER.lat),
     longitude: String(HONGCHEON_RIVER_CENTER.lng),
     current: "temperature_2m,precipitation,weather_code",
+    daily: "weather_code,precipitation_probability_max,precipitation_sum",
+    forecast_days: "1",
     timezone: "Asia/Seoul",
   });
 
@@ -72,39 +120,46 @@ async function fetchFromOpenMeteo(): Promise<RiverStatus> {
     : new Date().toISOString();
 
   return {
-    location: LOCATION_NAME,
-    observedAt,
-    temperature: current.temperature_2m,
-    rainfall1h: current.precipitation ?? 0,
-    skyText: weatherCodeToText(current.weather_code),
-    source: "live",
+    status: {
+      location: LOCATION_NAME,
+      observedAt,
+      temperature: current.temperature_2m,
+      rainfall1h: current.precipitation ?? 0,
+      skyText: weatherCodeToText(current.weather_code),
+      source: "live",
+    },
+    forecast: buildForecast(json.daily),
   };
 }
 
 /** 외부 API 장애 시 사용하는 예시 데이터 */
-function mockStatus(): RiverStatus {
+function mockStatus(): { status: RiverStatus; forecast: DailyForecast | null } {
   return {
-    location: LOCATION_NAME,
-    observedAt: new Date().toISOString(),
-    temperature: 21,
-    rainfall1h: 0,
-    skyText: "맑음",
-    source: "mock",
+    status: {
+      location: LOCATION_NAME,
+      observedAt: new Date().toISOString(),
+      temperature: 21,
+      rainfall1h: 0,
+      skyText: "맑음",
+      source: "mock",
+    },
+    forecast: null,
   };
 }
 
 export async function GET() {
-  let status: RiverStatus;
+  let result: { status: RiverStatus; forecast: DailyForecast | null };
   try {
-    status = await fetchFromOpenMeteo();
+    result = await fetchFromOpenMeteo();
   } catch {
     // 외부 API 장애 시에도 위젯이 깨지지 않도록 폴백
-    status = mockStatus();
+    result = mockStatus();
   }
 
   const body: RiverStatusResponse = {
-    ...status,
-    index: computeOutdoorIndex(status),
+    ...result.status,
+    index: computeOutdoorIndex(result.status),
+    forecast: result.forecast,
   };
 
   return NextResponse.json(body, {
