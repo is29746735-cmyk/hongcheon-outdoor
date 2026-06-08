@@ -79,7 +79,7 @@ export interface PlaceFilterOpts {
   tags?: string[];
   /** 한적함(고립도) 최소값 — 1이면 제한 없음 */
   minIsolation?: number;
-  /** 낚시 종류(OR 조건) */
+  /** 낚시 종류(AND 조건 — 선택한 종류를 모두 제공하는 곳만) */
   fishingTypes?: string[];
 }
 
@@ -107,7 +107,8 @@ export function filterPlaces(places: Place[], opts: PlaceFilterOpts): Place[] {
     }
     if (fishingTypes.length > 0) {
       const methods = fishingMethods(place);
-      if (!fishingTypes.some((t) => methods.has(t))) return false;
+      // 선택한 낚시 종류를 모두 제공하는 곳만 (중첩 시 AND → 없으면 빈 결과)
+      if (!fishingTypes.every((t) => methods.has(t))) return false;
     }
     return matchesQuery(place, query);
   });

@@ -13,11 +13,11 @@ export default function HomePage() {
           <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/90 ring-1 ring-white/20">
             강원 홍천 · 캠핑 · 낚시 · 차박 큐레이션
           </span>
-          <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+          <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.2] tracking-tight text-white sm:text-[3.25rem]">
             홍천에서 즐기는
             <br className="sm:hidden" /> 캠핑 &amp; 낚시
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-forest-50/90">
+          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-sand-100/90">
             {SITE.description} 검증된 명소만 모아, 지도와 함께 한눈에.
           </p>
           <div className="mt-7 flex justify-center">

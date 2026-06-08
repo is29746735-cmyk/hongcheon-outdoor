@@ -151,7 +151,7 @@ export default function PlaceBrowser() {
       {/* 캠핑 + 낚시 연계 강조 */}
       {showConnectedSection && connected.length > 0 && (
         <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50 p-5">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-neutral-900">
+          <h2 className="flex items-center gap-2 font-serif text-xl font-bold text-forest-800">
             <Fish className="h-5 w-5 text-sky-600" strokeWidth={2} />
             캠핑하며 낚시까지 — 연계 추천
           </h2>
@@ -175,7 +175,7 @@ export default function PlaceBrowser() {
       ) : (
         groups.map((group) => (
           <section key={group.category} className="mt-12">
-            <h2 className="mb-5 flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-neutral-900">
+            <h2 className="mb-5 flex items-center gap-2.5 font-serif text-2xl font-bold tracking-tight text-forest-800">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
                 <CategoryIcon category={group.category} className="h-5 w-5" />
               </span>
