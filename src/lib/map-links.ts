@@ -34,3 +34,19 @@ export function getMapLinks(place: Place): MapLinks {
     google: `https://www.google.com/maps/search/?api=1&query=${q}`,
   };
 }
+
+/**
+ * 장소를 도착지로 하는 카카오맵 길찾기 아웃링크.
+ * 검증된 좌표가 있으면 좌표를 도착지로(link/to), 없으면 명칭 검색으로 폴백한다.
+ */
+export function getDirectionsLink(place: Place): string {
+  const name = encodeURIComponent(place.name);
+  const loc = place.location;
+  if (loc) {
+    // 카카오맵 길찾기: 도착지 = 이름,위도,경도
+    return `https://map.kakao.com/link/to/${name},${loc.lat},${loc.lng}`;
+  }
+  return `https://map.kakao.com/link/search/${encodeURIComponent(
+    place.mapQuery
+  )}`;
+}
