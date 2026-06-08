@@ -14,6 +14,7 @@ import { Fish, X } from "lucide-react";
 import { usePlaceFilters } from "@/lib/usePlaceFilters";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
+import EmptyState from "@/components/places/EmptyState";
 import KakaoMap from "@/components/KakaoMap";
 
 const ISOLATION_OPTIONS = [
@@ -167,11 +168,9 @@ export default function PlaceBrowser() {
         </section>
       )}
 
-      {/* 카테고리별 목록 */}
-      {groups.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-neutral-300 p-12 text-center text-neutral-500">
-          조건에 맞는 장소가 없습니다.
-        </div>
+      {/* 카테고리별 목록 — 결과가 0건이면 Empty State */}
+      {f.filtered.length === 0 ? (
+        <EmptyState onReset={f.reset} />
       ) : (
         groups.map((group) => (
           <section key={group.category} className="mt-12">
