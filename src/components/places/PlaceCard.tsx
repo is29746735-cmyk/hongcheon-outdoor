@@ -7,12 +7,36 @@ import MapLinkButtons from "@/components/MapLinkButtons";
 
 interface PlaceCardProps {
   place: Place;
+  /** 지정 시 카드 클릭이 페이지 이동 대신 이 콜백(슬라이드오버)을 호출 */
+  onSelect?: (place: Place) => void;
 }
 
-export default function PlaceCard({ place }: PlaceCardProps) {
+export default function PlaceCard({ place, onSelect }: PlaceCardProps) {
+  // onSelect 가 있으면 버튼(슬라이드오버), 없으면 상세 페이지 링크
+  const Trigger = ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) =>
+    onSelect ? (
+      <button
+        type="button"
+        onClick={() => onSelect(place)}
+        className={`w-full text-left ${className ?? ""}`}
+      >
+        {children}
+      </button>
+    ) : (
+      <Link href={`/spots/${place.id}`} className={className}>
+        {children}
+      </Link>
+    );
+
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
-      <Link href={`/spots/${place.id}`} className="relative block">
+      <Trigger className="relative block">
         <PlaceImage place={place} className="aspect-[4/3]" />
         {/* 하단 그라디언트 */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
@@ -25,10 +49,10 @@ export default function PlaceCard({ place }: PlaceCardProps) {
             캠핑+낚시
           </span>
         )}
-      </Link>
+      </Trigger>
 
       <div className="flex flex-1 flex-col p-4">
-        <Link href={`/spots/${place.id}`} className="block">
+        <Trigger className="block">
           <h3 className="text-[15px] font-bold leading-snug text-neutral-900 transition-colors group-hover:text-forest-700">
             {place.name}
             {place.official && (
@@ -37,7 +61,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
               </span>
             )}
           </h3>
-        </Link>
+        </Trigger>
         <p className="mt-1.5 flex items-center gap-1 text-xs text-neutral-500">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
           <span className="truncate">{place.region}</span>

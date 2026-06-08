@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
+import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
 import {
   groupByCategory,
@@ -15,6 +16,7 @@ import { usePlaceFilters } from "@/lib/usePlaceFilters";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
 import EmptyState from "@/components/places/EmptyState";
+import SpotSlideOver from "@/components/places/SpotSlideOver";
 import KakaoMap from "@/components/KakaoMap";
 
 const ISOLATION_OPTIONS = [
@@ -44,6 +46,15 @@ export default function PlaceBrowser() {
     () => new Set(f.filtered.map((p) => p.id)),
     [f.filtered]
   );
+
+  // 슬라이드오버(우측 상세 보기) 상태
+  const [selected, setSelected] = useState<Place | null>(null);
+  const [slideOpen, setSlideOpen] = useState(false);
+  const openSpot = useCallback((place: Place) => {
+    setSelected(place);
+    setSlideOpen(true);
+  }, []);
+  const closeSpot = useCallback(() => setSlideOpen(false), []);
 
   return (
     <div id="list" className="scroll-mt-20">
@@ -162,7 +173,7 @@ export default function PlaceBrowser() {
           </p>
           <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {connected.map((place) => (
-              <PlaceCard key={place.id} place={place} />
+              <PlaceCard key={place.id} place={place} onSelect={openSpot} />
             ))}
           </div>
         </section>
@@ -185,12 +196,15 @@ export default function PlaceBrowser() {
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {group.items.map((place) => (
-                <PlaceCard key={place.id} place={place} />
+                <PlaceCard key={place.id} place={place} onSelect={openSpot} />
               ))}
             </div>
           </section>
         ))
       )}
+
+      {/* 우측 슬라이드오버 상세 보기 */}
+      <SpotSlideOver place={selected} open={slideOpen} onClose={closeSpot} />
     </div>
   );
 }

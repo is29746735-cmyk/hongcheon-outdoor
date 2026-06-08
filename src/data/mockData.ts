@@ -11,6 +11,12 @@ export interface SpotDetail {
   tips: string[];
   /** 네비게이션 주의사항(진입로 상태) */
   accessNote: string;
+  /** 화장실 이용 가능 여부 */
+  restroom: boolean;
+  /** 취사 가능 여부 (개수대·취사장 등) */
+  cooking: boolean;
+  /** 추천 시즌 (검증된 장소 특성 기반) */
+  season: string;
 }
 
 export const SPOT_DETAILS: Record<string, SpotDetail> = {
@@ -32,6 +38,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "굴지강변로를 따라 진입하며 도로가 포장되어 승용차 접근이 무난합니다. 성수기 주말 진입로 정체에 유의하세요.",
+    restroom: true,
+    cooking: true,
+    season: "봄~가을",
   },
   "dodam-camping": {
     facilities: ["개수대", "화장실", "샤워실", "매점", "물놀이용품 대여"],
@@ -42,6 +51,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "홍천강 변에 있어 마지막 진입 구간이 좁을 수 있으니 서행하세요.",
+    restroom: true,
+    cooking: true,
+    season: "여름·가을",
   },
   "mogok-bambeol": {
     facilities: ["24시 편의점", "개수대", "공용 화장실"],
@@ -52,6 +64,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "모래·자갈 지면이라 비 온 뒤엔 차량이 빠질 수 있습니다. 단단한 가장자리에 주차하세요.",
+    restroom: true,
+    cooking: true,
+    season: "여름",
   },
   "jarabawi-auto-camping": {
     facilities: ["샤워장", "개수대", "화장실", "어린이놀이터", "육각정자", "주차장"],
@@ -62,6 +77,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "팔봉산로를 따라 진입하며 굽은 길이 있어 야간 운전 시 주의가 필요합니다.",
+    restroom: true,
+    cooking: true,
+    season: "봄~가을",
   },
   "sagehill-camping": {
     facilities: [
@@ -78,6 +96,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "남노일로를 따라 강변으로 진입하며 일부 구간이 좁으니 서행하세요.",
+    restroom: true,
+    cooking: true,
+    season: "사계절",
   },
   "gulji-ri-fishing": {
     facilities: ["편의시설 거의 없음(노지)", "인근 홍천강오토캠핑장 시설 이용 가능"],
@@ -88,6 +109,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "강변 노지라 비포장·좁은 진입 구간이 있습니다. 우천 시 진입을 피하세요.",
+    restroom: false,
+    cooking: false,
+    season: "봄·가을",
   },
   "mogok-sogari-spot": {
     facilities: ["인근 모곡밤벌유원지 편의시설 이용 가능"],
@@ -98,6 +122,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "강변 접근로가 비포장일 수 있어 도보 이동 구간을 감안하세요.",
+    restroom: false,
+    cooking: false,
+    season: "여름~가을",
   },
   "gulun-fishing": {
     facilities: ["유료 낚시터 시설(화장실·매점 등)"],
@@ -108,6 +135,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "화촌면 산간 저수지라 진입로가 좁고 굽은 구간이 있습니다. 야간 서행하세요.",
+    restroom: true,
+    cooking: false,
+    season: "봄~가을",
   },
   "yuchi-fishing": {
     facilities: ["편의시설 적음(저수지)"],
@@ -118,6 +148,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "남면 유치리 저수지 진입로가 좁을 수 있고, 겨울철 결빙·미끄럼에 주의하세요.",
+    restroom: false,
+    cooking: false,
+    season: "겨울(얼음낚시)",
   },
   "sidong-fishing": {
     facilities: ["낚시터 기본 시설"],
@@ -126,6 +159,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
       "강변 낚시 시 수위·유속 변화에 유의하세요.",
     ],
     accessNote: "남면 시동리 강변으로 진입하며 마지막 구간이 좁을 수 있습니다.",
+    restroom: false,
+    cooking: false,
+    season: "봄·가을",
   },
   "namnoil-riverside": {
     facilities: ["화장실", "개수대", "주차장"],
@@ -136,6 +172,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "남노일리 강변으로 진입하며 성수기 주말 혼잡·주차난에 유의하세요.",
+    restroom: true,
+    cooking: true,
+    season: "여름",
   },
   "magok-resort": {
     facilities: ["화장실", "샤워실", "취사장"],
@@ -146,6 +185,9 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     ],
     accessNote:
       "남이섬 상류 서면 마곡리 강변으로, 진입로가 좁은 구간이 있으니 서행하세요.",
+    restroom: true,
+    cooking: true,
+    season: "여름",
   },
 };
 
