@@ -12,7 +12,7 @@ interface PlaceCardProps {
 export default function PlaceCard({ place }: PlaceCardProps) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
-      <Link href={`/places/${place.id}`} className="relative block">
+      <Link href={`/spots/${place.id}`} className="relative block">
         <PlaceImage place={place} className="aspect-[4/3]" />
         {/* 하단 그라디언트 */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
@@ -28,7 +28,7 @@ export default function PlaceCard({ place }: PlaceCardProps) {
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
-        <Link href={`/places/${place.id}`} className="block">
+        <Link href={`/spots/${place.id}`} className="block">
           <h3 className="text-[15px] font-bold leading-snug text-neutral-900 transition-colors group-hover:text-forest-700">
             {place.name}
             {place.official && (

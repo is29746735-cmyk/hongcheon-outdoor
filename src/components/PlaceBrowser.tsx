@@ -39,6 +39,10 @@ export default function PlaceBrowser() {
   );
 
   const showConnectedSection = f.activeCount === 0;
+  const visibleIds = useMemo(
+    () => new Set(f.filtered.map((p) => p.id)),
+    [f.filtered]
+  );
 
   return (
     <div id="list" className="scroll-mt-20">
@@ -139,6 +143,7 @@ export default function PlaceBrowser() {
         <KakaoMap
           places={allPlaces}
           activeCategory={f.category}
+          visibleIds={visibleIds}
           className="h-[440px]"
         />
       </div>

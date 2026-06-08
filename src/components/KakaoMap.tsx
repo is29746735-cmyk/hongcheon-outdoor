@@ -29,51 +29,63 @@ import { KAKAO_KEY, loadKakaoSdk } from "@/lib/kakao";
 
 interface KakaoMapProps {
   places: Place[];
-  /** 상단 카테고리 버튼과 공유되는 현재 필터 */
+  /** 상단 카테고리 버튼과 공유되는 현재 필터 (전기차 충전소 표시 조건용) */
   activeCategory: CategoryFilter;
+  /** 현재 필터로 표시할 장소 id 집합 (모든 필터 결과 반영). 미지정 시 전체 표시 */
+  visibleIds?: Set<string>;
   className?: string;
 }
 
 export default function KakaoMap({
   places,
   activeCategory,
+  visibleIds,
   className,
 }: KakaoMapProps) {
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const infoRef = useRef<any>(null);
-  const markersRef = useRef<{ overlay: any; category: PlaceCategory }[]>([]);
+  const markersRef = useRef<
+    { overlay: any; category: PlaceCategory; id: string }[]
+  >([]);
   const evMarkersRef = useRef<any[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading"
   );
+  const [visibleCount, setVisibleCount] = useState(0);
 
-  /** 현재 카테고리에 맞는 마커만 표시하고, 보이는 마커에 맞춰 화면을 맞춘다 */
-  const applyFilter = useCallback((cat: CategoryFilter) => {
-    const map = mapRef.current;
-    if (!map || !window.kakao) return;
-    const bounds = new window.kakao.maps.LatLngBounds();
-    let any = false;
-    markersRef.current.forEach(({ overlay, category }) => {
-      const visible = cat === "all" || category === cat;
-      overlay.setMap(visible ? map : null);
-      if (visible) {
-        bounds.extend(overlay.getPosition());
-        any = true;
-      }
-    });
-    // 차박지 선택 시에만 전기차 충전소도 함께 표시
-    const showEv = cat === "carcamping";
-    evMarkersRef.current.forEach((overlay) => {
-      overlay.setMap(showEv ? map : null);
-      if (showEv) {
-        bounds.extend(overlay.getPosition());
-        any = true;
-      }
-    });
-    infoRef.current?.close?.();
-    if (any && !bounds.isEmpty()) map.setBounds(bounds);
-  }, []);
+  /** 현재 필터(visibleIds)에 해당하는 마커만 표시하고, 보이는 마커에 맞춰 화면을 맞춘다 */
+  const applyFilter = useCallback(
+    (ids: Set<string> | undefined, cat: CategoryFilter) => {
+      const map = mapRef.current;
+      if (!map || !window.kakao) return;
+      const bounds = new window.kakao.maps.LatLngBounds();
+      let any = false;
+      let count = 0;
+      markersRef.current.forEach(({ overlay, id }) => {
+        const visible = !ids || ids.has(id);
+        overlay.setMap(visible ? map : null);
+        if (visible) {
+          bounds.extend(overlay.getPosition());
+          any = true;
+          count += 1;
+        }
+      });
+      // 차박지 카테고리 선택 시에만 전기차 충전소도 함께 표시
+      const showEv = cat === "carcamping";
+      evMarkersRef.current.forEach((overlay) => {
+        overlay.setMap(showEv ? map : null);
+        if (showEv) {
+          bounds.extend(overlay.getPosition());
+          any = true;
+        }
+      });
+      infoRef.current?.close?.();
+      if (any && !bounds.isEmpty()) map.setBounds(bounds);
+      setVisibleCount(count);
+    },
+    []
+  );
 
   // 지도 초기화 + 마커 생성 (최초 1회)
   useEffect(() => {
@@ -144,7 +156,11 @@ export default function KakaoMap({
             clickable: true,
           });
           overlay.setMap(map);
-          markersRef.current.push({ overlay, category: place.category });
+          markersRef.current.push({
+            overlay,
+            category: place.category,
+            id: place.id,
+          });
         };
 
         // 전기차 충전소 마커 (초기엔 숨김, 차박지 선택 시 표시)
@@ -191,7 +207,7 @@ export default function KakaoMap({
             pending -= 1;
             if (pending <= 0 && !cancelled) {
               setStatus("ready");
-              applyFilter(activeCategory);
+              applyFilter(visibleIds, activeCategory);
             }
           };
           places.forEach((place) => {
@@ -242,8 +258,8 @@ export default function KakaoMap({
 
   // 카테고리 변경 시 마커 필터링
   useEffect(() => {
-    if (status === "ready") applyFilter(activeCategory);
-  }, [activeCategory, status, applyFilter]);
+    if (status === "ready") applyFilter(visibleIds, activeCategory);
+  }, [activeCategory, visibleIds, status, applyFilter]);
 
   return (
     <div
@@ -299,11 +315,9 @@ export default function KakaoMap({
               </div>
             )}
           </div>
-          {/* 현재 필터 배지 */}
+          {/* 현재 필터 배지 — 표시 중인 스팟 수 */}
           <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs text-neutral-600 shadow-md ring-1 ring-black/5">
-            {activeCategory === "all"
-              ? "전체 스팟"
-              : `${CATEGORY_LABELS[activeCategory]} 만 표시 중`}
+            {visibleIds ? `${visibleCount}곳 표시 중` : "전체 스팟"}
           </div>
         </>
       )}
