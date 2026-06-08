@@ -15,7 +15,7 @@ export default function EmptyState({ onReset }: EmptyStateProps) {
       <span className="grid h-14 w-14 place-items-center rounded-2xl bg-forest-50 text-forest-700">
         <SearchX className="h-7 w-7" strokeWidth={1.8} />
       </span>
-      <p className="mt-5 font-serif text-lg font-bold text-forest-800">
+      <p className="mt-5 text-lg font-extrabold text-forest-800">
         조건에 맞는 홍천 아웃도어 스팟이 없습니다.
       </p>
       <p className="mt-1.5 text-sm text-neutral-500">

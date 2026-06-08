@@ -13,7 +13,7 @@ export default function HomePage() {
           <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/90 ring-1 ring-white/20">
             강원 홍천 · 캠핑 · 낚시 · 차박 큐레이션
           </span>
-          <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.2] tracking-tight text-white sm:text-[3.25rem]">
+          <h1 className="mt-5 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl">
             홍천에서 즐기는
             <br className="sm:hidden" /> 캠핑 &amp; 낚시
           </h1>

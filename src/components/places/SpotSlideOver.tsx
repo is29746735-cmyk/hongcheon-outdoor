@@ -136,7 +136,7 @@ export default function SpotSlideOver({
               sizes="(max-width: 768px) 100vw, 440px"
             />
 
-            <h2 className="mt-4 font-serif text-2xl font-bold tracking-tight text-forest-800">
+            <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-forest-800">
               {place.name}
             </h2>
             <p className="mt-1.5 flex items-center gap-1 text-sm text-neutral-500">

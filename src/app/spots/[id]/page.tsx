@@ -89,7 +89,7 @@ export default function SpotDetailPage({ params }: PageProps) {
             </span>
           )}
         </div>
-        <h1 className="mt-3 font-serif text-3xl font-bold tracking-tight text-forest-800 sm:text-4xl">
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-forest-800 sm:text-4xl">
           {place.name}
         </h1>
         <p className="mt-2 text-neutral-600">{place.summary}</p>

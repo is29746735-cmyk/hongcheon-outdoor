@@ -39,8 +39,6 @@ const config: Config = {
           "system-ui",
           "sans-serif",
         ],
-        // 매거진 감성 제목용 명조(세리프)
-        serif: ["var(--font-serif)", "Noto Serif KR", "serif"],
       },
       borderRadius: {
         "2xl": "1rem",
