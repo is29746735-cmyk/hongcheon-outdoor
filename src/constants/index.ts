@@ -3,7 +3,12 @@ import type { Activity, PlaceCategory } from "@/types/place";
 export const SITE = {
   name: "홍천 아웃도어",
   description: "강원 홍천의 캠핑·낚시 명소를 큐레이션합니다.",
-  url: "https://example.com",
+  /**
+   * 사이트 절대 URL (메타데이터·OG·canonical 기준).
+   * 배포 시 환경변수 NEXT_PUBLIC_SITE_URL 에 실제 도메인을 넣으세요.
+   * 미설정 시 로컬 개발 주소를 사용합니다.
+   */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;
 
 /** 홍천군청 기준 지도 초기 중심 좌표 */

@@ -1,6 +1,6 @@
 /**
  * 홍천강 실시간 상태 + 아웃도어 지수 도메인 타입.
- * 기상청 초단기실황(또는 수자원 API) 응답을 정규화한 형태입니다.
+ * Open-Meteo 기상 API 응답을 정규화한 형태입니다.
  */
 
 export type OutdoorIndexLevel = "safe" | "caution" | "danger";

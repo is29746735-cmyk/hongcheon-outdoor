@@ -40,7 +40,7 @@ const LEVEL_STYLES: Record<
   },
 };
 
-/** 기본 자동 갱신 주기 (기상청 초단기실황은 매시 갱신되므로 5분 폴링) */
+/** 기본 자동 갱신 주기 (Open-Meteo 실황은 매시 갱신되므로 5분 폴링) */
 const DEFAULT_REFRESH_MS = 5 * 60 * 1000;
 
 function formatTime(iso: string): string {

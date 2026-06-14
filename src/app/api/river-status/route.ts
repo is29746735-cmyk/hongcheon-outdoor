@@ -158,7 +158,7 @@ export async function GET() {
 
   const body: RiverStatusResponse = {
     ...result.status,
-    index: computeOutdoorIndex(result.status),
+    index: computeOutdoorIndex(result.status, result.forecast),
     forecast: result.forecast,
   };
 
