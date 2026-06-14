@@ -40,8 +40,11 @@ const LEVEL_STYLES: Record<
   },
 };
 
-/** 기본 자동 갱신 주기 (Open-Meteo 실황은 매시 갱신되므로 5분 폴링) */
-const DEFAULT_REFRESH_MS = 5 * 60 * 1000;
+/**
+ * 자동 갱신 주기. Open-Meteo 실황은 15분 간격(interval 900초) 데이터라
+ * 그보다 자주 받아도 값은 같지만, 새 값이 나오면 최대한 빨리 반영되도록 1분마다 폴링한다.
+ */
+const DEFAULT_REFRESH_MS = 60 * 1000;
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -54,7 +57,7 @@ function formatTime(iso: string): string {
 }
 
 interface OutdoorIndexWidgetProps {
-  /** 자동 갱신 주기(ms). 기본 5분. */
+  /** 자동 갱신 주기(ms). 기본 1분. */
   refreshIntervalMs?: number;
 }
 
@@ -72,10 +75,10 @@ export default function OutdoorIndexWidget({
   const inFlight = useRef(false);
   const mounted = useRef(true);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (silent = false) => {
     if (inFlight.current) return;
     inFlight.current = true;
-    setRefreshing(true);
+    if (!silent) setRefreshing(true);
     try {
       const res = await fetch("/api/river-status", { cache: "no-store" });
       if (!res.ok) throw new Error("요청 실패");
@@ -90,7 +93,7 @@ export default function OutdoorIndexWidget({
       setStatus((prev) => (prev === "loading" ? "error" : prev));
     } finally {
       inFlight.current = false;
-      if (mounted.current) setRefreshing(false);
+      if (mounted.current && !silent) setRefreshing(false);
     }
   }, []);
 
@@ -98,12 +101,12 @@ export default function OutdoorIndexWidget({
     mounted.current = true;
     load();
 
-    // 주기적 자동 갱신
-    const timer = setInterval(load, refreshIntervalMs);
+    // 주기적 자동 갱신 (백그라운드 폴링은 스피너 없이 조용히)
+    const timer = setInterval(() => load(true), refreshIntervalMs);
 
-    // 탭이 다시 활성화되면 즉시 갱신
+    // 탭이 다시 활성화되면 즉시 갱신 (조용히)
     const onVisible = () => {
-      if (document.visibilityState === "visible") load();
+      if (document.visibilityState === "visible") load(true);
     };
     document.addEventListener("visibilitychange", onVisible);
 
@@ -129,7 +132,7 @@ export default function OutdoorIndexWidget({
         <span>실시간 홍천강 정보를 불러오지 못했습니다.</span>
         <button
           type="button"
-          onClick={load}
+          onClick={() => load()}
           className="rounded-full border border-neutral-300 px-3 py-1 text-neutral-600 hover:border-forest-500 hover:text-forest-600"
         >
           다시 시도
@@ -207,7 +210,7 @@ export default function OutdoorIndexWidget({
           </span>
           <button
             type="button"
-            onClick={load}
+            onClick={() => load()}
             disabled={refreshing}
             className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium hover:text-forest-600 disabled:opacity-60"
             aria-label="새로고침"
