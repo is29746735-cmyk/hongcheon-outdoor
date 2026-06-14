@@ -206,7 +206,11 @@ export default function OutdoorIndexWidget({
         </span>
         <div className="flex items-center gap-2">
           <span className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium">
-            {data.source === "live" ? "실시간" : "예시 데이터"}
+            {data.source === "kma"
+              ? "기상청 실측"
+              : data.source === "live"
+              ? "실시간"
+              : "예시 데이터"}
           </span>
           <button
             type="button"

@@ -24,8 +24,8 @@ export interface RiverStatus {
   rainfall1h: number | null;
   /** 하늘/강수 상태 텍스트 (예: 맑음, 비) */
   skyText: string | null;
-  /** 데이터 출처: 실시간 API / 예시(mock) */
-  source: "live" | "mock";
+  /** 데이터 출처: 기상청 실측(kma) / Open-Meteo(live) / 예시(mock) */
+  source: "kma" | "live" | "mock";
 }
 
 /** 오늘의 날씨 예보 */

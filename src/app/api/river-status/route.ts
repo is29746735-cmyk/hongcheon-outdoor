@@ -10,17 +10,22 @@ import type {
 /**
  * GET /api/river-status
  *
- * 홍천강 인근의 실시간 기상(기온·강수·날씨)을 Open-Meteo API로 가져와
- * 아웃도어 지수를 함께 반환합니다.
+ * 홍천강 인근의 날씨(기온·강수·하늘상태)와 오늘 예보를 아웃도어 지수와 함께 반환합니다.
  *
- * Open-Meteo(https://open-meteo.com)는 비상업적 사용 시 API 키·회원가입이
- * 필요 없는 무료 기상 API입니다. 호출 실패 시 예시(mock) 데이터로 폴백합니다.
+ * 데이터 소스(하이브리드):
+ *  - 현재 기온·강수: 기상청 AWS 1분 실측(공공데이터포털, KMA_SERVICE_KEY 필요) — 거의 실시간.
+ *    키가 없거나 호출 실패 시 Open-Meteo 값으로 폴백.
+ *  - 하늘상태(맑음/흐림 등)·오늘 강수 예보: Open-Meteo(키 불필요).
+ *  - 둘 다 실패하면 예시(mock) 데이터로 폴백해 위젯이 깨지지 않게 합니다.
  */
 
 // 매 요청 시 최신값을 받도록 동적 처리
 export const dynamic = "force-dynamic";
 
 const OPEN_METEO_ENDPOINT = "https://api.open-meteo.com/v1/forecast";
+// 기상청 AWS(방재) 1분 관측 — 공공데이터포털
+const KMA_AWS_ENDPOINT =
+  "https://apis.data.go.kr/1360000/Aws1miInfoService/getAws1miList";
 const LOCATION_NAME = "홍천강 (홍천군)";
 
 /** WMO weather code → 한글 텍스트 */
@@ -132,6 +137,86 @@ async function fetchFromOpenMeteo(): Promise<{
   };
 }
 
+// ── 기상청 AWS 1분 실측 ──────────────────────────────────────────
+interface KmaAwsItem {
+  ta?: string | number;
+  rn60M?: string | number;
+  rn?: string | number;
+}
+interface KmaAwsResponse {
+  response?: {
+    header?: { resultCode?: string; resultMsg?: string };
+    body?: { items?: { item?: KmaAwsItem | KmaAwsItem[] } };
+  };
+}
+
+/** 숫자 파싱 (빈 값/결측 마커 -99·-999 등은 null 처리) */
+function num(v: unknown): number | null {
+  if (v == null || v === "") return null;
+  const n = parseFloat(String(v));
+  if (!Number.isFinite(n) || n <= -50) return null;
+  return n;
+}
+
+/** KST(UTC+9) 기준 분 단위 시각 문자열(YYYYMMDDHHmm), minutesBack 분 전 */
+function kstStamp(minutesBack: number): string {
+  const d = new Date(Date.now() + 9 * 3600 * 1000 - minutesBack * 60000);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return (
+    `${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}` +
+    `${p(d.getUTCHours())}${p(d.getUTCMinutes())}`
+  );
+}
+
+/** YYYYMMDDHHmm → ISO(+09:00) */
+function stampToIso(s: string): string {
+  return (
+    `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` +
+    `T${s.slice(8, 10)}:${s.slice(10, 12)}:00+09:00`
+  );
+}
+
+/**
+ * 기상청 AWS 1분 실측에서 현재 기온·강수를 가져온다.
+ * 최신 분이 아직 게시 전일 수 있어 최근 몇 분을 거슬러 시도한다.
+ * 키가 없거나 모두 실패하면 null 을 반환해 Open-Meteo 로 폴백한다.
+ */
+async function fetchFromKma(): Promise<{
+  temperature: number | null;
+  rainfall1h: number | null;
+  observedAt: string;
+} | null> {
+  const key = process.env.KMA_SERVICE_KEY;
+  if (!key) return null;
+  const station = process.env.KMA_AWS_STATION || "212"; // 212 = 홍천
+
+  for (let back = 1; back <= 5; back++) {
+    const stamp = kstStamp(back);
+    const url =
+      `${KMA_AWS_ENDPOINT}?serviceKey=${key}&dataType=JSON&pageNo=1` +
+      `&numOfRows=10&awsDt=${stamp}&awsId=${station}`;
+    try {
+      const res = await fetch(url, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!res.ok) continue;
+      const json = (await res.json()) as KmaAwsResponse;
+      if (json.response?.header?.resultCode !== "00") continue;
+      const items = json.response?.body?.items?.item;
+      const item = Array.isArray(items) ? items[0] : items;
+      if (!item) continue;
+      const ta = num(item.ta);
+      if (ta == null) continue; // 기온이 없으면 유효 관측으로 보지 않음
+      const rn = num(item.rn60M ?? item.rn); // 최근 1시간 강수 우선
+      return { temperature: ta, rainfall1h: rn, observedAt: stampToIso(stamp) };
+    } catch {
+      // 다음 분으로 재시도
+    }
+  }
+  return null;
+}
+
 /** 외부 API 장애 시 사용하는 예시 데이터 */
 function mockStatus(): { status: RiverStatus; forecast: DailyForecast | null } {
   return {
@@ -148,18 +233,30 @@ function mockStatus(): { status: RiverStatus; forecast: DailyForecast | null } {
 }
 
 export async function GET() {
-  let result: { status: RiverStatus; forecast: DailyForecast | null };
-  try {
-    result = await fetchFromOpenMeteo();
-  } catch {
-    // 외부 API 장애 시에도 위젯이 깨지지 않도록 폴백
-    result = mockStatus();
+  // Open-Meteo(예보 + 폴백 현재값)와 기상청 실측을 병렬로 요청
+  const [base, kma] = await Promise.all([
+    fetchFromOpenMeteo().catch(() => mockStatus()),
+    fetchFromKma().catch(() => null),
+  ]);
+
+  let status = base.status;
+
+  // 기상청 실측이 있으면 현재 기온·강수·관측시각을 실시간 값으로 교체
+  // (하늘상태 skyText 는 AWS 에 없으므로 Open-Meteo 값을 유지)
+  if (kma) {
+    status = {
+      ...status,
+      temperature: kma.temperature ?? status.temperature,
+      rainfall1h: kma.rainfall1h ?? status.rainfall1h,
+      observedAt: kma.observedAt,
+      source: "kma",
+    };
   }
 
   const body: RiverStatusResponse = {
-    ...result.status,
-    index: computeOutdoorIndex(result.status, result.forecast),
-    forecast: result.forecast,
+    ...status,
+    index: computeOutdoorIndex(status, base.forecast),
+    forecast: base.forecast,
   };
 
   return NextResponse.json(body, {
