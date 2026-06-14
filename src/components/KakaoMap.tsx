@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { CategoryFilter, Place, PlaceCategory } from "@/types/place";
 import {
   CATEGORY_COLORS,
@@ -42,6 +43,7 @@ export default function KakaoMap({
   visibleIds,
   className,
 }: KakaoMapProps) {
+  const router = useRouter();
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const infoRef = useRef<any>(null);
@@ -117,6 +119,18 @@ export default function KakaoMap({
           infoRef.current?.close?.();
         });
 
+        // 인포윈도우 안의 장소 이름(밑줄 링크)을 클릭하면 상세 페이지로 이동
+        elRef.current?.addEventListener("click", (e) => {
+          const link = (e.target as HTMLElement | null)?.closest?.(
+            "[data-spot]"
+          ) as HTMLElement | null;
+          if (link) {
+            e.preventDefault();
+            const id = link.getAttribute("data-spot");
+            if (id) router.push(`/spots/${id}`);
+          }
+        });
+
         const geocoder = new kakao.maps.services.Geocoder();
         const ps = new kakao.maps.services.Places();
 
@@ -140,7 +154,7 @@ export default function KakaoMap({
                    place.category,
                    CATEGORY_COLORS[place.category],
                    14
-                 )}<span>${place.name}</span></b>
+                 )}<a href="/spots/${place.id}" data-spot="${place.id}" style="color:#236340;text-decoration:underline;text-underline-offset:2px;cursor:pointer;">${place.name}</a></b>
                  <div style="margin-top:3px;color:#666;font-size:12px;word-break:keep-all;">${place.region}</div>
                </div>`
             );
