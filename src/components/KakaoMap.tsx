@@ -269,7 +269,7 @@ export default function KakaoMap({
 
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-2xl border border-neutral-200 ${
+      className={`kmap-allow-scroll relative w-full overflow-hidden rounded-2xl border border-neutral-200 ${
         className ?? "h-[60vh]"
       }`}
     >

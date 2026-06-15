@@ -23,3 +23,13 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/*
+ * 모바일: 지도(고정 개요) 위에 손을 대고 스크롤해도 페이지가 세로로 내려가도록.
+ * 지도는 드래그·확대가 잠겨 있으므로 세로 팬(페이지 스크롤)은 흘려보내고 탭(마커 클릭)만 받는다.
+ * 카카오가 내부 요소에 거는 touch-action 을 덮기 위해 !important + 하위 전체(*) 적용.
+ */
+.kmap-allow-scroll,
+.kmap-allow-scroll * {
+  touch-action: pan-y !important;
+}
