@@ -16,6 +16,7 @@ import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
 import CourseMap from "@/components/CourseMap";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
+import CommentSection from "@/components/CommentSection";
 
 interface PageProps {
   params: { id: string };
@@ -227,6 +228,9 @@ export default function SpotDetailPage({ params }: PageProps) {
           </a>
         </p>
       )}
+
+      {/* 이용자 리뷰 (데모용 — 로컬 상태 저장) */}
+      <CommentSection placeId={place.id} />
     </article>
   );
 }
