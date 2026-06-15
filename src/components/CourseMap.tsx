@@ -342,9 +342,9 @@ export default function CourseMap({ place }: { place: Place }) {
                         </span>
                       )}
                       <a
-                        href={`https://map.kakao.com/?sName=${encodeURIComponent(
-                          place.name
-                        )}&eName=${encodeURIComponent(s.name)}`}
+                        href={`https://map.kakao.com/link/to/${encodeURIComponent(
+                          s.name
+                        )},${s.lat},${s.lng}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-0.5 rounded-full bg-forest-50 px-2 py-0.5 text-[11px] font-semibold text-forest-700 hover:bg-forest-100"
