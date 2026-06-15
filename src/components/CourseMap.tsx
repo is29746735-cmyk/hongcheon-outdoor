@@ -308,10 +308,12 @@ export default function CourseMap({ place }: { place: Place }) {
               {steps.map((s, i) => {
                 const meta = CATS.find((c) => c.label === s.label);
                 const Icon = meta?.Icon ?? MapPin;
-                const dist = distanceM(
-                  i === 0 ? loc : steps[i - 1],
-                  s
-                );
+                // 출발지 = 이전 지점(첫 구간은 현재 장소), 도착지 = 이 지점
+                const prev =
+                  i === 0
+                    ? { name: place.name, lat: loc.lat, lng: loc.lng }
+                    : steps[i - 1];
+                const dist = distanceM(prev, s);
                 return (
                   <li
                     key={`${s.name}-${i}`}
@@ -338,11 +340,13 @@ export default function CourseMap({ place }: { place: Place }) {
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       {feasible && (
                         <span className="text-xs font-medium text-neutral-400">
-                          ~{fmtKm(dist)}
+                          직선 {fmtKm(dist)}
                         </span>
                       )}
                       <a
-                        href={`https://map.kakao.com/link/to/${encodeURIComponent(
+                        href={`https://map.kakao.com/link/from/${encodeURIComponent(
+                          prev.name
+                        )},${prev.lat},${prev.lng}/to/${encodeURIComponent(
                           s.name
                         )},${s.lat},${s.lng}`}
                         target="_blank"
