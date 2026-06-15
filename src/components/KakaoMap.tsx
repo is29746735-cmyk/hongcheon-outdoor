@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { X } from "lucide-react";
 import type { CategoryFilter, Place, PlaceCategory } from "@/types/place";
 import {
   CATEGORY_COLORS,
@@ -23,6 +24,8 @@ import { KAKAO_KEY, loadKakaoSdk } from "@/lib/kakao";
  * - 좌표를 임의로 만들지 않고, place.location(검증된 좌표)이 있으면 그것을,
  *   없으면 카카오 장소검색(keyword)·주소검색(geocoder)으로 실제 등록 좌표를 받아 마커를 찍는다.
  * - activeCategory 가 바뀌면 해당 카테고리 마커만 실시간으로 보이도록 필터링한다.
+ * - 마커 클릭 시 정보는 카카오 InfoWindow(자동 지도 이동·화면밖 잘림 발생) 대신
+ *   지도 위에 고정된 React 카드로 표시한다. (지도가 움직이지 않고 항상 화면 안에 보임)
  *
  * 사용 전: 카카오 개발자센터(developers.kakao.com)에서 JavaScript 키를 발급받아
  *   .env.local 의 NEXT_PUBLIC_KAKAO_MAP_KEY 에 넣고, 플랫폼 도메인을 등록해야 합니다.
@@ -37,16 +40,24 @@ interface KakaoMapProps {
   className?: string;
 }
 
+/** 마커 클릭 시 상단 카드에 표시할 선택 정보 */
+interface SelectedInfo {
+  name: string;
+  region: string;
+  /** 스팟이면 상세 링크용 id (전기차 충전소는 없음) */
+  id?: string;
+  /** 카테고리 색상 점 */
+  color: string;
+}
+
 export default function KakaoMap({
   places,
   activeCategory,
   visibleIds,
   className,
 }: KakaoMapProps) {
-  const router = useRouter();
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
-  const infoRef = useRef<any>(null);
   const markersRef = useRef<
     { overlay: any; category: PlaceCategory; id: string }[]
   >([]);
@@ -55,6 +66,7 @@ export default function KakaoMap({
     "loading"
   );
   const [visibleCount, setVisibleCount] = useState(0);
+  const [info, setInfo] = useState<SelectedInfo | null>(null);
 
   /** 현재 필터(visibleIds)에 해당하는 마커만 표시하고, 보이는 마커에 맞춰 화면을 맞춘다 */
   const applyFilter = useCallback(
@@ -82,7 +94,7 @@ export default function KakaoMap({
           any = true;
         }
       });
-      infoRef.current?.close?.();
+      setInfo(null);
       if (any && !bounds.isEmpty()) map.setBounds(bounds);
       setVisibleCount(count);
     },
@@ -117,23 +129,10 @@ export default function KakaoMap({
         map.setZoomable(false);
         map.setDraggable(false);
         mapRef.current = map;
-        infoRef.current = new kakao.maps.InfoWindow({ removable: true });
 
-        // 지도 빈 곳을 클릭하면 열린 설명창을 닫는다 (X 버튼은 그대로 유지)
+        // 지도 빈 곳을 클릭하면 선택 정보 카드를 닫는다
         kakao.maps.event.addListener(map, "click", () => {
-          infoRef.current?.close?.();
-        });
-
-        // 인포윈도우 안의 장소 이름(밑줄 링크)을 클릭하면 상세 페이지로 이동
-        elRef.current?.addEventListener("click", (e) => {
-          const link = (e.target as HTMLElement | null)?.closest?.(
-            "[data-spot]"
-          ) as HTMLElement | null;
-          if (link) {
-            e.preventDefault();
-            const id = link.getAttribute("data-spot");
-            if (id) router.push(`/spots/${id}`);
-          }
+          setInfo(null);
         });
 
         const geocoder = new kakao.maps.services.Geocoder();
@@ -153,18 +152,12 @@ export default function KakaoMap({
             15
           )}</span>`;
           el.addEventListener("click", () => {
-            infoRef.current.setContent(
-              `<div style="padding:9px 12px;width:200px;font-size:13px;font-family:system-ui;line-height:1.45;word-break:keep-all;white-space:normal;">
-                 <b style="display:flex;align-items:center;gap:5px;">${categoryMarkerSvg(
-                   place.category,
-                   CATEGORY_COLORS[place.category],
-                   14
-                 )}<a href="/spots/${place.id}" data-spot="${place.id}" style="color:#236340;text-decoration:underline;text-underline-offset:2px;cursor:pointer;">${place.name}</a></b>
-                 <div style="margin-top:3px;color:#666;font-size:12px;word-break:keep-all;">${place.region}</div>
-               </div>`
-            );
-            infoRef.current.setPosition(pos);
-            infoRef.current.open(map);
+            setInfo({
+              name: place.name,
+              region: place.region,
+              id: place.id,
+              color,
+            });
           });
 
           const overlay = new kakao.maps.CustomOverlay({
@@ -193,17 +186,11 @@ export default function KakaoMap({
             14
           )}</span>`;
           el.addEventListener("click", () => {
-            infoRef.current.setContent(
-              `<div style="padding:9px 12px;width:200px;font-size:13px;font-family:system-ui;line-height:1.45;word-break:keep-all;">
-                 <b style="display:flex;align-items:center;gap:5px;">${evMarkerSvg(
-                   EV_COLOR,
-                   14
-                 )}<span>${charger.name}</span></b>
-                 <div style="margin-top:3px;color:#666;font-size:12px;">${charger.region}</div>
-               </div>`
-            );
-            infoRef.current.setPosition(pos);
-            infoRef.current.open(map);
+            setInfo({
+              name: charger.name,
+              region: charger.region,
+              color: EV_COLOR,
+            });
           });
           const overlay = new kakao.maps.CustomOverlay({
             position: pos,
@@ -307,33 +294,71 @@ export default function KakaoMap({
       )}
       {status === "ready" && (
         <>
-          {/* 색상 범례 (항상 표시) */}
-          <div className="pointer-events-none absolute right-3 top-3 z-10 flex flex-col gap-1 rounded-xl bg-white/95 px-3 py-2 text-xs text-neutral-700 shadow-md ring-1 ring-black/5">
-            {(["camping", "fishing", "carcamping"] as PlaceCategory[]).map(
-              (c) => (
-                <div key={c} className="flex items-center gap-1.5">
+          {/* 선택된 장소 정보 카드 — 지도 위 고정(지도를 움직이지 않음, 항상 화면 안) */}
+          {info && (
+            <div className="absolute inset-x-2.5 top-2.5 z-30 flex items-start gap-2.5 rounded-xl bg-white/95 px-3.5 py-2.5 shadow-lg ring-1 ring-black/5 backdrop-blur">
+              <span
+                className="mt-1 h-3 w-3 shrink-0 rounded-full"
+                style={{ background: info.color }}
+              />
+              <div className="min-w-0 flex-1">
+                {info.id ? (
+                  <Link
+                    href={`/spots/${info.id}`}
+                    className="text-sm font-bold text-forest-700 underline underline-offset-2 transition-colors hover:text-forest-800"
+                  >
+                    {info.name}
+                  </Link>
+                ) : (
+                  <span className="text-sm font-bold text-neutral-800">
+                    {info.name}
+                  </span>
+                )}
+                <p className="mt-0.5 break-keep text-xs leading-relaxed text-neutral-500">
+                  {info.region}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInfo(null)}
+                aria-label="닫기"
+                className="-mr-1 shrink-0 rounded-full p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
+              >
+                <X className="h-4 w-4" strokeWidth={2.2} />
+              </button>
+            </div>
+          )}
+
+          {/* 색상 범례 (정보 카드가 떠 있지 않을 때만) */}
+          {!info && (
+            <div className="pointer-events-none absolute right-3 top-3 z-10 flex flex-col gap-1 rounded-xl bg-white/95 px-3 py-2 text-xs text-neutral-700 shadow-md ring-1 ring-black/5">
+              {(["camping", "fishing", "carcamping"] as PlaceCategory[]).map(
+                (c) => (
+                  <div key={c} className="flex items-center gap-1.5">
+                    <span
+                      className="grid h-4 w-4 place-items-center rounded-full text-white"
+                      style={{ background: CATEGORY_COLORS[c] }}
+                    >
+                      <CategoryIcon category={c} className="h-2.5 w-2.5" />
+                    </span>
+                    {CATEGORY_LABELS[c]}
+                  </div>
+                )
+              )}
+              {activeCategory === "carcamping" && (
+                <div className="mt-0.5 flex items-center gap-1.5 border-t border-neutral-200 pt-1">
                   <span
                     className="grid h-4 w-4 place-items-center rounded-full text-white"
-                    style={{ background: CATEGORY_COLORS[c] }}
+                    style={{ background: EV_COLOR }}
                   >
-                    <CategoryIcon category={c} className="h-2.5 w-2.5" />
+                    <EvIcon className="h-2.5 w-2.5" />
                   </span>
-                  {CATEGORY_LABELS[c]}
+                  전기차 충전소
                 </div>
-              )
-            )}
-            {activeCategory === "carcamping" && (
-              <div className="mt-0.5 flex items-center gap-1.5 border-t border-neutral-200 pt-1">
-                <span
-                  className="grid h-4 w-4 place-items-center rounded-full text-white"
-                  style={{ background: EV_COLOR }}
-                >
-                  <EvIcon className="h-2.5 w-2.5" />
-                </span>
-                전기차 충전소
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
+
           {/* 현재 필터 배지 — 표시 중인 스팟 수 */}
           <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs text-neutral-600 shadow-md ring-1 ring-black/5">
             {visibleIds ? `${visibleCount}곳 표시 중` : "전체 스팟"}
