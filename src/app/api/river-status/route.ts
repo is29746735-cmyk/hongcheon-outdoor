@@ -200,9 +200,16 @@ async function fetchFromKma(): Promise<{
         cache: "no-store",
         signal: AbortSignal.timeout(4000),
       });
+      // 401/403 은 키·권한 문제이므로 재시도하지 않고 즉시 폴백한다
+      if (res.status === 401 || res.status === 403) return null;
       if (!res.ok) continue;
       const json = (await res.json()) as KmaAwsResponse;
-      if (json.response?.header?.resultCode !== "00") continue;
+      const code = json.response?.header?.resultCode;
+      if (code !== "00") {
+        // 키 미등록(30)·만료(31)·한도초과(22) 는 재시도 무의미 → 폴백
+        if (code === "30" || code === "31" || code === "22") return null;
+        continue; // 03(NO_DATA) 등은 이전 분으로 재시도
+      }
       const items = json.response?.body?.items?.item;
       const item = Array.isArray(items) ? items[0] : items;
       if (!item) continue;
