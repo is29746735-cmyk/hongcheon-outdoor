@@ -17,6 +17,8 @@ import MapLinkButtons from "@/components/MapLinkButtons";
 import CourseMap from "@/components/CourseMap";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import CommentSection from "@/components/CommentSection";
+import SpotActions from "@/components/SpotActions";
+import NearbyShops from "@/components/NearbyShops";
 
 interface PageProps {
   params: { id: string };
@@ -193,6 +195,11 @@ export default function SpotDetailPage({ params }: PageProps) {
         )}
       </dl>
 
+      {/* 링크 복사 · 길찾기 */}
+      <div className="mt-6">
+        <SpotActions place={place} />
+      </div>
+
       {/* 지도 앱으로 위치 보기 */}
       <section className="mt-6">
         <h2 className="mb-3 text-sm font-semibold text-neutral-500">
@@ -227,6 +234,11 @@ export default function SpotDetailPage({ params }: PageProps) {
             {place.sourceName ?? place.sourceUrl}
           </a>
         </p>
+      )}
+
+      {/* 함께 방문하면 좋은 로컬 스토어 */}
+      {place.nearbyShops && place.nearbyShops.length > 0 && (
+        <NearbyShops shops={place.nearbyShops} />
       )}
 
       {/* 이용자 리뷰 (데모용 — 로컬 상태 저장) */}

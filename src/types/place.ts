@@ -14,6 +14,24 @@ export interface GeoPoint {
   lng: number;
 }
 
+/** 주변 로컬 스토어 분류 — 맛집 / 장비 대여 / 카페 / 상점 */
+export type ShopCategory = "food" | "rental" | "cafe" | "store";
+
+/** 함께 방문하면 좋은 주변 로컬 스토어 (맛집·장비 대여점 등) */
+export interface NearbyShop {
+  name: string;
+  category: ShopCategory;
+  /** 한 줄 설명 (대표 메뉴·취급 품목 등) */
+  description?: string;
+  /** 스팟에서의 거리/이동시간 (예: "차로 5분") */
+  distance?: string;
+  /** 외부 지도 검색·길찾기용 명칭·키워드 (없으면 name 사용) */
+  mapQuery?: string;
+  /** 좌표 (검증된 경우에만, 선택) */
+  location?: GeoPoint;
+  phone?: string;
+}
+
 export interface Place {
   /** URL slug 겸 고유 식별자 */
   id: string;
@@ -54,6 +72,8 @@ export interface Place {
   thumbnail?: string;
   images?: string[];
   featured?: boolean;
+  /** 함께 방문하면 좋은 주변 로컬 스토어 (맛집·장비 대여점 등) */
+  nearbyShops?: NearbyShop[];
 }
 
 /** 목록 필터용 카테고리 (전체 포함) */
