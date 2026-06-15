@@ -107,6 +107,11 @@ export default function KakaoMap({
             HONGCHEON_RIVER_CENTER.lng
           ),
           level: 9,
+          // 고정 개요 지도 — 모든 확대 경로 차단 (마커 클릭만 허용)
+          draggable: false,
+          scrollwheel: false, // 휠 확대 금지
+          disableDoubleClick: true, // 더블클릭 이벤트 금지
+          disableDoubleClickZoom: true, // 더블클릭 확대 금지
         });
         // 지도 확대/축소·이동 잠금 (마커 클릭은 가능)
         map.setZoomable(false);
