@@ -30,6 +30,8 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
       "전기",
       "와이파이",
       "주차장",
+      "산책로",
+      "전망대",
     ],
     tips: [
       "주말·성수기는 홍천군 문화관광포털에서 사전 예약이 필수입니다.",
@@ -56,7 +58,7 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     season: "여름·가을",
   },
   "mogok-bambeol": {
-    facilities: ["24시 편의점", "개수대", "공용 화장실"],
+    facilities: ["편의점·매점", "개수대", "공용 화장실"],
     tips: [
       "선착순 이용이라 성수기엔 일찍 도착해 자리를 잡는 것이 좋습니다.",
       "견지·플라잉 낚시로 피라미·쉬리·메기를 노릴 수 있습니다.",
@@ -153,15 +155,15 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     season: "겨울(얼음낚시)",
   },
   "sidong-fishing": {
-    facilities: ["낚시터 기본 시설"],
+    facilities: ["유료 관리형 낚시터 시설(좌대 등)", "이용 요금 별도"],
     tips: [
-      "홍천강 권역으로 붕어·잉어·메기 등을 노릴 수 있습니다.",
-      "강변 낚시 시 수위·유속 변화에 유의하세요.",
+      "유료 관리형 낚시터(잡이터)로 붕어 낚시 위주입니다.",
+      "어종·좌대·이용 요금은 시즌에 따라 다를 수 있으니 방문 전 전화로 확인하세요.",
     ],
-    accessNote: "남면 시동리 강변으로 진입하며 마지막 구간이 좁을 수 있습니다.",
-    restroom: false,
+    accessNote: "남면 시동리 소재로, 진입 시 마지막 구간이 좁을 수 있습니다.",
+    restroom: true,
     cooking: false,
-    season: "봄·가을",
+    season: "봄~가을",
   },
   "namnoil-riverside": {
     facilities: ["화장실", "개수대", "주차장"],
@@ -177,7 +179,7 @@ export const SPOT_DETAILS: Record<string, SpotDetail> = {
     season: "여름",
   },
   "magok-resort": {
-    facilities: ["화장실", "샤워실", "취사장"],
+    facilities: ["화장실", "개수대", "매점"],
     tips: [
       "수심이 깊어 카약·수상레저를 즐기기 좋습니다.",
       "강가에서 낚시도 함께 즐길 수 있습니다.",
