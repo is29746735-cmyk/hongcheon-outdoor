@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mountain } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/constants";
+import AuthButton from "@/components/layout/AuthButton";
 
 export default function Header() {
   return (
@@ -14,17 +15,20 @@ export default function Header() {
             {SITE.name}
           </span>
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-semibold">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-full px-3.5 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-1">
+          <nav className="flex items-center gap-1 text-sm font-semibold">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-full px-3.5 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <AuthButton />
+        </div>
       </div>
     </header>
   );
