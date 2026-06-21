@@ -1,0 +1,18 @@
+{
+  "reference_id": "toss",
+  "description": "토스 스타일로, 홍천 아웃도어 캠핑·낚시 큐레이션 사이트 디자인 시스템",
+  "mode": "inspired",
+  "delta_set": {
+    "axes": {},
+    "voiceHints": [
+      "아웃도어/자연 도메인 (캠핑·낚시·차박 큐레이션)",
+      "검증된 공공정보 기반 — 과장·허위 금지가 브랜드 약속",
+      "한국어 1차, 차분하고 신뢰감 있는 톤 (토스 보이스 보존)"
+    ],
+    "matchedKeywords": ["minimal", "trustworthy", "clean", "calm"],
+    "warnings": [
+      "'토스 스타일' 지시에 따라 토스 블루(#3182f6) 등 토큰을 보존(preserve)함. 기존 사이트는 forest-green 팔레트라 시각적으로 다름 — 아웃도어 그린으로 맞추려면 color.hue_deg 델타를 적용해 재생성 가능."
+    ]
+  },
+  "bootstrapped_at": "2026-06-21"
+}
