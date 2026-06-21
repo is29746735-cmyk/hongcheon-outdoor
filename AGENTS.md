@@ -4,8 +4,8 @@
 This project uses [`DESIGN.md`](./DESIGN.md) as the single source of truth for design.
 **Before creating or editing any UI, read `DESIGN.md` first and follow its tokens, components, principles, and voice.**
 
-- Reference: **Toss (TDS)** — bootstrapped 2026-06-21 (preserve mode)
-- Primary interactive color: `#3182f6` (Toss Blue) · hover `#2272eb` · `#0064ff` is logo/marketing only
+- Reference: **Toss (TDS)** — bootstrapped 2026-06-21 (preserve + primary→forest green)
+- Primary interactive color: `#22633f` (Forest Green) · hover `#1e3a1e` · deep green `#1e3a1e` for logo/hero
 - Surfaces: bg `#ffffff` · surface `#f2f4f6` · heading `#191f28` · body `#6b7684` · border `#e5e8eb`
 - Semantic: success `#03b26c` · error `#f04452` · warning `#fe9800`
 - Font: Toss Product Sans → use **Pretendard** (open-source) on web

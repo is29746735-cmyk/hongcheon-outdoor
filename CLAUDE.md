@@ -4,8 +4,8 @@
 이 프로젝트는 [`DESIGN.md`](./DESIGN.md)를 디자인 시스템의 단일 출처(single source of truth)로 사용합니다.
 **UI를 만들거나 수정하기 전에 항상 `DESIGN.md`를 먼저 읽고, 그 토큰·컴포넌트·원칙·보이스를 따르세요.**
 
-- 기반 레퍼런스: **Toss (TDS)** — bootstrapped 2026-06-21 (preserve mode)
-- Primary 상호작용 색: `#3182f6` (Toss Blue) · hover `#2272eb` · brand `#0064ff`는 로고/마케팅 전용
+- 기반 레퍼런스: **Toss (TDS)** — bootstrapped 2026-06-21 (preserve + primary→forest green)
+- Primary 상호작용 색: `#22633f` (Forest Green, forest-600) · hover `#1e3a1e` · 딥 그린 `#1e3a1e`은 로고/히어로용
 - 배경 `#ffffff` · surface `#f2f4f6` · 제목 `#191f28` · 본문 `#6b7684` · border `#e5e8eb`
 - 의미색: 성공 `#03b26c` · 오류 `#f04452` · 주의 `#fe9800`
 - 폰트: Toss Product Sans → 웹은 **Pretendard**(오픈소스)로 대체

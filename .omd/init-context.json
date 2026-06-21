@@ -3,15 +3,20 @@
   "description": "토스 스타일로, 홍천 아웃도어 캠핑·낚시 큐레이션 사이트 디자인 시스템",
   "mode": "inspired",
   "delta_set": {
-    "axes": {},
+    "axes": {
+      "color.primary": "#22633f",
+      "color.primary_hover": "#1e3a1e",
+      "color.primary_light": "#f1f7f2",
+      "color.hue_deg": -70
+    },
     "voiceHints": [
       "아웃도어/자연 도메인 (캠핑·낚시·차박 큐레이션)",
       "검증된 공공정보 기반 — 과장·허위 금지가 브랜드 약속",
       "한국어 1차, 차분하고 신뢰감 있는 톤 (토스 보이스 보존)"
     ],
-    "matchedKeywords": ["minimal", "trustworthy", "clean", "calm"],
+    "matchedKeywords": ["minimal", "trustworthy", "clean", "calm", "nature"],
     "warnings": [
-      "'토스 스타일' 지시에 따라 토스 블루(#3182f6) 등 토큰을 보존(preserve)함. 기존 사이트는 forest-green 팔레트라 시각적으로 다름 — 아웃도어 그린으로 맞추려면 color.hue_deg 델타를 적용해 재생성 가능."
+      "primary 상호작용 색을 토스 블루(#3182f6)에서 사이트 포레스트 그린(forest-600 #22633f, hover forest-700 #1e3a1e, light forest-50 #f1f7f2)으로 hue-shift(~-70deg). 중립 그레이/차콜·의미색·반경·타이포·모션은 토스 보존. 그린 hex는 tailwind.config.ts forest 팔레트 기준."
     ]
   },
   "bootstrapped_at": "2026-06-21"
