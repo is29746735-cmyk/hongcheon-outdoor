@@ -304,20 +304,26 @@ export default function CommentSection({
 
       {/* 평균 별점 (제목 바로 아래) */}
       {reviews.length > 0 ? (
-        <div className="mt-1.5 flex items-center gap-1.5 text-sm">
-          <StarRow value={Math.round(avg)} />
-          <span className="font-bold text-amber-500">{avg.toFixed(1)}</span>
-          <span className="text-neutral-400">/ 5 · 리뷰 {reviews.length}개</span>
+        <div className="mt-2 flex items-center gap-3">
+          <span className="text-2xl font-extrabold leading-none tabular-nums text-neutral-900">
+            {avg.toFixed(1)}
+          </span>
+          <span className="flex flex-col gap-1">
+            <StarRow value={Math.round(avg)} />
+            <span className="text-xs text-neutral-500">
+              5점 만점 · 리뷰 {reviews.length}개
+            </span>
+          </span>
         </div>
       ) : (
-        <p className="mt-1.5 text-sm text-neutral-400">현재 리뷰가 없습니다.</p>
+        <p className="mt-2 text-sm text-neutral-400">현재 리뷰가 없습니다.</p>
       )}
 
       {/* 작성/수정 폼 또는 '이미 작성' 패널 */}
       {showForm ? (
         <form
           onSubmit={editing ? saveEdit : handleCreate}
-          className="mt-4 rounded-3xl border border-neutral-200 bg-white p-5"
+          className="mt-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-card"
         >
           {editing ? (
             <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
@@ -326,7 +332,7 @@ export default function CommentSection({
             </p>
           ) : (
             location && (
-              <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700">
+              <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-forest-50 px-3 py-1.5 text-xs font-semibold text-forest-700">
                 <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
                 리뷰는 현장(스팟 근처)에서만 등록됩니다
               </p>
@@ -341,7 +347,7 @@ export default function CommentSection({
               placeholder="닉네임"
               aria-label="닉네임"
               maxLength={20}
-              className="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm outline-none transition focus:border-forest-500 focus:ring-2 focus:ring-forest-100 sm:w-40"
+              className="w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm outline-none transition focus:border-forest-600 focus:ring-2 focus:ring-forest-100 sm:w-40"
             />
 
             <div
@@ -385,14 +391,14 @@ export default function CommentSection({
               placeholder="한줄평을 남겨주세요 (예: 강 바로 앞이라 낚시하기 최고예요!)"
               aria-label="한줄평"
               maxLength={100}
-              className="flex-1 rounded-xl border border-neutral-300 px-3 py-2 text-sm outline-none transition focus:border-forest-500 focus:ring-2 focus:ring-forest-100"
+              className="flex-1 rounded-xl border border-neutral-200 px-3 py-2 text-sm outline-none transition focus:border-forest-600 focus:ring-2 focus:ring-forest-100"
             />
             {editing ? (
               <div className="flex gap-2">
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-forest-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-forest-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Send className="h-4 w-4" strokeWidth={2.2} />
                   수정 완료
@@ -400,7 +406,7 @@ export default function CommentSection({
                 <button
                   type="button"
                   onClick={cancelEdit}
-                  className="inline-flex items-center justify-center gap-1 rounded-xl border border-neutral-300 px-3 py-2 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-50"
+                  className="inline-flex items-center justify-center gap-1 rounded-xl bg-neutral-100 px-3 py-2 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-200"
                 >
                   <X className="h-4 w-4" strokeWidth={2.2} />
                   취소
@@ -410,7 +416,7 @@ export default function CommentSection({
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-forest-700 px-5 py-2 text-sm font-bold text-white transition hover:bg-forest-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-forest-600 px-5 py-2 text-sm font-bold text-white transition hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Send className="h-4 w-4" strokeWidth={2.2} />
                 {locating ? "현장 확인 중…" : "등록"}
@@ -448,13 +454,13 @@ export default function CommentSection({
           {reviews.map((r) => (
             <li
               key={r.id}
-              className="rounded-2xl border border-neutral-200 bg-white p-4"
+              className="rounded-xl border border-neutral-200 bg-white p-4 transition hover:border-forest-200 hover:shadow-card"
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sand-100 text-forest-700">
                   <UserRound className="h-4 w-4" strokeWidth={2} />
                 </span>
-                <span className="text-sm font-bold text-neutral-800">
+                <span className="text-sm font-bold text-neutral-900">
                   {r.nickname}
                 </span>
                 {r.id === myReviewId && (
@@ -463,7 +469,7 @@ export default function CommentSection({
                   </span>
                 )}
                 <StarRow value={r.rating} />
-                <span className="ml-auto shrink-0 text-xs text-neutral-400">
+                <span className="ml-auto shrink-0 text-xs tabular-nums text-neutral-400">
                   {formatDate(r.updatedAt ?? r.createdAt)}
                   {r.updatedAt ? " · 수정됨" : ""}
                 </span>
