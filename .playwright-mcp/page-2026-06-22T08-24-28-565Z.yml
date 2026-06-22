@@ -1,0 +1,136 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - text: 홍천 아웃도어
+      - navigation [ref=e9]:
+        - link "홈" [ref=e10] [cursor=pointer]:
+          - /url: "#"
+        - link "장소" [ref=e11] [cursor=pointer]:
+          - /url: "#list"
+        - link "저장" [ref=e12] [cursor=pointer]:
+          - /url: "#"
+        - link "둘러보기" [ref=e13] [cursor=pointer]:
+          - /url: "#list"
+  - main [ref=e14]:
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - img [ref=e18]
+        - text: 강원 홍천 · 캠핑 · 낚시 · 차박
+      - heading "홍천의 검증된 아웃도어를 한눈에." [level=1] [ref=e21]:
+        - text: 홍천의 검증된
+        - text: 아웃도어를 한눈에.
+      - paragraph [ref=e22]: 홍천군청·구석구석·고캠핑으로 교차검증한 캠핑장과 낚시터, 차박지만 모았습니다.
+      - generic [ref=e23]:
+        - link "장소 둘러보기" [ref=e24] [cursor=pointer]:
+          - /url: "#list"
+          - text: 장소 둘러보기
+          - img [ref=e25]
+        - link "지도로 보기" [ref=e27] [cursor=pointer]:
+          - /url: "#"
+    - region "오늘의 홍천강 아웃도어 지수" [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: 오늘의 홍천강 아웃도어 지수
+        - generic [ref=e32]:
+          - img [ref=e33]
+          - text: 안전
+      - generic [ref=e36]:
+        - paragraph [ref=e37]: 수위가 안정적이고 바람이 약해 야영과 낚시에 좋은 날입니다.
+        - generic [ref=e38]:
+          - term [ref=e39]: 기온
+          - definition [ref=e40]: 21°C
+        - generic [ref=e41]:
+          - term [ref=e42]: 현재 강수
+          - definition [ref=e43]: 0.0mm
+      - generic [ref=e44]:
+        - generic [ref=e45]: 맑음 · 6월 22일 16:30 기준
+        - generic [ref=e46]: 기상청 실측
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - heading "어디로 떠나볼까요" [level=2] [ref=e50]
+        - paragraph [ref=e51]: 카테고리와 조건으로 검증된 장소를 좁혀보세요.
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - button "전체" [ref=e54] [cursor=pointer]
+          - button "캠핑장" [ref=e55] [cursor=pointer]
+          - button "낚시 스팟" [ref=e56] [cursor=pointer]
+          - button "차박지" [ref=e57] [cursor=pointer]
+        - generic [ref=e58]:
+          - generic [ref=e59]: 한적함
+          - button "전체" [ref=e60] [cursor=pointer]
+          - button "3점+" [ref=e61] [cursor=pointer]
+          - button "4점+" [ref=e62] [cursor=pointer]
+          - button "5점" [ref=e63] [cursor=pointer]
+        - generic [ref=e64]:
+          - generic [ref=e65]: 태그
+          - button "#오토캠핑" [ref=e66] [cursor=pointer]
+          - button "#리버뷰" [ref=e67] [cursor=pointer]
+          - button "#1급수" [ref=e68] [cursor=pointer]
+          - button "#견지낚시" [ref=e69] [cursor=pointer]
+          - button "#차박성지" [ref=e70] [cursor=pointer]
+      - generic [ref=e71]:
+        - article [ref=e72]:
+          - generic [ref=e73]:
+            - generic [ref=e74]: 캠핑장
+            - generic [ref=e75]:
+              - img [ref=e76]
+              - text: 캠핑+낚시
+            - img [ref=e80]
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - text: 홍천강오토캠핑장
+              - generic [ref=e85]: 공식
+            - paragraph [ref=e86]: 홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.
+            - generic [ref=e87]:
+              - generic [ref=e88]: 오토캠핑
+              - generic [ref=e89]: 공공운영
+              - generic [ref=e90]: 홍천강
+            - generic [ref=e91]:
+              - generic [ref=e92]: 한적함 2/5
+              - link "길찾기" [ref=e93] [cursor=pointer]:
+                - /url: "#"
+        - article [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e96]: 캠핑장
+            - generic [ref=e97]:
+              - img [ref=e98]
+              - text: 캠핑+낚시
+            - img [ref=e102]
+          - generic [ref=e105]:
+            - generic [ref=e106]: 도담캠핑장
+            - paragraph [ref=e107]: 1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.
+            - generic [ref=e108]:
+              - generic [ref=e109]: 가족
+              - generic [ref=e110]: 리버뷰
+              - generic [ref=e111]: 1급수
+            - generic [ref=e112]:
+              - generic [ref=e113]: 한적함 3/5
+              - link "길찾기" [ref=e114] [cursor=pointer]:
+                - /url: "#"
+        - article [ref=e115]:
+          - generic [ref=e116]:
+            - generic [ref=e117]: 캠핑장
+            - generic [ref=e118]:
+              - img [ref=e119]
+              - text: 캠핑+낚시
+            - img [ref=e123]
+          - generic [ref=e126]:
+            - generic [ref=e127]: 모곡밤벌유원지
+            - paragraph [ref=e128]: 캠핑·차박·낚시·물놀이를 한 곳에서. 홍천강 대표 유원지.
+            - generic [ref=e129]:
+              - generic [ref=e130]: 차박성지
+              - generic [ref=e131]: 견지낚시
+              - generic [ref=e132]: 물놀이
+            - generic [ref=e133]:
+              - generic [ref=e134]: 입장료 2,000원
+              - link "길찾기" [ref=e135] [cursor=pointer]:
+                - /url: "#"
+  - contentinfo [ref=e136]:
+    - generic [ref=e137]:
+      - generic [ref=e138]:
+        - img [ref=e140]
+        - text: 홍천 아웃도어
+      - paragraph [ref=e143]:
+        - text: 공공정보로 교차검증한 캠핑·낚시·차박 큐레이션.
+        - text: 방문 전 운영 여부와 요금은 전화로 확인하세요.

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>홍천 아웃도어 · 홈 디자인 변주 비교</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root { --green:#22633f; --ink:#191f28; --body:#6b7684; --line:#e5e8eb; --bg:#f2f4f6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  a { color: inherit; text-decoration: none; }
+  .top { background:#fff; border-bottom:1px solid var(--line); padding: 26px 32px; position: sticky; top:0; z-index:10; }
+  .top h1 { font-size: 22px; font-weight: 800; letter-spacing:-0.02em; }
+  .top p { margin-top: 6px; font-size: 14px; color: var(--body); }
+  .grid { max-width: 1320px; margin: 0 auto; padding: 28px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .card .head { padding: 18px 20px; border-bottom: 1px solid var(--line); display:flex; align-items:flex-start; justify-content:space-between; gap: 12px; }
+  .card .head .t { font-size: 17px; font-weight: 800; letter-spacing:-0.01em; }
+  .card .head .d { margin-top: 5px; font-size: 12.5px; color: var(--body); line-height: 1.5; }
+  .dials { margin-top: 8px; display:flex; gap:6px; flex-wrap: wrap; }
+  .dials span { font-size: 10.5px; font-weight: 700; color: var(--green); background:#eef3ee; padding: 3px 8px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+  .open { flex-shrink:0; font-size: 12.5px; font-weight: 700; color:#fff; background: var(--green); padding: 9px 14px; border-radius: 999px; white-space: nowrap; }
+  .open:hover { background:#1e3a1e; }
+  .preview { position: relative; width: 100%; height: 540px; overflow: hidden; background:#fff; border:0; }
+  .preview iframe { position:absolute; top:0; left:0; width: 1440px; height: 1350px; border:0;
+                    transform: scale(.42); transform-origin: top left; pointer-events: none; }
+  .legend { max-width: 1320px; margin: 0 auto 40px; padding: 0 28px; }
+  .legend .note { background:#fff; border:1px solid var(--line); border-radius: 14px; padding: 18px 22px; font-size: 13px; color: var(--body); line-height: 1.7; }
+  .legend .note b { color: var(--ink); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .preview iframe { transform: scale(.6); width: 1100px; height: 1400px; } .preview { height: 560px; } }
+</style>
+</head>
+<body>
+  <div class="top">
+    <h1>홍천 아웃도어 · 홈 디자인 변주 4안</h1>
+    <p>실제 콘텐츠로 만든 풀 목업. 카드의 <b>전체 화면</b>으로 열어 비교하세요. 아래 미리보기는 데스크톱 렌더를 축소한 것입니다.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="head">
+        <div>
+          <div class="t">A · 미니멀 에디토리얼</div>
+          <div class="d">웜 모노크롬 + 벤토 + 넉넉한 여백. 토스 절제미.</div>
+          <div class="dials"><span>VAR 5</span><span>MOT 3</span><span>DEN 3</span></div>
+        </div>
+        <a class="open" href="01-minimal.html" target="_blank">전체 화면 ↗</a>
+      </div>
+      <div class="preview"><iframe src="01-minimal.html" scrolling="no" tabindex="-1" title="미니멀"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <div>
+          <div class="t">B · 소프트 프리미엄</div>
+          <div class="d">큰 라운드 + 소프트 그린 섀도 + 큰 히어로. 프리미엄 컨슈머.</div>
+          <div class="dials"><span>VAR 7</span><span>MOT 5</span><span>DEN 3</span></div>
+        </div>
+        <a class="open" href="02-soft.html" target="_blank">전체 화면 ↗</a>
+      </div>
+      <div class="preview"><iframe src="02-soft.html" scrolling="no" tabindex="-1" title="소프트"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <div>
+          <div class="t">C · 웜 매거진</div>
+          <div class="d">한글 세리프(고운바탕) + sand 면 + 비대칭 에디토리얼.</div>
+          <div class="dials"><span>VAR 8</span><span>MOT 4</span><span>DEN 4</span></div>
+        </div>
+        <a class="open" href="03-magazine.html" target="_blank">전체 화면 ↗</a>
+      </div>
+      <div class="preview"><iframe src="03-magazine.html" scrolling="no" tabindex="-1" title="매거진"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <div>
+          <div class="t">D · 브루탈리스트 / 스위스</div>
+          <div class="d">강한 그로테스크 + 모노 라벨 + 2px 보더 그리드. 대담한 대비안.</div>
+          <div class="dials"><span>VAR 6</span><span>MOT 2</span><span>DEN 6</span></div>
+        </div>
+        <a class="open" href="04-brutalist.html" target="_blank">전체 화면 ↗</a>
+      </div>
+      <div class="preview"><iframe src="04-brutalist.html" scrolling="no" tabindex="-1" title="브루탈리스트"></iframe></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="note">
+      공통 규칙: 상호작용 색은 <b>포레스트 그린 #22633f</b> 하나로 고정 · 핵심 수치는 고정폭(tabular) · em-dash 미사용 · 사진은 브랜드 원칙대로 실사진 없이 스타일별 플레이스홀더로 처리.
+      네 안 모두 같은 실제 데이터(홍천강오토캠핑장 · 도담캠핑장 · 모곡밤벌유원지)와 같은 아웃도어 지수를 씁니다. 현재 라이브 홈과 비교하려면 dev 서버(<b>localhost:3000</b>)를 같이 열어보세요.
+    </div>
+  </div>
+</body>
+</html>

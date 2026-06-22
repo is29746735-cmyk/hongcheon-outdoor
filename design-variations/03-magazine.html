@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>홍천 아웃도어 · 웜 매거진</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     변주 C · 웜 매거진 / 아웃도어
+     한글 세리프(고운바탕) 디스플레이 + 브랜드 sand 면 + 비대칭 에디토리얼 그리드.
+     상호작용 색은 #22633f(그린) 단일 고정. clay(#b5613a)는 장식 헤어라인으로만.
+     라운드 규칙: 모든 면·버튼 6px(프린트 감성), pill 미사용.
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --canvas: #faf6ec;      /* 브랜드 sand */
+    --paper:  #fffdf6;
+    --ink:    #20251c;
+    --body:   #5c5a4d;
+    --muted:  #978f7c;
+    --line:   #e7dec9;
+    --green:  #22633f;      /* 상호작용 단일 액센트 */
+    --green-deep: #1e3a1e;
+    --green-wash: #e9f0e6;
+    --clay:   #b5613a;      /* 장식 전용(헤어라인·마크) */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.6; word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Gowun Batang", "Pretendard Variable", serif; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+  a { color: inherit; text-decoration: none; }
+  svg { display: block; }
+
+  header { border-bottom: 1.5px solid var(--ink); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .brand { font-family:"Gowun Batang",serif; font-weight: 700; font-size: 22px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
+  .brand .mk { width: 26px; height: 26px; border: 1.5px solid var(--ink); border-radius: 50%; display: grid; place-items: center; }
+  .nav-links { display: flex; gap: 30px; font-size: 14px; color: var(--body); font-weight: 600; }
+  .nav-links a.active { color: var(--ink); border-bottom: 2px solid var(--green); padding-bottom: 3px; }
+  .nav-links a:hover { color: var(--green); }
+
+  /* Hero — 비대칭 에디토리얼 스프레드 */
+  .hero { padding: 60px 0 56px; border-bottom: 1px solid var(--line); }
+  .hero-grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 52px; }
+  .eyebrow { font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay); font-weight: 700; }
+  h1.title { font-family:"Gowun Batang",serif; margin-top: 20px; font-size: clamp(44px, 6.6vw, 84px); line-height: 1.04; letter-spacing: -0.02em; font-weight: 700; color: var(--ink); }
+  h1.title .ln2 { color: var(--green-deep); }
+  .lede { margin-top: 26px; font-size: 18px; line-height: 1.7; color: var(--body); max-width: 42ch; }
+  .lede .drop { font-family:"Gowun Batang",serif; }
+  .hero-cta { margin-top: 30px; display: flex; align-items: center; gap: 22px; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; height: 50px; padding: 0 24px; border-radius: 6px; font-weight: 700; font-size: 15px; border: 0; cursor: pointer; transition: background .15s, transform .15s; }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
+  .btn-text { font-weight: 700; font-size: 15px; color: var(--ink); border-bottom: 2px solid var(--clay); padding-bottom: 3px; }
+  .btn-text:hover { color: var(--green); }
+
+  /* 오늘의 지수 — 매거진 사이드 인포박스 */
+  .infobox { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 0; overflow: hidden; }
+  .infobox .rule { height: 5px; background: var(--clay); }
+  .infobox .pad { padding: 24px; }
+  .ix-kicker { font-family:"Gowun Batang",serif; font-size: 15px; color: var(--muted); }
+  .ix-level { font-family:"Gowun Batang",serif; font-size: 44px; font-weight: 700; color: var(--green-deep); line-height: 1.1; margin-top: 4px; display: flex; align-items: center; gap: 12px; }
+  .ix-level svg { width: 30px; height: 30px; }
+  .ix-reason { margin-top: 14px; font-size: 15px; line-height: 1.6; color: var(--body); }
+  .ix-stats { margin-top: 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; }
+  .ix-stats div { padding: 14px 4px; }
+  .ix-stats div + div { border-left: 1px solid var(--line); padding-left: 16px; }
+  .ix-stats dt { font-size: 12px; color: var(--muted); }
+  .ix-stats dd { font-size: 24px; font-weight: 700; margin-top: 2px; font-family:"Gowun Batang",serif; }
+  .ix-src { margin-top: 12px; font-size: 11.5px; color: var(--muted); }
+
+  /* Filter — 에디토리얼 인덱스 라인 */
+  .index-line { padding: 30px 0 8px; }
+  .cats { display: flex; gap: 26px; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 16px; flex-wrap: wrap; }
+  .cats a { font-family:"Gowun Batang",serif; font-size: 21px; color: var(--muted); font-weight: 700; }
+  .cats a.on { color: var(--ink); }
+  .cats a.on::after { content: ""; display: block; height: 2px; background: var(--green); margin-top: 5px; }
+  .cats .spacer { flex: 1; }
+  .cats .count { font-size: 13px; color: var(--muted); font-family: inherit; font-weight: 500; }
+  .tagline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 16px 0 0; }
+  .tagline .lab { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: .08em; }
+  .tag { border: 1px solid var(--line); background: var(--paper); color: var(--body); padding: 6px 13px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: .15s; }
+  .tag:hover { border-color: var(--green); color: var(--green); }
+  .tag.on { background: var(--green); border-color: var(--green); color: #fff; }
+
+  /* Feature place — 좌 textured 패널 / 우 텍스트 */
+  .feature { display: grid; grid-template-columns: 1fr 1.1fr; gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-top: 28px; background: var(--paper); }
+  .panel { position: relative; min-height: 320px; background: linear-gradient(160deg,#2f6b46,#1e3a1e); display: flex; flex-direction: column; justify-content: space-between; padding: 26px; }
+  .panel svg.topo { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .22; }
+  .panel .cat { position: relative; font-family:"Gowun Batang",serif; color: #fff; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
+  .panel .big { position: relative; font-family:"Gowun Batang",serif; color: #fff; font-size: 52px; line-height: 1.05; font-weight: 700; }
+  .panel .fish { position: relative; align-self: flex-start; background: rgba(255,255,255,.16); color: #fff; font-size: 12.5px; font-weight: 700; padding: 6px 12px; border-radius: 6px; display: inline-flex; gap: 6px; align-items: center; backdrop-filter: blur(2px); }
+  .fbody { padding: 34px; display: flex; flex-direction: column; }
+  .fbody .official { font-size: 11.5px; font-weight: 700; color: var(--green-deep); background: var(--green-wash); padding: 3px 9px; border-radius: 5px; align-self: flex-start; }
+  .fname { font-family:"Gowun Batang",serif; font-size: 34px; font-weight: 700; letter-spacing: -0.01em; margin-top: 14px; line-height: 1.2; }
+  .fsum { margin-top: 16px; font-size: 16.5px; line-height: 1.7; color: var(--body); }
+  .faddr { margin-top: 18px; font-size: 13px; color: var(--muted); display: flex; gap: 7px; }
+  .ftags { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .ftags span { font-size: 12.5px; color: var(--body); border: 1px solid var(--line); padding: 5px 11px; border-radius: 6px; }
+  .ffoot { margin-top: auto; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+  .quiet { font-size: 13px; color: var(--muted); }
+  .quiet b { color: var(--ink); font-family:"Gowun Batang",serif; font-weight: 700; }
+  .go { font-size: 15px; font-weight: 700; color: var(--green); display: inline-flex; align-items: center; gap: 6px; }
+  .go:hover { color: var(--green-deep); }
+
+  /* Two small editorial cards */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+  .scard { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--paper); display: flex; flex-direction: column; }
+  .strip { height: 96px; position: relative; display: flex; align-items: flex-end; padding: 14px 18px; }
+  .strip.a { background: linear-gradient(160deg,#4f9e74,#22633f); }
+  .strip.b { background: linear-gradient(160deg,#6aa9b0,#2e6b6f); }
+  .strip svg.topo { position:absolute; inset:0; width:100%; height:100%; opacity:.2; }
+  .strip .cat { position: relative; font-family:"Gowun Batang",serif; color:#fff; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+  .sbody { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+  .sname { font-family:"Gowun Batang",serif; font-size: 23px; font-weight: 700; letter-spacing: -0.01em; }
+  .ssum { margin-top: 10px; font-size: 14.5px; line-height: 1.65; color: var(--body); }
+  .sfoot { margin-top: auto; padding-top: 18px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); margin-top: 18px; }
+
+  footer { margin-top: 70px; border-top: 1.5px solid var(--ink); }
+  .foot { padding: 40px 0; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 18px; }
+  .foot .small { font-size: 13px; color: var(--body); line-height: 1.75; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .feature { grid-template-columns: 1fr; } .panel { min-height: 200px; }
+    .duo { grid-template-columns: 1fr; }
+    .wrap { padding: 0 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#20251c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <nav class="nav-links">
+      <a class="active" href="#">홈</a>
+      <a href="#list">장소</a>
+      <a href="#">저장</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">캠핑 · 낚시 · 차박</span>
+        <h1 class="title">강을 따라,<br><span class="ln2">검증된 자리.</span></h1>
+        <p class="lede"><span class="drop">홍천강을 끼고 앉은 캠핑장과 낚시터, 차박지를</span> 홍천군청과 구석구석, 고캠핑으로 하나하나 교차검증해 모았습니다.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#list">장소 둘러보기
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn-text" href="#">지도로 보기</a>
+        </div>
+      </div>
+      <aside class="infobox" aria-label="오늘의 홍천강 아웃도어 지수">
+        <div class="rule"></div>
+        <div class="pad">
+          <div class="ix-kicker">오늘의 홍천강 지수</div>
+          <div class="ix-level">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22633f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+            안전
+          </div>
+          <p class="ix-reason">수위가 안정적이고 바람이 약해 야영과 낚시에 좋은 날입니다.</p>
+          <dl class="ix-stats">
+            <div><dt>기온</dt><dd class="num">21°C</dd></div>
+            <div><dt>현재 강수</dt><dd class="num">0.0mm</dd></div>
+          </dl>
+          <p class="ix-src">맑음 · 6월 22일 16:30 기준 · 기상청 실측</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div id="list" class="wrap">
+    <div class="index-line">
+      <div class="cats">
+        <a class="on" href="#">전체</a>
+        <a href="#">캠핑장</a>
+        <a href="#">낚시 스팟</a>
+        <a href="#">차박지</a>
+        <span class="spacer"></span>
+        <span class="count num">검증 3곳</span>
+      </div>
+      <div class="tagline">
+        <span class="lab">태그</span>
+        <button class="tag">#오토캠핑</button><button class="tag">#리버뷰</button><button class="tag">#1급수</button><button class="tag">#견지낚시</button><button class="tag">#차박성지</button><button class="tag">#물놀이</button>
+      </div>
+    </div>
+
+    <article class="feature">
+      <div class="panel">
+        <svg class="topo" viewBox="0 0 300 300" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="1.2">
+          <path d="M-10 80 C 70 50,140 110,220 70 S 320 60,330 90"/>
+          <path d="M-10 140 C 80 110,150 170,230 130 S 320 120,330 150"/>
+          <path d="M-10 200 C 60 175,160 225,240 190 S 320 185,330 210"/>
+          <path d="M-10 255 C 90 235,170 275,250 245 S 320 245,330 262"/>
+        </svg>
+        <span class="cat">캠핑장</span>
+        <span class="big">홍천강<br>오토캠핑</span>
+        <span class="fish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.5"/></svg> 캠핑 + 낚시</span>
+      </div>
+      <div class="fbody">
+        <span class="official">공식 운영</span>
+        <h3 class="fname">홍천강오토캠핑장</h3>
+        <p class="fsum">홍천군이 직접 운영하는 공공 오토캠핑장. 매점과 샤워실을 갖췄고, 홍천강까지 데크로 연결되어 물가 접근이 편합니다.</p>
+        <p class="faddr">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22633f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          강원특별자치도 홍천군 북방면 굴지강변로 322
+        </p>
+        <div class="ftags"><span>오토캠핑</span><span>공공운영</span><span>홍천강</span><span>수상레포츠</span></div>
+        <div class="ffoot">
+          <span class="quiet">한적함 <b class="num">2</b> / 5</span>
+          <a class="go" href="#">길찾기
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <div class="duo">
+      <article class="scard">
+        <div class="strip a">
+          <svg class="topo" viewBox="0 0 300 100" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="1.2"><path d="M-10 30 C 80 12,150 50,230 22 S 320 18,330 40"/><path d="M-10 64 C 70 48,160 82,240 54 S 320 52,330 72"/></svg>
+          <span class="cat">캠핑장</span>
+        </div>
+        <div class="sbody">
+          <h3 class="sname">도담캠핑장</h3>
+          <p class="ssum">1급수 홍천강 도보 3분. 가족 물놀이와 낚시에 특화된 캠핑장입니다.</p>
+          <div class="sfoot"><span class="quiet">한적함 <b class="num">3</b> / 5</span><a class="go" href="#">길찾기</a></div>
+        </div>
+      </article>
+      <article class="scard">
+        <div class="strip b">
+          <svg class="topo" viewBox="0 0 300 100" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="1.2"><path d="M-10 34 C 80 16,150 54,230 26 S 320 22,330 44"/><path d="M-10 68 C 70 52,160 86,240 58 S 320 56,330 76"/></svg>
+          <span class="cat">캠핑장</span>
+        </div>
+        <div class="sbody">
+          <h3 class="sname">모곡밤벌유원지</h3>
+          <p class="ssum">캠핑과 차박, 낚시와 물놀이를 한 곳에서. 홍천강을 대표하는 유원지입니다.</p>
+          <div class="sfoot"><span class="quiet">입장료 <b class="num">2,000</b>원</span><a class="go" href="#">길찾기</a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand">
+      <span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#20251c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <p class="small">공공정보로 교차검증한 캠핑·낚시·차박 큐레이션.<br>방문 전 운영 여부와 요금은 전화로 확인하세요.</p>
+  </div>
+</footer>
+</body>
+</html>

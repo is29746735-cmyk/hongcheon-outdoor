@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>홍천 아웃도어 · 브루탈리스트 / 스위스</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     변주 D · 브루탈리스트 / 스위스
+     강한 그로테스크 디스플레이(Pretendard 800/900) + 모노 라벨/수치(Spline Sans Mono)
+     + 2px 잉크 보더 그리드(실제 콘텐츠 정렬). radius 0 일관. 액센트 #22633f 단일.
+     대담함은 한 곳 — 검은 '지수' 패널에만.
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --paper: #f5f5f0;       /* off-white */
+    --card:  #fbfbf8;
+    --ink:   #15160f;       /* off-black */
+    --body:  #45463c;
+    --muted: #7d7e72;
+    --green: #22633f;
+    --green-bright: #2c8050;
+    --line:  #15160f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+    background: var(--paper); color: var(--ink); line-height: 1.5; word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "Spline Sans Mono", "Pretendard Variable", monospace; }
+  .num { font-family: "Spline Sans Mono", monospace; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+  svg { display: block; }
+
+  header { border-bottom: 2px solid var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { font-weight: 900; font-size: 19px; letter-spacing: -0.04em; text-transform: uppercase; display: flex; align-items: center; gap: 9px; }
+  .brand .mk { width: 26px; height: 26px; background: var(--ink); display: grid; place-items: center; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a { font-family:"Spline Sans Mono",monospace; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--body); padding: 7px 12px; border: 1.5px solid transparent; }
+  .nav-links a.active { border-color: var(--line); }
+  .nav-links a:hover { color: var(--green); }
+
+  /* Hero — 스위스 그리드 스플릿 */
+  .hero { border-bottom: 2px solid var(--line); }
+  .hero-grid { display: grid; grid-template-columns: 1.5fr 1fr; }
+  .hero-l { padding: 54px 40px 44px 0; border-right: 2px solid var(--line); }
+  .kicker { font-family:"Spline Sans Mono",monospace; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--green); }
+  h1.title { margin-top: 20px; font-size: clamp(44px, 7vw, 86px); line-height: 0.96; letter-spacing: -0.045em; font-weight: 900; }
+  .lede { margin-top: 24px; font-size: 16px; line-height: 1.6; color: var(--body); max-width: 40ch; }
+  .hero-cta { margin-top: 30px; display: flex; gap: 0; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; height: 52px; padding: 0 24px; font-family:"Spline Sans Mono",monospace; font-weight: 700; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; border: 2px solid var(--line); cursor: pointer; background: transparent; color: var(--ink); transition: .12s; }
+  .btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+  .btn-ghost { border-left: 0; }
+  .btn-ghost:hover { background: var(--ink); color: #fff; }
+
+  /* 지수 — 단 하나의 검은 패널(대담함은 여기만) */
+  .hero-r { background: var(--ink); color: #fff; padding: 28px; display: flex; flex-direction: column; }
+  .ix-head { display: flex; align-items: center; justify-content: space-between; font-family:"Spline Sans Mono",monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #b9bbae; }
+  .ix-head .live { color: var(--green-bright); display: inline-flex; align-items: center; gap: 6px; }
+  .ix-head .live b { width: 7px; height: 7px; background: var(--green-bright); display: block; }
+  .ix-level { margin-top: 20px; font-size: 56px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; display: flex; align-items: center; gap: 14px; }
+  .ix-level svg { width: 34px; height: 34px; }
+  .ix-reason { margin-top: 16px; font-size: 14px; line-height: 1.6; color: #d9dace; }
+  .ix-stats { margin-top: auto; padding-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #33342a; border: 1px solid #33342a; }
+  .ix-stats div { background: var(--ink); padding: 14px; }
+  .ix-stats dt { font-family:"Spline Sans Mono",monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: #8a8b7e; }
+  .ix-stats dd { margin-top: 6px; font-size: 28px; font-weight: 700; font-family:"Spline Sans Mono",monospace; }
+  .ix-src { margin-top: 14px; font-family:"Spline Sans Mono",monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: #8a8b7e; }
+
+  /* Filter bar */
+  .filterbar { border-bottom: 2px solid var(--line); }
+  .fb-row { display: flex; align-items: stretch; border-bottom: 1.5px solid var(--line); }
+  .fb-row:last-child { border-bottom: 0; }
+  .fb-lab { font-family:"Spline Sans Mono",monospace; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); width: 120px; display: flex; align-items: center; border-right: 1.5px solid var(--line); padding: 14px 0 14px 4px; flex-shrink: 0; }
+  .fb-items { display: flex; flex-wrap: wrap; }
+  .seg-btn { font-family:"Spline Sans Mono",monospace; font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 14px 18px; border: 0; border-right: 1.5px solid var(--line); background: transparent; color: var(--body); cursor: pointer; transition: .12s; }
+  .seg-btn:hover { background: #e9e9e2; color: var(--ink); }
+  .seg-btn.on { background: var(--green); color: #fff; }
+  .tag-btn { font-size: 13px; font-weight: 600; padding: 13px 15px; border: 0; border-right: 1.5px solid var(--line); background: transparent; color: var(--body); cursor: pointer; }
+  .tag-btn:hover { background: #e9e9e2; color: var(--green); }
+
+  /* Places — 스위스 모듈 그리드 */
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); }
+  .cell { border-right: 1.5px solid var(--line); border-bottom: 2px solid var(--line); padding: 0; display: flex; flex-direction: column; background: var(--card); }
+  .cell:nth-child(3n) { border-right: 0; }
+  .cell-top { height: 6px; background: transparent; }
+  .cell.official .cell-top { background: var(--green); }
+  .cell-pad { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+  .meta-line { display: flex; align-items: center; justify-content: space-between; }
+  .cat { font-family:"Spline Sans Mono",monospace; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); }
+  .fish { font-family:"Spline Sans Mono",monospace; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #1d4ed8; border: 1.5px solid #1d4ed8; padding: 3px 7px; }
+  .pname { margin-top: 16px; font-size: 27px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.1; }
+  .official-tag { font-family:"Spline Sans Mono",monospace; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--green); padding: 2px 7px; margin-left: 8px; vertical-align: middle; }
+  .psum { margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: var(--body); }
+  .paddr { margin-top: 16px; font-family:"Spline Sans Mono",monospace; font-size: 11px; line-height: 1.5; color: var(--muted); letter-spacing: .01em; }
+  .ptags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .ptags span { font-family:"Spline Sans Mono",monospace; font-size: 11px; color: var(--body); border: 1.5px solid var(--line); padding: 4px 8px; }
+  .pfoot { margin-top: auto; padding-top: 22px; display: flex; align-items: flex-end; justify-content: space-between; }
+  .metric { line-height: 1; }
+  .metric .k { font-family:"Spline Sans Mono",monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .metric .v { font-family:"Spline Sans Mono",monospace; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin-top: 5px; }
+  .metric .v small { font-size: 14px; color: var(--muted); }
+  .go { font-family:"Spline Sans Mono",monospace; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #fff; background: var(--ink); padding: 11px 16px; display: inline-flex; align-items: center; gap: 8px; transition: .12s; }
+  .go:hover { background: var(--green); }
+
+  footer { border-top: 2px solid var(--line); }
+  .foot { padding: 34px 0; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; }
+  .foot .small { font-family:"Spline Sans Mono",monospace; font-size: 11.5px; color: var(--body); line-height: 1.8; letter-spacing: .01em; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-l { border-right: 0; border-bottom: 2px solid var(--line); padding: 40px 0 36px; }
+    .grid3 { grid-template-columns: 1fr; }
+    .cell { border-right: 0; }
+    .fb-lab { width: 92px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <nav class="nav-links">
+      <a class="active" href="#">HOME</a>
+      <a href="#list">PLACES</a>
+      <a href="#">SAVED</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-l">
+        <span class="kicker">캠핑 / 낚시 / 차박 · 강원 홍천</span>
+        <h1 class="title">검증된<br>아웃도어.</h1>
+        <p class="lede">홍천군청과 구석구석, 고캠핑으로 교차검증한 캠핑장과 낚시터, 차박지. 좌표가 확인된 곳만 지도에 찍습니다.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#list">장소 둘러보기
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#">지도</a>
+        </div>
+      </div>
+      <aside class="hero-r" aria-label="오늘의 홍천강 아웃도어 지수">
+        <div class="ix-head">
+          <span>오늘의 홍천강 지수</span>
+          <span class="live"><b></b>LIVE</span>
+        </div>
+        <div class="ix-level">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2c8050" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+          안전
+        </div>
+        <p class="ix-reason">수위가 안정적이고 바람이 약해 야영과 낚시에 좋은 날입니다.</p>
+        <dl class="ix-stats">
+          <div><dt>기온</dt><dd>21°C</dd></div>
+          <div><dt>현재 강수</dt><dd>0.0mm</dd></div>
+        </dl>
+        <p class="ix-src">06.22 16:30 · KMA 실측</p>
+      </aside>
+    </div>
+  </section>
+
+  <div id="list" class="filterbar">
+    <div class="wrap">
+      <div class="fb-row">
+        <span class="fb-lab">Category</span>
+        <div class="fb-items">
+          <button class="seg-btn on">전체</button>
+          <button class="seg-btn">캠핑장</button>
+          <button class="seg-btn">낚시 스팟</button>
+          <button class="seg-btn">차박지</button>
+        </div>
+      </div>
+      <div class="fb-row">
+        <span class="fb-lab">한적함</span>
+        <div class="fb-items">
+          <button class="seg-btn on">전체</button>
+          <button class="seg-btn">3+</button>
+          <button class="seg-btn">4+</button>
+          <button class="seg-btn">5</button>
+        </div>
+      </div>
+      <div class="fb-row">
+        <span class="fb-lab">Tags</span>
+        <div class="fb-items">
+          <button class="tag-btn">#오토캠핑</button><button class="tag-btn">#리버뷰</button><button class="tag-btn">#1급수</button><button class="tag-btn">#견지낚시</button><button class="tag-btn">#차박성지</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid3">
+      <article class="cell official">
+        <div class="cell-top"></div>
+        <div class="cell-pad">
+          <div class="meta-line">
+            <span class="cat">캠핑장</span>
+            <span class="fish">캠핑+낚시</span>
+          </div>
+          <h3 class="pname">홍천강<br>오토캠핑장<span class="official-tag">공식</span></h3>
+          <p class="psum">홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.</p>
+          <p class="paddr">강원 홍천군 북방면<br>굴지강변로 322</p>
+          <div class="ptags"><span>오토캠핑</span><span>공공운영</span><span>홍천강</span></div>
+          <div class="pfoot">
+            <div class="metric"><div class="k">한적함</div><div class="v">2<small>/5</small></div></div>
+            <a class="go" href="#">길찾기
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="cell">
+        <div class="cell-top"></div>
+        <div class="cell-pad">
+          <div class="meta-line">
+            <span class="cat">캠핑장</span>
+            <span class="fish">캠핑+낚시</span>
+          </div>
+          <h3 class="pname">도담<br>캠핑장</h3>
+          <p class="psum">1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.</p>
+          <p class="paddr">강원 홍천군 서면<br>개야로 357-18</p>
+          <div class="ptags"><span>가족</span><span>리버뷰</span><span>1급수</span></div>
+          <div class="pfoot">
+            <div class="metric"><div class="k">한적함</div><div class="v">3<small>/5</small></div></div>
+            <a class="go" href="#">길찾기
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="cell">
+        <div class="cell-top"></div>
+        <div class="cell-pad">
+          <div class="meta-line">
+            <span class="cat">캠핑장</span>
+            <span class="fish">캠핑+낚시</span>
+          </div>
+          <h3 class="pname">모곡밤벌<br>유원지</h3>
+          <p class="psum">캠핑·차박·낚시·물놀이를 한 곳에서. 홍천강 대표 유원지.</p>
+          <p class="paddr">강원 홍천군 서면<br>모곡리 528</p>
+          <div class="ptags"><span>차박성지</span><span>견지낚시</span></div>
+          <div class="pfoot">
+            <div class="metric"><div class="k">입장료</div><div class="v">2,000<small>원</small></div></div>
+            <a class="go" href="#">길찾기
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand">
+      <span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <p class="small">공공정보로 교차검증한 캠핑 · 낚시 · 차박 큐레이션<br>방문 전 운영 여부와 요금은 전화로 확인하세요</p>
+  </div>
+</footer>
+</body>
+</html>

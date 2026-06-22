@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>홍천 아웃도어 · 소프트 프리미엄</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     변주 B · 소프트 프리미엄
+     큰 라운드(면 24px) + 소프트 포레스트-틴트 섀도 + 넉넉한 여백 + 미세 모션.
+     상호작용 색 #22633f 단일. 라운드 규칙: 면=24px, 입력=16px, 버튼·칩=pill.
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --canvas: #ffffff;
+    --soft:   #eef3ef;      /* 소프트 그린-틴트 surface */
+    --soft2:  #f4f7f4;
+    --ink:    #16261c;
+    --body:   #59685e;
+    --muted:  #93a097;
+    --line:   #e4eae5;
+    --green:  #22633f;
+    --green-deep: #1e3a1e;
+    --green-wash: #e3efe6;
+    --shadow: 0 22px 48px -24px rgba(26,58,34,.30), 0 4px 12px -6px rgba(26,58,34,.12);
+    --shadow-sm: 0 10px 24px -16px rgba(26,58,34,.28);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.55;
+    -webkit-font-smoothing: antialiased; word-break: keep-all;
+  }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  a { color: inherit; text-decoration: none; }
+  svg { display: block; }
+
+  header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.78); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 74px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
+  .brand .dot { width: 34px; height: 34px; border-radius: 12px; background: linear-gradient(140deg, #2a7a4d, #1e3a1e); display: grid; place-items: center; box-shadow: var(--shadow-sm); }
+  .nav-links { display: flex; gap: 30px; font-size: 14.5px; color: var(--body); font-weight: 600; align-items: center; }
+  .nav-links a.active { color: var(--ink); }
+  .nav-links a:hover { color: var(--green); }
+  .nav .cta-sm { background: var(--green); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 700; }
+
+  /* Hero — 소프트 그린 그라데이션, 중앙 정렬, 지수 카드가 아래 섹션으로 겹침 */
+  .hero { position: relative; text-align: center; padding: 92px 0 150px;
+          background:
+            radial-gradient(80% 120% at 50% -10%, #dcebe0 0%, #eef4ef 46%, #ffffff 78%);
+          overflow: hidden; }
+  .hero .glow { position: absolute; width: 520px; height: 520px; border-radius: 50%; filter: blur(60px); opacity: .5; pointer-events: none; }
+  .hero .g1 { background: #bfe0c9; left: -120px; top: -80px; }
+  .hero .g2 { background: #cfe6d6; right: -120px; top: 40px; }
+  .hero-inner { position: relative; max-width: 760px; margin: 0 auto; }
+  .pill-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.7); border: 1px solid var(--line); color: var(--green-deep); padding: 8px 15px; border-radius: 999px; font-size: 13px; font-weight: 700; box-shadow: var(--shadow-sm); }
+  h1.title { margin-top: 26px; font-size: clamp(38px, 5.6vw, 60px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 800; }
+  .lede { margin: 24px auto 0; font-size: 18px; line-height: 1.6; color: var(--body); max-width: 34ch; }
+  .hero-cta { margin-top: 34px; display: flex; gap: 12px; justify-content: center; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; height: 54px; padding: 0 26px; border-radius: 999px; font-weight: 700; font-size: 16px; border: 0; cursor: pointer; transition: transform .18s cubic-bezier(.16,1,.3,1), box-shadow .18s; }
+  .btn-primary { background: var(--green); color: #fff; box-shadow: 0 14px 30px -12px rgba(34,99,63,.6); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 38px -12px rgba(34,99,63,.66); }
+  .btn-ghost { background: rgba(255,255,255,.85); color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { transform: translateY(-2px); }
+
+  /* 아웃도어 지수 — 히어로 하단에 겹쳐 떠 있는 카드 */
+  .index-shell { margin-top: -110px; position: relative; z-index: 5; }
+  .index { background: var(--canvas); border-radius: 24px; box-shadow: var(--shadow); padding: 30px; max-width: 920px; margin: 0 auto; border: 1px solid var(--line); }
+  .ix-top { display: flex; align-items: center; gap: 12px; }
+  .ix-label { font-size: 14px; color: var(--muted); font-weight: 700; flex: 1; }
+  .ix-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 800; color: #fff; background: linear-gradient(135deg,#2a8a55,#22633f); padding: 8px 16px; border-radius: 999px; }
+  .ix-body { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 14px; margin-top: 22px; align-items: stretch; }
+  .ix-reason { background: var(--soft); border-radius: 18px; padding: 20px; font-size: 16.5px; font-weight: 600; line-height: 1.5; color: var(--ink); display: flex; align-items: center; }
+  .ix-stat { background: var(--soft2); border-radius: 18px; padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+  .ix-stat dt { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .ix-stat dd { margin-top: 6px; font-size: 30px; font-weight: 800; letter-spacing: -0.03em; }
+  .ix-foot { margin-top: 18px; display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); }
+  .ix-chip { background: var(--soft); padding: 5px 12px; border-radius: 999px; font-weight: 600; }
+
+  section.block { padding: 76px 0 0; }
+  .sec-head { text-align: center; max-width: 640px; margin: 0 auto 40px; }
+  h2.sec-title { font-size: clamp(28px, 3.6vw, 38px); letter-spacing: -0.03em; font-weight: 800; }
+  .sec-sub { margin-top: 12px; font-size: 16px; color: var(--body); }
+
+  /* Filters */
+  .filterbar { background: var(--soft); border-radius: 22px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .seg { display: inline-flex; background: #fff; border-radius: 999px; padding: 5px; gap: 3px; width: fit-content; box-shadow: var(--shadow-sm); }
+  .seg button { border: 0; background: transparent; padding: 10px 20px; border-radius: 999px; font-size: 14.5px; font-weight: 700; color: var(--body); cursor: pointer; transition: .15s; }
+  .seg button.on { background: var(--green); color: #fff; }
+  .chiprow { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  .chiprow .lab { font-size: 13px; color: var(--muted); font-weight: 700; width: 52px; }
+  .chip { border: 0; background: #fff; color: var(--body); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-sm); transition: .15s; }
+  .chip:hover { color: var(--green); transform: translateY(-1px); }
+  .chip.on { background: var(--green); color: #fff; }
+
+  /* Places */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; }
+  .place { background: var(--canvas); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; transition: transform .22s cubic-bezier(.16,1,.3,1), box-shadow .22s; border: 1px solid var(--line); }
+  .place:hover { transform: translateY(-6px); box-shadow: 0 30px 60px -26px rgba(26,58,34,.4); }
+  .pthumb { height: 168px; position: relative; display: grid; place-items: center; }
+  .pthumb.c { background: linear-gradient(150deg,#3a8c5c,#1e3a1e); }
+  .pthumb.c2 { background: linear-gradient(150deg,#4f9e74,#22633f); }
+  .pthumb.c3 { background: linear-gradient(150deg,#6aa9b0,#2e6b6f); }
+  .pthumb svg { opacity: .92; }
+  .pthumb .glyph { width: 56px; height: 56px; border-radius: 18px; background: rgba(255,255,255,.16); display: grid; place-items: center; backdrop-filter: blur(2px); }
+  .pthumb .cat { position: absolute; left: 16px; top: 16px; background: rgba(255,255,255,.92); color: var(--green-deep); font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; }
+  .pthumb .fish { position: absolute; right: 16px; top: 16px; background: rgba(37,99,235,.95); color: #fff; font-size: 11.5px; font-weight: 800; padding: 6px 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; }
+  .pbody { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+  .pname { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 7px; }
+  .badge-official { font-size: 11px; font-weight: 800; color: var(--green-deep); background: var(--green-wash); padding: 3px 8px; border-radius: 7px; }
+  .psum { margin-top: 11px; font-size: 14.5px; line-height: 1.6; color: var(--body); }
+  .ptags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 7px; }
+  .ptags span { font-size: 12px; color: var(--green-deep); background: var(--green-wash); padding: 5px 11px; border-radius: 999px; font-weight: 600; }
+  .pfoot { margin-top: auto; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; }
+  .quiet { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .quiet b { color: var(--ink); font-weight: 800; }
+  .go { background: var(--green-wash); color: var(--green-deep); font-size: 14px; font-weight: 800; padding: 10px 18px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; transition: .15s; }
+  .place:hover .go { background: var(--green); color: #fff; }
+
+  footer { margin-top: 92px; background: var(--soft); }
+  .foot { padding: 48px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; }
+  .foot .small { font-size: 13px; color: var(--body); line-height: 1.7; }
+
+  /* load motion */
+  .rise { opacity: 0; transform: translateY(16px); animation: rise .6s cubic-bezier(.16,1,.3,1) forwards; }
+  .d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.19s}
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  @media (max-width: 920px) {
+    .ix-body { grid-template-columns: 1fr 1fr; } .ix-reason { grid-column: 1 / -1; }
+    .grid3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) { .wrap { padding: 0 18px; } .hero { padding: 64px 0 140px; } }
+  @media (prefers-reduced-motion: reduce) { *, .rise { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <nav class="nav-links">
+      <a class="active" href="#">홈</a>
+      <a href="#list">장소</a>
+      <a href="#">저장</a>
+      <a class="cta-sm" href="#list">둘러보기</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="glow g1"></span><span class="glow g2"></span>
+    <div class="wrap hero-inner">
+      <span class="pill-eyebrow rise">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        강원 홍천 · 캠핑 · 낚시 · 차박
+      </span>
+      <h1 class="title rise d1">홍천의 검증된<br>아웃도어를 한눈에.</h1>
+      <p class="lede rise d2">홍천군청·구석구석·고캠핑으로 교차검증한 캠핑장과 낚시터, 차박지만 모았습니다.</p>
+      <div class="hero-cta rise d3">
+        <a class="btn btn-primary" href="#list">장소 둘러보기
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#">지도로 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="index-shell wrap">
+    <section class="index" aria-label="오늘의 홍천강 아웃도어 지수">
+      <div class="ix-top">
+        <span class="ix-label">오늘의 홍천강 아웃도어 지수</span>
+        <span class="ix-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+          안전
+        </span>
+      </div>
+      <div class="ix-body">
+        <p class="ix-reason">수위가 안정적이고 바람이 약해 야영과 낚시에 좋은 날입니다.</p>
+        <div class="ix-stat"><dt>기온</dt><dd class="num">21°C</dd></div>
+        <div class="ix-stat"><dt>현재 강수</dt><dd class="num">0.0mm</dd></div>
+      </div>
+      <div class="ix-foot">
+        <span>맑음 · 6월 22일 16:30 기준</span>
+        <span class="ix-chip">기상청 실측</span>
+      </div>
+    </section>
+  </div>
+
+  <section class="block" id="list">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="sec-title">어디로 떠나볼까요</h2>
+        <p class="sec-sub">카테고리와 조건으로 검증된 장소를 좁혀보세요.</p>
+      </div>
+      <div class="filterbar">
+        <div class="seg">
+          <button class="on">전체</button>
+          <button>캠핑장</button>
+          <button>낚시 스팟</button>
+          <button>차박지</button>
+        </div>
+        <div class="chiprow">
+          <span class="lab">한적함</span>
+          <button class="chip on">전체</button><button class="chip">3점+</button><button class="chip">4점+</button><button class="chip">5점</button>
+        </div>
+        <div class="chiprow">
+          <span class="lab">태그</span>
+          <button class="chip">#오토캠핑</button><button class="chip">#리버뷰</button><button class="chip">#1급수</button><button class="chip">#견지낚시</button><button class="chip">#차박성지</button>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <article class="place">
+          <div class="pthumb c">
+            <span class="cat">캠핑장</span>
+            <span class="fish"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.5"/></svg>캠핑+낚시</span>
+            <span class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+          </div>
+          <div class="pbody">
+            <div class="pname">홍천강오토캠핑장 <span class="badge-official">공식</span></div>
+            <p class="psum">홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.</p>
+            <div class="ptags"><span>오토캠핑</span><span>공공운영</span><span>홍천강</span></div>
+            <div class="pfoot"><span class="quiet">한적함 <b class="num">2</b>/5</span><a class="go" href="#">길찾기</a></div>
+          </div>
+        </article>
+
+        <article class="place">
+          <div class="pthumb c2">
+            <span class="cat">캠핑장</span>
+            <span class="fish"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.5"/></svg>캠핑+낚시</span>
+            <span class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+          </div>
+          <div class="pbody">
+            <div class="pname">도담캠핑장</div>
+            <p class="psum">1급수 홍천강 도보 3분. 가족 물놀이·낚시에 특화된 캠핑장.</p>
+            <div class="ptags"><span>가족</span><span>리버뷰</span><span>1급수</span></div>
+            <div class="pfoot"><span class="quiet">한적함 <b class="num">3</b>/5</span><a class="go" href="#">길찾기</a></div>
+          </div>
+        </article>
+
+        <article class="place">
+          <div class="pthumb c3">
+            <span class="cat">캠핑장</span>
+            <span class="fish"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.5"/></svg>캠핑+낚시</span>
+            <span class="glyph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+          </div>
+          <div class="pbody">
+            <div class="pname">모곡밤벌유원지</div>
+            <p class="psum">캠핑·차박·낚시·물놀이를 한 곳에서. 홍천강 대표 유원지.</p>
+            <div class="ptags"><span>차박성지</span><span>견지낚시</span><span>물놀이</span></div>
+            <div class="pfoot"><span class="quiet">입장료 <b class="num">2,000</b>원</span><a class="go" href="#">길찾기</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand">
+      <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 12 4l9 17"/><path d="M9 21l3-5 3 5"/></svg></span>
+      홍천 아웃도어
+    </div>
+    <p class="small">공공정보로 교차검증한 캠핑·낚시·차박 큐레이션.<br>방문 전 운영 여부와 요금은 전화로 확인하세요.</p>
+  </div>
+</footer>
+</body>
+</html>
