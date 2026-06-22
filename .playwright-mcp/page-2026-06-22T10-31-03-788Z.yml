@@ -1,0 +1,242 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "홍천 아웃도어" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: 홍천 아웃도어
+      - generic [ref=e9]:
+        - navigation [ref=e10]:
+          - link "홈" [ref=e11] [cursor=pointer]:
+            - /url: /
+          - link "장소" [ref=e12] [cursor=pointer]:
+            - /url: /#list
+          - link "저장" [ref=e13] [cursor=pointer]:
+            - /url: /saved
+        - button "로그인" [ref=e14] [cursor=pointer]:
+          - img [ref=e15]
+          - text: 로그인
+  - main [ref=e18]:
+    - article [ref=e19]:
+      - link "← 목록으로" [ref=e20] [cursor=pointer]:
+        - /url: /#list
+      - generic [ref=e22]:
+        - img [ref=e23]
+        - generic [ref=e27]: (업로드 예정)
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]: 캠핑장
+          - generic [ref=e31]: 공식 운영
+          - generic [ref=e32]:
+            - img [ref=e33]
+            - text: 캠핑+낚시
+        - heading "홍천강오토캠핑장" [level=1] [ref=e39]
+        - paragraph [ref=e40]: 홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.
+      - paragraph [ref=e42]: 홍천군이 직접 운영·관리하는 공공 캠핑장입니다. 카라반·오토캠핑·프리텐트 사이트와 매점·샤워실·화장실·어린이놀이터·산책로 등 편의시설을 갖췄고, 홍천강까지 데크가 연결되어 있어 강 접근성이 좋습니다. 인근에서 수상레포츠도 즐길 수 있습니다.
+      - region "예약" [ref=e44]:
+        - generic [ref=e45]:
+          - heading "예약" [level=2] [ref=e46]:
+            - img [ref=e48]
+            - text: 예약
+          - generic [ref=e50]:
+            - img [ref=e51]
+            - text: 준비 중
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: 체크인
+            - generic [ref=e57]: 날짜 선택
+          - generic [ref=e58]:
+            - generic [ref=e59]: 체크아웃
+            - generic [ref=e60]: 날짜 선택
+        - generic [ref=e61]:
+          - generic [ref=e62]: 인원
+          - generic [ref=e63]: 인원 선택
+        - button "예약하기" [disabled] [ref=e64]
+        - paragraph [ref=e65]:
+          - text: 온라인 예약 기능을 준비 중입니다. 지금은 전화로 문의해 주세요.
+          - link "033-430-2498" [ref=e66] [cursor=pointer]:
+            - /url: tel:033-430-2498
+            - img [ref=e67]
+            - text: 033-430-2498
+      - generic [ref=e73]:
+        - heading "캠핑 + 낚시 연계 포인트" [level=2] [ref=e74]:
+          - img [ref=e75]
+          - text: 캠핑 + 낚시 연계 포인트
+        - paragraph [ref=e81]: 캠핑장이 자리한 북방면 굴지리 일대 홍천강은 붕어·잉어·쏘가리가 나오는 노지 낚시터로도 알려져 있어, 캠핑과 낚시를 함께 즐기기 좋습니다.
+      - generic [ref=e82]:
+        - heading "낚시 전 확인 · 금어기와 주의사항" [level=2] [ref=e83]:
+          - img [ref=e85]
+          - text: 낚시 전 확인 · 금어기와 주의사항
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - generic [ref=e93]:
+              - img [ref=e94]
+              - text: 쏘가리 금어기
+            - generic [ref=e98]:
+              - generic [ref=e99]:
+                - term [ref=e100]: 금어기
+                - definition [ref=e101]: 강 본류 5월 1일~6월 10일 · 댐·호소 5월 20일~6월 30일
+              - generic [ref=e102]:
+                - term [ref=e103]: 금지체장
+                - definition [ref=e104]: 18cm 미만 연중 포획 금지
+            - paragraph [ref=e105]: 홍천강 본류는 5월 1일~6월 10일이 기준이며, 댐·호소에 해당하는 구간은 5월 20일~6월 30일이 적용됩니다. 구간 경계는 수역마다 다를 수 있어 방문 전 확인이 필요합니다.
+          - paragraph [ref=e106]: 붕어·잉어·메기·누치 등은 전국 단위 금어기·금지체장이 지정되어 있지 않습니다. 다만 시·도 내수면 규정이나 유료 낚시터 자체 규정이 있을 수 있어 현장 확인이 필요합니다.
+        - list [ref=e107]:
+          - listitem [ref=e108]:
+            - img [ref=e110]
+            - generic [ref=e113]:
+              - paragraph [ref=e114]: 생태교란종은 되살려 보내면 안 됩니다
+              - paragraph [ref=e115]: 배스·블루길은 환경부가 지정한 생태계교란 생물입니다. 살아 있는 채로 다시 풀어주거나 다른 수역으로 옮기는 것은 「생물다양성 보전 및 이용에 관한 법률」에 따라 금지되며, 위반 시 처벌받을 수 있습니다.
+          - listitem [ref=e116]:
+            - img [ref=e118]
+            - generic [ref=e122]:
+              - paragraph [ref=e123]: 수위·방류에 주의하세요
+              - paragraph [ref=e124]: 상류 댐 방류나 비가 온 뒤에는 수위와 유속이 갑자기 변할 수 있습니다. 우천 시·야간에는 강변 노지와 여울 진입을 피하세요.
+          - listitem [ref=e125]:
+            - img [ref=e127]
+            - generic [ref=e129]:
+              - paragraph [ref=e130]: 허용된 낚시 도구만 사용하세요
+              - paragraph [ref=e131]: 투망·그물·통발과 전기·약품을 이용한 포획은 불법입니다. 일반 낚시인은 낚싯대 등 허용된 도구로만 낚시할 수 있습니다.
+          - listitem [ref=e132]:
+            - img [ref=e134]
+            - generic [ref=e140]:
+              - paragraph [ref=e141]: 낚시 금지구역과 유료터 규정을 확인하세요
+              - paragraph [ref=e142]: 상수원보호구역 등 낚시가 금지·제한된 구간이 있습니다. 유료 낚시터는 이용 요금·어종·규정이 별도이니 방문 전 확인하세요.
+          - listitem [ref=e143]:
+            - img [ref=e145]
+            - generic [ref=e148]:
+              - paragraph [ref=e149]: 1급수와 현장을 깨끗이
+              - paragraph [ref=e150]: 낚싯줄·납봉돌·쓰레기는 반드시 되가져가고, 세제나 오염물을 강에 흘리지 마세요. 여울·바위는 미끄러우니 안전화와 구명조끼를 착용하세요.
+        - generic [ref=e151]:
+          - paragraph [ref=e152]: 규정은 개정되거나 수역·구간에 따라 달라질 수 있습니다. 방문 전 최신 정보를 확인하세요.
+          - generic [ref=e153]:
+            - link "해양수산부 · 수산자원의 금어기·금지체장 기준" [ref=e154] [cursor=pointer]:
+              - /url: https://www.mof.go.kr/doc/ko/selectDoc.do?docSeq=64389&menuSeq=851&bbsSeq=22
+              - img [ref=e155]
+              - text: 해양수산부 · 수산자원의 금어기·금지체장 기준
+            - link "국립수산과학원 · 금어기·금지체장 소개" [ref=e159] [cursor=pointer]:
+              - /url: https://www.nifs.go.kr/contents/actionContentsCons0148.do
+              - img [ref=e160]
+              - text: 국립수산과학원 · 금어기·금지체장 소개
+            - link "정부24 · 전국 낚시금지·제한구역 조회" [ref=e164] [cursor=pointer]:
+              - /url: https://www.gov.kr/portal/service/serviceInfo/PTR000051942
+              - img [ref=e165]
+              - text: 정부24 · 전국 낚시금지·제한구역 조회
+      - generic [ref=e169]:
+        - heading "현장 편의시설" [level=2] [ref=e170]:
+          - img [ref=e172]
+          - text: 현장 편의시설
+        - list [ref=e176]:
+          - listitem [ref=e177]:
+            - img [ref=e178]
+            - text: 매점
+          - listitem [ref=e181]:
+            - img [ref=e182]
+            - text: 샤워실
+          - listitem [ref=e185]:
+            - img [ref=e186]
+            - text: 화장실
+          - listitem [ref=e189]:
+            - img [ref=e190]
+            - text: 식수대
+          - listitem [ref=e193]:
+            - img [ref=e194]
+            - text: 어린이놀이터
+          - listitem [ref=e197]:
+            - img [ref=e198]
+            - text: 전기
+          - listitem [ref=e201]:
+            - img [ref=e202]
+            - text: 와이파이
+          - listitem [ref=e205]:
+            - img [ref=e206]
+            - text: 주차장
+          - listitem [ref=e209]:
+            - img [ref=e210]
+            - text: 산책로
+          - listitem [ref=e213]:
+            - img [ref=e214]
+            - text: 전망대
+      - generic [ref=e217]:
+        - heading "낚시·캠핑 꿀팁" [level=2] [ref=e218]:
+          - img [ref=e220]
+          - text: 낚시·캠핑 꿀팁
+        - list [ref=e222]:
+          - listitem [ref=e223]:
+            - img [ref=e224]
+            - generic [ref=e226]: 주말·성수기는 홍천군 문화관광포털에서 사전 예약이 필수입니다.
+          - listitem [ref=e227]:
+            - img [ref=e228]
+            - generic [ref=e230]: 강변 데크 사이트는 일교차가 크니 보온 장비를 챙기세요.
+          - listitem [ref=e231]:
+            - img [ref=e232]
+            - generic [ref=e234]: 인근 굴지리 홍천강에서 붕어·쏘가리 낚시를 함께 즐겨보세요.
+      - generic [ref=e235]:
+        - img [ref=e237]
+        - generic [ref=e240]:
+          - heading "네비게이션 주의사항" [level=2] [ref=e241]
+          - paragraph [ref=e242]: 굴지강변로를 따라 진입하며 도로가 포장되어 승용차 접근이 무난합니다. 성수기 주말 진입로 정체에 유의하세요.
+      - generic [ref=e243]:
+        - generic [ref=e244]:
+          - term [ref=e245]: 소재지
+          - definition [ref=e246]: 강원특별자치도 홍천군 북방면 굴지강변로 322
+        - generic [ref=e247]:
+          - term [ref=e248]: 전화
+          - definition [ref=e249]: 033-430-2498
+      - generic [ref=e250]:
+        - button "이 장소 저장" [disabled] [ref=e251]:
+          - img [ref=e252]
+          - text: 이 장소 저장
+        - generic [ref=e254]:
+          - button "링크 복사" [ref=e255] [cursor=pointer]:
+            - img [ref=e256]
+            - text: 링크 복사
+          - link "길찾기" [ref=e259] [cursor=pointer]:
+            - /url: https://map.kakao.com/link/to/%ED%99%8D%EC%B2%9C%EA%B0%95%EC%98%A4%ED%86%A0%EC%BA%A0%ED%95%91%EC%9E%A5,37.690281,127.787231
+            - img [ref=e260]
+            - text: 길찾기
+      - generic [ref=e262]:
+        - heading "지도에서 위치 보기" [level=2] [ref=e263]
+        - generic [ref=e264]:
+          - link "네이버 지도에서 보기" [ref=e265] [cursor=pointer]:
+            - /url: https://map.naver.com/p/search/%ED%99%8D%EC%B2%9C%EA%B0%95%EC%98%A4%ED%86%A0%EC%BA%A0%ED%95%91%EC%9E%A5?c=127.787231,37.690281,16,0,0,0,dh
+          - link "카카오맵에서 보기" [ref=e266] [cursor=pointer]:
+            - /url: https://map.kakao.com/link/map/%ED%99%8D%EC%B2%9C%EA%B0%95%EC%98%A4%ED%86%A0%EC%BA%A0%ED%95%91%EC%9E%A5,37.690281,127.787231
+          - link "구글 지도에서 보기" [ref=e267] [cursor=pointer]:
+            - /url: https://www.google.com/maps/search/?api=1&query=37.690281,127.787231
+      - generic [ref=e268]:
+        - heading "AI 추천 코스" [level=2] [ref=e269]:
+          - img [ref=e270]
+          - text: AI 추천 코스
+        - paragraph [ref=e274]: 이 장소 주변의 실제 등록된 맛집·관광지·카페를 가까운 순으로 이어 동선을 제안합니다.
+        - generic [ref=e277]: 주변 코스를 분석하는 중…
+      - generic [ref=e278]:
+        - generic [ref=e279]: "#오토캠핑"
+        - generic [ref=e280]: "#공공운영"
+        - generic [ref=e281]: "#홍천강"
+        - generic [ref=e282]: "#수상레포츠"
+      - paragraph [ref=e283]:
+        - text: "정보 출처:"
+        - link "홍천군 문화관광포털" [ref=e284] [cursor=pointer]:
+          - /url: https://www.hongcheon.go.kr/tour/contents.do?key=1879
+      - region "함께 방문하면 좋은 로컬 스토어" [ref=e285]:
+        - heading "함께 방문하면 좋은 로컬 스토어" [level=2] [ref=e286]:
+          - img [ref=e288]
+          - text: 함께 방문하면 좋은 로컬 스토어
+        - paragraph [ref=e292]: 이 장소에서 가장 가까운 실제 편의점·마트·낚시·주유소를 안내합니다. 길찾기는 이 장소에서 출발합니다.
+        - paragraph [ref=e293]: 주변 가게를 찾는 중…
+        - paragraph [ref=e294]: "* 카카오 등록 정보 기준 종류별 가장 가까운 한 곳입니다. 표시 거리는 직선 거리이며, 실제 차로·도보 시간과 영업 여부는 길찾기(카카오맵)에서 확인하세요."
+      - region "이용자 리뷰" [ref=e295]:
+        - heading "이용자 리뷰 0" [level=2] [ref=e296]:
+          - img [ref=e298]
+          - text: 이용자 리뷰
+          - generic [ref=e300]: "0"
+        - paragraph [ref=e301]: 리뷰 불러오는 중…
+        - paragraph [ref=e302]: "* 리뷰는 로그인 후 작성되며, 욕설·스팸 필터 / 1인 1리뷰(수정 가능) / 현장(GPS) 인증이 적용됩니다."
+  - contentinfo [ref=e303]:
+    - generic [ref=e304]:
+      - generic [ref=e305]:
+        - img [ref=e307]
+        - paragraph [ref=e309]: 홍천 아웃도어
+      - paragraph [ref=e310]: 강원 홍천의 캠핑·낚시 명소를 큐레이션합니다.
+      - paragraph [ref=e311]: © 2026 홍천 아웃도어. 정보는 공공·전문 출처로 검증해 제공하며, 방문 전 운영 상태를 확인하세요.

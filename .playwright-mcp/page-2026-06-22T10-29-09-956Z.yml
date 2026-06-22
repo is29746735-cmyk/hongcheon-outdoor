@@ -1,0 +1,184 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "홍천 아웃도어" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: 홍천 아웃도어
+      - generic [ref=e9]:
+        - navigation [ref=e10]:
+          - link "홈" [ref=e11] [cursor=pointer]:
+            - /url: /
+          - link "장소" [ref=e12] [cursor=pointer]:
+            - /url: /#list
+          - link "저장" [ref=e13] [cursor=pointer]:
+            - /url: /saved
+        - button "로그인" [ref=e14] [cursor=pointer]:
+          - img [ref=e15]
+          - text: 로그인
+  - main [ref=e18]:
+    - article [ref=e19]:
+      - link "← 목록으로" [ref=e20] [cursor=pointer]:
+        - /url: /#list
+      - generic [ref=e22]:
+        - img [ref=e23]
+        - generic [ref=e29]: (업로드 예정)
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: 낚시 스팟
+          - generic [ref=e33]:
+            - img [ref=e34]
+            - text: 캠핑+낚시
+        - heading "서면 모곡 쏘가리 여울" [level=1] [ref=e40]
+        - paragraph [ref=e41]: 여울이 발달해 쏘가리 루어 낚시로 이름난 구간.
+      - paragraph [ref=e43]: 서면 모곡 일대는 홍천강에서 여울이 가장 많이 형성된 구간으로 쏘가리 루어 명소로 꼽힙니다. 야행성인 쏘가리는 저녁부터 새벽까지, 그리고 비 온 뒤 약한 탁수가 섞일 때 활성도가 높습니다. 모곡밤벌유원지와 가까워 캠핑과 연계하기 좋습니다.
+      - generic [ref=e48]:
+        - heading "캠핑 + 낚시 연계 포인트" [level=2] [ref=e49]:
+          - img [ref=e50]
+          - text: 캠핑 + 낚시 연계 포인트
+        - paragraph [ref=e56]: 모곡밤벌유원지와 인접해, 캠핑·차박을 베이스로 쏘가리 루어 낚시를 즐기기 좋습니다.
+      - generic [ref=e57]:
+        - heading "낚시 전 확인 · 금어기와 주의사항" [level=2] [ref=e58]:
+          - img [ref=e60]
+          - text: 낚시 전 확인 · 금어기와 주의사항
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - img [ref=e69]
+              - text: 쏘가리 금어기
+            - generic [ref=e73]:
+              - generic [ref=e74]:
+                - term [ref=e75]: 금어기
+                - definition [ref=e76]: 강 본류 5월 1일~6월 10일 · 댐·호소 5월 20일~6월 30일
+              - generic [ref=e77]:
+                - term [ref=e78]: 금지체장
+                - definition [ref=e79]: 18cm 미만 연중 포획 금지
+            - paragraph [ref=e80]: 홍천강 본류는 5월 1일~6월 10일이 기준이며, 댐·호소에 해당하는 구간은 5월 20일~6월 30일이 적용됩니다. 구간 경계는 수역마다 다를 수 있어 방문 전 확인이 필요합니다.
+          - paragraph [ref=e81]: 붕어·잉어·메기·누치 등은 전국 단위 금어기·금지체장이 지정되어 있지 않습니다. 다만 시·도 내수면 규정이나 유료 낚시터 자체 규정이 있을 수 있어 현장 확인이 필요합니다.
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - img [ref=e85]
+            - generic [ref=e88]:
+              - paragraph [ref=e89]: 생태교란종은 되살려 보내면 안 됩니다
+              - paragraph [ref=e90]: 배스·블루길은 환경부가 지정한 생태계교란 생물입니다. 살아 있는 채로 다시 풀어주거나 다른 수역으로 옮기는 것은 「생물다양성 보전 및 이용에 관한 법률」에 따라 금지되며, 위반 시 처벌받을 수 있습니다.
+          - listitem [ref=e91]:
+            - img [ref=e93]
+            - generic [ref=e97]:
+              - paragraph [ref=e98]: 수위·방류에 주의하세요
+              - paragraph [ref=e99]: 상류 댐 방류나 비가 온 뒤에는 수위와 유속이 갑자기 변할 수 있습니다. 우천 시·야간에는 강변 노지와 여울 진입을 피하세요.
+          - listitem [ref=e100]:
+            - img [ref=e102]
+            - generic [ref=e104]:
+              - paragraph [ref=e105]: 허용된 낚시 도구만 사용하세요
+              - paragraph [ref=e106]: 투망·그물·통발과 전기·약품을 이용한 포획은 불법입니다. 일반 낚시인은 낚싯대 등 허용된 도구로만 낚시할 수 있습니다.
+          - listitem [ref=e107]:
+            - img [ref=e109]
+            - generic [ref=e115]:
+              - paragraph [ref=e116]: 낚시 금지구역과 유료터 규정을 확인하세요
+              - paragraph [ref=e117]: 상수원보호구역 등 낚시가 금지·제한된 구간이 있습니다. 유료 낚시터는 이용 요금·어종·규정이 별도이니 방문 전 확인하세요.
+          - listitem [ref=e118]:
+            - img [ref=e120]
+            - generic [ref=e123]:
+              - paragraph [ref=e124]: 1급수와 현장을 깨끗이
+              - paragraph [ref=e125]: 낚싯줄·납봉돌·쓰레기는 반드시 되가져가고, 세제나 오염물을 강에 흘리지 마세요. 여울·바위는 미끄러우니 안전화와 구명조끼를 착용하세요.
+        - generic [ref=e126]:
+          - paragraph [ref=e127]: 규정은 개정되거나 수역·구간에 따라 달라질 수 있습니다. 방문 전 최신 정보를 확인하세요.
+          - generic [ref=e128]:
+            - link "해양수산부 · 수산자원의 금어기·금지체장 기준" [ref=e129] [cursor=pointer]:
+              - /url: https://www.mof.go.kr/doc/ko/selectDoc.do?docSeq=64389&menuSeq=851&bbsSeq=22
+              - img [ref=e130]
+              - text: 해양수산부 · 수산자원의 금어기·금지체장 기준
+            - link "국립수산과학원 · 금어기·금지체장 소개" [ref=e134] [cursor=pointer]:
+              - /url: https://www.nifs.go.kr/contents/actionContentsCons0148.do
+              - img [ref=e135]
+              - text: 국립수산과학원 · 금어기·금지체장 소개
+            - link "정부24 · 전국 낚시금지·제한구역 조회" [ref=e139] [cursor=pointer]:
+              - /url: https://www.gov.kr/portal/service/serviceInfo/PTR000051942
+              - img [ref=e140]
+              - text: 정부24 · 전국 낚시금지·제한구역 조회
+      - generic [ref=e144]:
+        - heading "현장 편의시설" [level=2] [ref=e145]:
+          - img [ref=e147]
+          - text: 현장 편의시설
+        - list [ref=e151]:
+          - listitem [ref=e152]:
+            - img [ref=e153]
+            - text: 인근 모곡밤벌유원지 편의시설 이용 가능
+      - generic [ref=e156]:
+        - heading "낚시·캠핑 꿀팁" [level=2] [ref=e157]:
+          - img [ref=e159]
+          - text: 낚시·캠핑 꿀팁
+        - list [ref=e161]:
+          - listitem [ref=e162]:
+            - img [ref=e163]
+            - generic [ref=e165]: 여울 구간 쏘가리 루어 명소로, 저녁~새벽·비 온 뒤 약한 탁수에 활성도가 높습니다.
+          - listitem [ref=e166]:
+            - img [ref=e167]
+            - generic [ref=e169]: 미끄러운 여울 바닥에 대비해 안전화·구명조끼를 착용하세요.
+          - listitem [ref=e170]:
+            - img [ref=e171]
+            - generic [ref=e173]: 야간 낚시 시 헤드랜턴을 준비하세요.
+      - generic [ref=e174]:
+        - img [ref=e176]
+        - generic [ref=e179]:
+          - heading "네비게이션 주의사항" [level=2] [ref=e180]
+          - paragraph [ref=e181]: 강변 접근로가 비포장일 수 있어 도보 이동 구간을 감안하세요.
+      - generic [ref=e183]:
+        - term [ref=e184]: 소재지
+        - definition [ref=e185]: 강원특별자치도 홍천군 서면 모곡리 일대 (홍천강 여울)
+      - generic [ref=e186]:
+        - button "이 장소 저장" [disabled] [ref=e187]:
+          - img [ref=e188]
+          - text: 이 장소 저장
+        - generic [ref=e190]:
+          - button "링크 복사" [ref=e191] [cursor=pointer]:
+            - img [ref=e192]
+            - text: 링크 복사
+          - link "길찾기" [ref=e195] [cursor=pointer]:
+            - /url: https://map.kakao.com/link/to/%EC%84%9C%EB%A9%B4%20%EB%AA%A8%EA%B3%A1%20%EC%8F%98%EA%B0%80%EB%A6%AC%20%EC%97%AC%EC%9A%B8,37.689622,127.589589
+            - img [ref=e196]
+            - text: 길찾기
+      - generic [ref=e198]:
+        - heading "지도에서 위치 보기" [level=2] [ref=e199]
+        - generic [ref=e200]:
+          - link "네이버 지도에서 보기" [ref=e201] [cursor=pointer]:
+            - /url: https://map.naver.com/p/search/%EC%84%9C%EB%A9%B4%20%EB%AA%A8%EA%B3%A1%20%EC%8F%98%EA%B0%80%EB%A6%AC%20%EC%97%AC%EC%9A%B8?c=127.589589,37.689622,16,0,0,0,dh
+          - link "카카오맵에서 보기" [ref=e202] [cursor=pointer]:
+            - /url: https://map.kakao.com/link/map/%EC%84%9C%EB%A9%B4%20%EB%AA%A8%EA%B3%A1%20%EC%8F%98%EA%B0%80%EB%A6%AC%20%EC%97%AC%EC%9A%B8,37.689622,127.589589
+          - link "구글 지도에서 보기" [ref=e203] [cursor=pointer]:
+            - /url: https://www.google.com/maps/search/?api=1&query=37.689622,127.589589
+      - generic [ref=e204]:
+        - heading "AI 추천 코스" [level=2] [ref=e205]:
+          - img [ref=e206]
+          - text: AI 추천 코스
+        - paragraph [ref=e210]: 이 장소 주변의 실제 등록된 맛집·관광지·카페를 가까운 순으로 이어 동선을 제안합니다.
+        - generic [ref=e213]: 주변 코스를 분석하는 중…
+      - generic [ref=e214]:
+        - generic [ref=e215]: "#쏘가리"
+        - generic [ref=e216]: "#루어"
+        - generic [ref=e217]: "#여울"
+      - paragraph [ref=e218]:
+        - text: "정보 출처:"
+        - link "BFG 낚시 포인트" [ref=e219] [cursor=pointer]:
+          - /url: https://www.bfg-fishing.com/fishing-spots/gangwon-hongcheon
+      - region "함께 방문하면 좋은 로컬 스토어" [ref=e220]:
+        - heading "함께 방문하면 좋은 로컬 스토어" [level=2] [ref=e221]:
+          - img [ref=e223]
+          - text: 함께 방문하면 좋은 로컬 스토어
+        - paragraph [ref=e227]: 이 장소에서 가장 가까운 실제 편의점·마트·낚시·주유소를 안내합니다. 길찾기는 이 장소에서 출발합니다.
+        - paragraph [ref=e228]: 주변 가게를 찾는 중…
+        - paragraph [ref=e229]: "* 카카오 등록 정보 기준 종류별 가장 가까운 한 곳입니다. 표시 거리는 직선 거리이며, 실제 차로·도보 시간과 영업 여부는 길찾기(카카오맵)에서 확인하세요."
+      - region "이용자 리뷰" [ref=e230]:
+        - heading "이용자 리뷰 0" [level=2] [ref=e231]:
+          - img [ref=e233]
+          - text: 이용자 리뷰
+          - generic [ref=e235]: "0"
+        - paragraph [ref=e236]: 리뷰 불러오는 중…
+        - paragraph [ref=e237]: "* 리뷰는 로그인 후 작성되며, 욕설·스팸 필터 / 1인 1리뷰(수정 가능) / 현장(GPS) 인증이 적용됩니다."
+  - contentinfo [ref=e238]:
+    - generic [ref=e239]:
+      - generic [ref=e240]:
+        - img [ref=e242]
+        - paragraph [ref=e244]: 홍천 아웃도어
+      - paragraph [ref=e245]: 강원 홍천의 캠핑·낚시 명소를 큐레이션합니다.
+      - paragraph [ref=e246]: © 2026 홍천 아웃도어. 정보는 공공·전문 출처로 검증해 제공하며, 방문 전 운영 상태를 확인하세요.

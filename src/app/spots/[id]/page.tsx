@@ -20,6 +20,8 @@ import CommentSection from "@/components/CommentSection";
 import SpotActions from "@/components/SpotActions";
 import SaveButton from "@/components/SaveButton";
 import NearbyShops from "@/components/NearbyShops";
+import ReservationBox from "@/components/ReservationBox";
+import FishingGuide from "@/components/FishingGuide";
 
 interface PageProps {
   params: { id: string };
@@ -103,6 +105,13 @@ export default function SpotDetailPage({ params }: PageProps) {
         <p>{place.description}</p>
       </section>
 
+      {/* 예약 (현재 비작동 — 준비 중). 숙박 예약이 의미 있는 캠핑·차박에만 노출 */}
+      {(place.category === "camping" || place.category === "carcamping") && (
+        <div className="mt-6">
+          <ReservationBox place={place} />
+        </div>
+      )}
+
       {/* 오늘의 아웃도어 지수 */}
       <section className="mt-7">
         <OutdoorIndexWidget />
@@ -117,6 +126,11 @@ export default function SpotDetailPage({ params }: PageProps) {
           </h2>
           <p className="mt-2 text-sm text-neutral-700">{place.connectionNote}</p>
         </section>
+      )}
+
+      {/* 낚시 전 확인 — 금어기·주의사항 (낚시 스팟 또는 캠핑+낚시 연계 장소) */}
+      {(place.category === "fishing" || place.connectedFishing) && (
+        <FishingGuide />
       )}
 
       {/* 현장 편의시설 */}
