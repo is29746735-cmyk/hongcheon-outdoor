@@ -12,6 +12,15 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* 한글: 단어(어절) 중간에서 줄바꿈되지 않도록 */
+  word-break: keep-all;
+}
+
+/* 제목·핵심 문구는 줄을 균형 있게 분배 */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
 ::selection {
