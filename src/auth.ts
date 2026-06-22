@@ -51,7 +51,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       ? [Google({ clientId: googleId, clientSecret: googleSecret })]
       : []),
     ...(naverId && naverSecret
-      ? [Naver({ clientId: naverId, clientSecret: naverSecret })]
+      ? [
+          Naver({
+            clientId: naverId,
+            clientSecret: naverSecret,
+            // 기본 Naver provider는 name을 '별명(nickname)'에서만 읽는다.
+            // '회원이름'만 동의해도 이름이 뜨도록 nickname→name 폴백.
+            profile(p) {
+              return {
+                id: p.response.id,
+                name: p.response.nickname ?? p.response.name ?? null,
+                email: p.response.email ?? null,
+                image: p.response.profile_image ?? null,
+              };
+            },
+          }),
+        ]
       : []),
   ],
   callbacks: {
