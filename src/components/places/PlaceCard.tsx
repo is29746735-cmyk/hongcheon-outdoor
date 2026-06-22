@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Fish, MapPin } from "lucide-react";
+import { Fish, MapPin, Trees } from "lucide-react";
 import type { Place } from "@/types/place";
 import { CATEGORY_LABELS } from "@/constants";
 import PlaceImage from "@/components/PlaceImage";
@@ -82,6 +82,16 @@ export default function PlaceCard({ place, onSelect }: PlaceCardProps) {
         </div>
 
         <div className="mt-auto border-t border-neutral-100 pt-3.5">
+          {place.isolationScore != null && (
+            <div className="mb-2.5 flex items-center gap-1.5 text-xs">
+              <Trees className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
+              <span className="text-neutral-500">한적함</span>
+              <span className="font-bold tabular-nums text-neutral-800">
+                {place.isolationScore}
+                <span className="font-normal text-neutral-400">/5</span>
+              </span>
+            </div>
+          )}
           <MapLinkButtons place={place} compact />
         </div>
       </div>

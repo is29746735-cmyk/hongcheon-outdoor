@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
 import {
@@ -34,6 +34,19 @@ export default function PlaceBrowser() {
   const allPlaces = useMemo(() => getAllPlaces(), []);
   const allTags = useMemo(() => getAllFilterTags(allPlaces), [allPlaces]);
   const f = usePlaceFilters(allPlaces);
+
+  // 히어로 검색창/카테고리 칩(HeroSearch)에서 발행한 hco:search 이벤트를 필터에 반영
+  const { setQuery, setCategory } = f;
+  useEffect(() => {
+    const onSearch = (e: Event) => {
+      const d = (e as CustomEvent).detail ?? {};
+      if (typeof d.query === "string") setQuery(d.query);
+      if (typeof d.category === "string") setCategory(d.category);
+    };
+    window.addEventListener("hco:search", onSearch as EventListener);
+    return () =>
+      window.removeEventListener("hco:search", onSearch as EventListener);
+  }, [setQuery, setCategory]);
 
   const groups = useMemo(() => groupByCategory(f.filtered), [f.filtered]);
   const connected = useMemo(
