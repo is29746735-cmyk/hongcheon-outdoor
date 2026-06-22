@@ -74,3 +74,18 @@ export const reviews = sqliteTable("review", {
     .$defaultFn(() => new Date()),
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
 });
+
+// ── 앱 전용: 저장(북마크)한 장소 ───────────────────────────────
+export const savedPlaces = sqliteTable(
+  "savedPlace",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    placeId: text("placeId").notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.placeId] })]
+);

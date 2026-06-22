@@ -18,6 +18,7 @@ import CourseMap from "@/components/CourseMap";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import CommentSection from "@/components/CommentSection";
 import SpotActions from "@/components/SpotActions";
+import SaveButton from "@/components/SaveButton";
 import NearbyShops from "@/components/NearbyShops";
 
 interface PageProps {
@@ -195,8 +196,9 @@ export default function SpotDetailPage({ params }: PageProps) {
         )}
       </dl>
 
-      {/* 링크 복사 · 길찾기 */}
-      <div className="mt-6">
+      {/* 저장 · 링크 복사 · 길찾기 */}
+      <div className="mt-6 space-y-2.5">
+        <SaveButton placeId={place.id} />
         <SpotActions place={place} />
       </div>
 

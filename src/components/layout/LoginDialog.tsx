@@ -20,7 +20,13 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    // 다른 컴포넌트(저장 버튼·저장 페이지 등)에서 로그인 유도 시 모달을 연다.
+    const openLogin = () => setOpen(true);
+    window.addEventListener("hco:open-login", openLogin);
+    return () => window.removeEventListener("hco:open-login", openLogin);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -35,7 +41,9 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
     };
   }, [open]);
 
-  const go = (provider: string) => signIn(provider, { callbackUrl: "/" });
+  // 로그인 후 현재 보던 페이지로 복귀 (저장 페이지/상세에서 로그인 유도 시 자연스럽게)
+  const go = (provider: string) =>
+    signIn(provider, { callbackUrl: window.location.href });
 
   return (
     <>
