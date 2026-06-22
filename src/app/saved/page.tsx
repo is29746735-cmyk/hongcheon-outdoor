@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Bookmark } from "lucide-react";
 import { desc, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db, schema } from "@/db";
 import { getPlaceById } from "@/data/places";
-import { CATEGORY_LABELS } from "@/constants";
-import SaveButton from "@/components/SaveButton";
 import LoginPromptButton from "@/components/LoginPromptButton";
+import SavedList, { type SavedItem } from "@/components/SavedList";
 
 export const metadata: Metadata = { title: "저장한 장소" };
 
@@ -43,63 +41,21 @@ export default async function SavedPage() {
     .where(eq(schema.savedPlaces.userId, userId))
     .orderBy(desc(schema.savedPlaces.createdAt));
 
-  const places = rows
+  const items: SavedItem[] = rows
     .map((r) => getPlaceById(r.placeId))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+    .filter((p): p is NonNullable<typeof p> => Boolean(p))
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      region: p.region,
+      summary: p.summary,
+    }));
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-extrabold text-forest-800">저장한 장소</h1>
-      <p className="mt-1 text-sm text-neutral-500">
-        {places.length > 0
-          ? `${places.length}곳 저장됨`
-          : "아직 저장한 장소가 없어요."}
-      </p>
-
-      {places.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-10 text-center">
-          <p className="text-sm leading-relaxed text-neutral-500">
-            장소 상세 페이지에서{" "}
-            <span className="font-bold text-forest-700">이 장소 저장</span> 버튼을
-            눌러 추가하세요.
-          </p>
-          <Link
-            href="/#list"
-            className="mt-4 inline-block rounded-full bg-forest-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
-          >
-            장소 둘러보기
-          </Link>
-        </div>
-      ) : (
-        <ul className="mt-6 space-y-3">
-          {places.map((place) => (
-            <li
-              key={place.id}
-              className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-card"
-            >
-              <Link href={`/spots/${place.id}`} className="block">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-forest-600 px-2.5 py-0.5 text-xs font-semibold text-white">
-                    {CATEGORY_LABELS[place.category]}
-                  </span>
-                  <span className="text-xs text-neutral-400">
-                    {place.region}
-                  </span>
-                </div>
-                <h2 className="mt-1.5 text-base font-extrabold text-neutral-900">
-                  {place.name}
-                </h2>
-                <p className="mt-1 line-clamp-2 text-sm text-neutral-600">
-                  {place.summary}
-                </p>
-              </Link>
-              <div className="mt-3">
-                <SaveButton placeId={place.id} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <SavedList initial={items} />
     </main>
   );
 }

@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "홍천 아웃도어" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: 홍천 아웃도어
+      - generic [ref=e9]:
+        - navigation [ref=e10]:
+          - link "홈" [ref=e11] [cursor=pointer]:
+            - /url: /
+          - link "장소" [ref=e12] [cursor=pointer]:
+            - /url: /#list
+          - link "저장" [ref=e13] [cursor=pointer]:
+            - /url: /saved
+        - button "로그인" [ref=e14] [cursor=pointer]:
+          - img [ref=e15]
+          - text: 로그인
+  - main [ref=e18]:
+    - main [ref=e19]:
+      - img [ref=e21]
+      - heading "저장한 장소" [level=1] [ref=e23]
+      - paragraph [ref=e24]:
+        - text: 마음에 드는 낚시터·캠핑장을 저장하려면 로그인하세요.
+        - text: 저장한 장소는 로그인하면 어디서든 다시 볼 수 있어요.
+      - button "로그인하고 저장 시작" [ref=e26] [cursor=pointer]:
+        - img [ref=e27]
+        - text: 로그인하고 저장 시작
+  - contentinfo [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - img [ref=e34]
+        - paragraph [ref=e36]: 홍천 아웃도어
+      - paragraph [ref=e37]: 강원 홍천의 캠핑·낚시 명소를 큐레이션합니다.
+      - paragraph [ref=e38]: © 2026 홍천 아웃도어. 정보는 공공·전문 출처로 검증해 제공하며, 방문 전 운영 상태를 확인하세요.
