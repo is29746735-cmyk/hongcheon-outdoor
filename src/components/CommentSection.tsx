@@ -10,21 +10,15 @@ import {
   AlertCircle,
   Pencil,
   X,
+  LogIn,
 } from "lucide-react";
 import type { GeoPoint } from "@/types/place";
-import { checkReviewContent } from "@/lib/contentFilter";
-
-interface Review {
-  id: string;
-  nickname: string;
-  /** 별점 1~5 */
-  rating: number;
-  content: string;
-  /** 작성 시각 (ISO) */
-  createdAt: string;
-  /** 마지막 수정 시각 (ISO) — 수정된 경우에만 */
-  updatedAt?: string;
-}
+import {
+  loadReviews,
+  createReview,
+  updateReview,
+  type ReviewDTO,
+} from "@/lib/review-actions";
 
 interface CommentSectionProps {
   /** 스팟 식별자 (리뷰 저장·1인 1리뷰 판정 키) */
@@ -32,11 +26,6 @@ interface CommentSectionProps {
   /** 스팟 좌표 — 현장(위치) 인증에 사용. 없으면 등록을 제한한다. */
   location?: GeoPoint;
 }
-
-/** 현장 인증 허용 반경 (m) — 넓은 캠핑장·강변 + GPS 오차 감안 */
-const MAX_DISTANCE_M = 1000;
-/** 허용 가능한 위치 정확도 한계 (m) — 이보다 부정확하면 GPS가 아닌 IP 추정으로 보고 거부 */
-const ACCURACY_LIMIT_M = 500;
 
 function StarRow({ value }: { value: number }) {
   return (
@@ -54,38 +43,10 @@ function StarRow({ value }: { value: number }) {
   );
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
+function formatDate(ms: number): string {
+  const d = new Date(ms);
   const p = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-}
-
-function newId(): string {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
-/** 두 좌표 사이 거리(m) — 하버사인 */
-function distanceMeters(
-  lat1: number,
-  lng1: number,
-  lat2: number,
-  lng2: number
-): number {
-  const R = 6371000;
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function formatDistance(m: number): string {
-  return m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${Math.round(m)}m`;
 }
 
 /** 현재 위치 가져오기 — 캐시 금지(항상 새 측정), 고정밀 요청 */
@@ -104,54 +65,44 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
 }
 
 /**
- * 스팟 상세 하단의 이용자 리뷰 섹션.
- * - 평균 별점을 제목 아래에 표시(없으면 "현재 리뷰가 없습니다").
- * - 욕설·스팸 자동 필터(작성·수정 모두 적용).
- * - 1인 1리뷰 + 본인 리뷰 수정(내용·별점) 가능.
- * - 현장(GPS) 인증: 작성은 스팟 반경 내에서만, 수정은 위치 무관 허용.
- *
- * ⚠️ 데모: 리뷰·본인 리뷰 식별은 브라우저 localStorage 기준. 실제 운영은 로그인·서버 검증 필요.
+ * 스팟 상세 하단의 이용자 리뷰 섹션 (DB + 로그인 기반).
+ * - 작성·수정은 로그인 필수. 비로그인은 로그인 유도.
+ * - 표시 이름은 로그인 계정 이름. userId 기준 1인 1리뷰 + 본인 리뷰 수정.
+ * - 현장(GPS) 인증: 작성은 스팟 반경 내에서만(서버 검증), 수정은 위치 무관.
+ * - 욕설·스팸 자동 필터(서버).
+ * 정적 페이지의 클라이언트 섬: 마운트 시 리뷰·로그인 상태를 서버 액션으로 로드.
  */
 export default function CommentSection({
   placeId,
   location,
 }: CommentSectionProps) {
-  const storageKey = `hco-reviews-${placeId}`;
-  const myIdKey = `hco-myreview-${placeId}`;
-
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const [reviews, setReviews] = useState<ReviewDTO[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [myReviewId, setMyReviewId] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [nickname, setNickname] = useState("");
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [content, setContent] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [locating, setLocating] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  // 최초 1회: localStorage 복원
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) setReviews(JSON.parse(raw) as Review[]);
-      const id = localStorage.getItem(myIdKey);
-      if (id) setMyReviewId(id);
-    } catch {
-      /* localStorage 불가 시 무시 */
-    }
-    setHydrated(true);
-  }, [storageKey, myIdKey]);
-
-  // 리뷰 변경 시 저장(복원 이후에만)
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(reviews));
-    } catch {
-      /* 무시 */
-    }
-  }, [reviews, hydrated, storageKey]);
+    let active = true;
+    loadReviews(placeId)
+      .then((d) => {
+        if (!active) return;
+        setReviews(d.reviews);
+        setLoggedIn(d.loggedIn);
+        setMyReviewId(d.myReviewId);
+      })
+      .finally(() => {
+        if (active) setHydrated(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [placeId]);
 
   const alreadyReviewed = myReviewId !== null;
   const myReview = reviews.find((r) => r.id === myReviewId) ?? null;
@@ -159,94 +110,51 @@ export default function CommentSection({
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
-  const canSubmit =
-    nickname.trim().length > 0 && content.trim().length > 0 && !locating;
+  const canSubmit = content.trim().length > 0 && !submitting;
 
   const resetForm = () => {
-    setNickname("");
     setContent("");
     setRating(5);
     setHover(0);
   };
 
-  // 신규 등록 — 현장(GPS) 인증 필수
+  // 신규 등록 — 클라이언트 GPS 측정 후 서버에서 거리·1인1리뷰·욕설 검증
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (nickname.trim().length === 0 || content.trim().length === 0) return;
-
-    if (alreadyReviewed) {
-      setError("이미 이 장소에 리뷰를 남기셨습니다. (1인 1리뷰)");
-      return;
-    }
-    const filtered = checkReviewContent(content, nickname);
-    if (!filtered.ok) {
-      setError(filtered.reason ?? "등록할 수 없는 내용이에요.");
-      return;
-    }
-    // 좌표가 없으면 현장 인증 불가 → 등록 제한
+    if (content.trim().length === 0) return;
     if (!location) {
-      setError("이 장소는 위치 정보가 없어 현장 인증을 할 수 없어 등록이 제한됩니다.");
+      setError(
+        "이 장소는 위치 정보가 없어 현장 인증을 할 수 없어 등록이 제한됩니다.",
+      );
       return;
     }
-
-    setLocating(true);
+    setSubmitting(true);
     try {
       const pos = await getCurrentPosition();
-      const acc = pos.coords.accuracy ?? Number.MAX_SAFE_INTEGER;
-      // 위치 정확도가 너무 낮으면(=IP 추정 등) 신뢰 불가 → 거부
-      if (acc > ACCURACY_LIMIT_M) {
-        setError(
-          `정확한 GPS 위치를 가져오지 못했어요(오차 약 ${formatDistance(
-            acc
-          )}). 실외에서 GPS를 켜고 다시 시도해 주세요.`
-        );
+      const res = await createReview(placeId, rating, content, {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy ?? Number.MAX_SAFE_INTEGER,
+      });
+      if (!res.ok || !res.review) {
+        setError(res.error ?? "등록에 실패했어요. 잠시 후 다시 시도해 주세요.");
         return;
       }
-      const dist = distanceMeters(
-        pos.coords.latitude,
-        pos.coords.longitude,
-        location.lat,
-        location.lng
-      );
-      if (dist > MAX_DISTANCE_M) {
-        setError(
-          `리뷰는 현장에서만 작성할 수 있어요. 지금 스팟에서 약 ${formatDistance(
-            dist
-          )} 떨어져 있습니다.`
-        );
-        return;
-      }
+      setReviews((prev) => [res.review!, ...prev]);
+      setMyReviewId(res.review.id);
+      resetForm();
     } catch {
       setError(
-        "현장 인증을 위해 위치 권한이 필요해요. 위치 권한을 허용한 뒤 다시 시도해 주세요."
+        "현장 인증을 위해 위치 권한이 필요해요. 위치 권한을 허용한 뒤 다시 시도해 주세요.",
       );
-      return;
     } finally {
-      setLocating(false);
+      setSubmitting(false);
     }
-
-    const review: Review = {
-      id: newId(),
-      nickname: nickname.trim(),
-      rating,
-      content: content.trim(),
-      createdAt: new Date().toISOString(),
-    };
-    setReviews((prev) => [review, ...prev]);
-    try {
-      localStorage.setItem(myIdKey, review.id);
-    } catch {
-      /* 무시 */
-    }
-    setMyReviewId(review.id);
-    resetForm();
   };
 
-  // 수정 시작 — 본인 리뷰 값을 폼에 불러온다
   const startEdit = () => {
     if (!myReview) return;
-    setNickname(myReview.nickname);
     setRating(myReview.rating);
     setContent(myReview.content);
     setHover(0);
@@ -260,35 +168,29 @@ export default function CommentSection({
     resetForm();
   };
 
-  // 수정 저장 — 위치 인증 없음(어디서나 가능), 욕설·스팸 필터는 유지
-  const saveEdit = (e: FormEvent) => {
+  // 수정 저장 — 위치 인증 없음(어디서나), 욕설·스팸 필터는 서버에서 유지
+  const saveEdit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (nickname.trim().length === 0 || content.trim().length === 0) return;
-
-    const filtered = checkReviewContent(content, nickname);
-    if (!filtered.ok) {
-      setError(filtered.reason ?? "등록할 수 없는 내용이에요.");
-      return;
+    if (!myReviewId || content.trim().length === 0) return;
+    setSubmitting(true);
+    try {
+      const res = await updateReview(myReviewId, rating, content);
+      if (!res.ok || !res.review) {
+        setError(res.error ?? "수정에 실패했어요.");
+        return;
+      }
+      setReviews((prev) =>
+        prev.map((r) => (r.id === myReviewId ? res.review! : r)),
+      );
+      setEditing(false);
+      resetForm();
+    } finally {
+      setSubmitting(false);
     }
-    setReviews((prev) =>
-      prev.map((r) =>
-        r.id === myReviewId
-          ? {
-              ...r,
-              nickname: nickname.trim(),
-              rating,
-              content: content.trim(),
-              updatedAt: new Date().toISOString(),
-            }
-          : r
-      )
-    );
-    setEditing(false);
-    resetForm();
   };
 
-  const showForm = !alreadyReviewed || editing;
+  const showForm = loggedIn && (!alreadyReviewed || editing);
 
   return (
     <section className="mt-8" aria-label="이용자 리뷰">
@@ -316,11 +218,30 @@ export default function CommentSection({
           </span>
         </div>
       ) : (
-        <p className="mt-2 text-sm text-neutral-400">현재 리뷰가 없습니다.</p>
+        <p className="mt-2 text-sm text-neutral-400">
+          {hydrated ? "현재 리뷰가 없습니다." : "리뷰 불러오는 중…"}
+        </p>
       )}
 
-      {/* 작성/수정 폼 또는 '이미 작성' 패널 */}
-      {showForm ? (
+      {/* 비로그인 → 로그인 유도 */}
+      {hydrated && !loggedIn && (
+        <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-6 text-center">
+          <p className="text-sm text-neutral-600">
+            리뷰는 로그인 후 작성할 수 있어요.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("hco:open-login"))}
+            className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
+          >
+            <LogIn className="h-4 w-4" strokeWidth={2.2} />
+            로그인하고 리뷰 쓰기
+          </button>
+        </div>
+      )}
+
+      {/* 작성/수정 폼 (로그인 + 미작성/수정중) */}
+      {showForm && (
         <form
           onSubmit={editing ? saveEdit : handleCreate}
           className="mt-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-card"
@@ -340,16 +261,6 @@ export default function CommentSection({
           )}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <input
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="닉네임"
-              aria-label="닉네임"
-              maxLength={20}
-              className="w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm outline-none transition focus:border-forest-600 focus:ring-2 focus:ring-forest-100 sm:w-40"
-            />
-
             <div
               className="flex items-center gap-0.5"
               role="radiogroup"
@@ -401,7 +312,7 @@ export default function CommentSection({
                   className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-forest-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Send className="h-4 w-4" strokeWidth={2.2} />
-                  수정 완료
+                  {submitting ? "저장 중…" : "수정 완료"}
                 </button>
                 <button
                   type="button"
@@ -419,19 +330,25 @@ export default function CommentSection({
                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-forest-600 px-5 py-2 text-sm font-bold text-white transition hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Send className="h-4 w-4" strokeWidth={2.2} />
-                {locating ? "현장 확인 중…" : "등록"}
+                {submitting ? "현장 확인 중…" : "등록"}
               </button>
             )}
           </div>
 
           {error && (
             <p className="mt-3 flex items-start gap-1.5 text-xs font-medium text-rose-600">
-              <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+              <AlertCircle
+                className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                strokeWidth={2}
+              />
               <span>{error}</span>
             </p>
           )}
         </form>
-      ) : (
+      )}
+
+      {/* 이미 작성한 경우(로그인) */}
+      {loggedIn && alreadyReviewed && !editing && (
         <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-forest-200 bg-forest-50 px-4 py-3">
           <span className="flex items-center gap-2 text-sm font-medium text-forest-700">
             <UserRound className="h-4 w-4 shrink-0" strokeWidth={2} />
@@ -461,9 +378,9 @@ export default function CommentSection({
                   <UserRound className="h-4 w-4" strokeWidth={2} />
                 </span>
                 <span className="text-sm font-bold text-neutral-900">
-                  {r.nickname}
+                  {r.name}
                 </span>
-                {r.id === myReviewId && (
+                {r.mine && (
                   <span className="rounded-full bg-forest-50 px-1.5 py-0.5 text-[10px] font-bold text-forest-600">
                     내 리뷰
                   </span>
@@ -483,8 +400,8 @@ export default function CommentSection({
       )}
 
       <p className="mt-3 text-[11px] leading-relaxed text-neutral-400">
-        * 데모용 리뷰입니다. 이 브라우저에 저장되며, 욕설·스팸 필터 / 1인 1리뷰(수정
-        가능) / 현장(GPS) 인증이 적용됩니다.
+        * 리뷰는 로그인 후 작성되며, 욕설·스팸 필터 / 1인 1리뷰(수정 가능) / 현장(GPS)
+        인증이 적용됩니다.
       </p>
     </section>
   );

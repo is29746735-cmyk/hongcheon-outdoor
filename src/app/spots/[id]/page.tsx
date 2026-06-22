@@ -241,7 +241,7 @@ export default function SpotDetailPage({ params }: PageProps) {
       {/* 함께 방문하면 좋은 로컬 스토어 (주변 실제 가게 실시간 검색) */}
       {place.location && <NearbyShops place={place} />}
 
-      {/* 이용자 리뷰 (데모용 — 로컬 상태 저장) */}
+      {/* 이용자 리뷰 (DB · 로그인 기반) */}
       <CommentSection placeId={place.id} location={place.location} />
     </article>
   );
