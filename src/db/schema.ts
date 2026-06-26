@@ -75,6 +75,56 @@ export const reviews = sqliteTable("review", {
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
 });
 
+// ── 앱 전용: 제휴 파트너(업체 과금 B2B) ────────────────────────
+// tier: 'free'=무료 검증 리스팅 | 'affiliate'=유료 제휴(갤러리·예약연결·뱃지·우선노출)
+// verified/affiliate는 별도 플래그 — 절대 한 축에 섞지 말 것(브랜드 철칙)
+export const partners = sqliteTable("partner", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  placeId: text("placeId").notNull().unique(),
+  businessName: text("businessName").notNull(),
+  contactName: text("contactName"),
+  contactPhone: text("contactPhone"),
+  contactEmail: text("contactEmail"),
+  tier: text("tier", { enum: ["free", "affiliate"] })
+    .notNull()
+    .default("free"),
+  // 제휴 과금 정보
+  monthlyFee: integer("monthlyFee"),          // 원 단위
+  billingStartAt: integer("billingStartAt", { mode: "timestamp_ms" }),
+  billingEndAt: integer("billingEndAt", { mode: "timestamp_ms" }),
+  // 제휴 기능 플래그
+  showGallery: integer("showGallery", { mode: "boolean" }).default(false),
+  showReservation: integer("showReservation", { mode: "boolean" }).default(false),
+  prioritySlot: integer("prioritySlot", { mode: "boolean" }).default(false),
+  note: text("note"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
+});
+
+// ── 앱 전용: 리스팅 노출·클릭 이벤트 (가치 계측) ─────────────────
+// eventType: 'impression'=카드 노출 | 'click'=상세 진입 | 'map_click'=지도 클릭 | 'phone_click'=전화
+export const listingEvents = sqliteTable("listingEvent", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  placeId: text("placeId").notNull(),
+  eventType: text("eventType", {
+    enum: ["impression", "click", "map_click", "phone_click"],
+  }).notNull(),
+  // 세션 식별(로그인 불필요 — 익명 추적)
+  sessionId: text("sessionId"),
+  userId: text("userId").references(() => users.id, { onDelete: "set null" }),
+  // 유입 컨텍스트
+  referrer: text("referrer"),   // 'home' | 'search' | 'saved' | 'direct'
+  createdAt: integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 // ── 앱 전용: 저장(북마크)한 장소 ───────────────────────────────
 export const savedPlaces = sqliteTable(
   "savedPlace",

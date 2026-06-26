@@ -72,6 +72,8 @@ export interface Place {
   thumbnail?: string;
   images?: string[];
   featured?: boolean;
+  /** 제휴 파트너 ID (partner 테이블 FK) — 있으면 "검증 제휴처" 뱃지 노출 */
+  partnerId?: string;
   /** 함께 방문하면 좋은 주변 로컬 스토어 (맛집·장비 대여점 등) */
   nearbyShops?: NearbyShop[];
 }

@@ -22,6 +22,7 @@ import SaveButton from "@/components/SaveButton";
 import NearbyShops from "@/components/NearbyShops";
 import ReservationBox from "@/components/ReservationBox";
 import FishingGuide from "@/components/FishingGuide";
+import SpotTracker from "@/components/SpotTracker";
 
 interface PageProps {
   params: { id: string };
@@ -45,6 +46,7 @@ export default function SpotDetailPage({ params }: PageProps) {
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
+      <SpotTracker placeId={place.id} />
       <Link
         href="/#list"
         className="text-sm text-neutral-500 transition-colors hover:text-forest-600"
@@ -87,6 +89,11 @@ export default function SpotDetailPage({ params }: PageProps) {
             <span className="inline-flex items-center gap-1 rounded-full bg-sky-600 px-3 py-1 text-xs font-semibold text-white">
               <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
               캠핑+낚시
+            </span>
+          )}
+          {place.partnerId && (
+            <span className="rounded-full border border-forest-300 bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
+              검증 제휴처
             </span>
           )}
           {place.rating != null && (
