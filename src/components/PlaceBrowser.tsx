@@ -186,7 +186,12 @@ export default function PlaceBrowser() {
           </p>
           <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {connected.map((place) => (
-              <PlaceCard key={place.id} place={place} onSelect={openSpot} />
+              <PlaceCard
+                key={place.id}
+                place={place}
+                onSelect={openSpot}
+                impressionReferrer="home"
+              />
             ))}
           </div>
         </section>
@@ -209,7 +214,12 @@ export default function PlaceBrowser() {
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {group.items.map((place) => (
-                <PlaceCard key={place.id} place={place} onSelect={openSpot} />
+                <PlaceCard
+                  key={place.id}
+                  place={place}
+                  onSelect={openSpot}
+                  impressionReferrer="home"
+                />
               ))}
             </div>
           </section>

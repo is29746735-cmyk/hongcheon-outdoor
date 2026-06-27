@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db, schema } from "@/db";
+import { rateLimit } from "@/lib/rate-limit";
 
 export type SaveState = { loggedIn: boolean; saved: boolean };
 
@@ -30,6 +31,11 @@ export async function toggleSave(placeId: string): Promise<SaveState> {
   const session = await auth().catch(() => null);
   const userId = session?.user?.id;
   if (!userId) return { loggedIn: false, saved: false };
+
+  // 연타 방어: 10초당 20회 초과 시 변경 없이 현재 상태만 반환
+  if (!rateLimit(`save:${userId}`, 20, 10_000)) {
+    return getSaveState(placeId);
+  }
 
   const existing = await db
     .select({ placeId: schema.savedPlaces.placeId })

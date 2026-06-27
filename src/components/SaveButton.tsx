@@ -48,6 +48,7 @@ export default function SaveButton({ placeId }: { placeId: string }) {
       onClick={onClick}
       disabled={pending || !ready}
       aria-pressed={saved}
+      aria-label={saved ? "저장 해제" : "이 장소 저장"}
       className={`inline-flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold transition disabled:opacity-50 ${
         saved
           ? "bg-forest-600 text-white hover:bg-forest-700"

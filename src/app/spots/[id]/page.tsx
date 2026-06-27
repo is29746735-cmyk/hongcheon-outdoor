@@ -23,6 +23,7 @@ import NearbyShops from "@/components/NearbyShops";
 import ReservationBox from "@/components/ReservationBox";
 import FishingGuide from "@/components/FishingGuide";
 import SpotTracker from "@/components/SpotTracker";
+import PhoneLink from "@/components/PhoneLink";
 
 interface PageProps {
   params: { id: string };
@@ -228,7 +229,9 @@ export default function SpotDetailPage({ params }: PageProps) {
         {place.phone && (
           <div>
             <dt className="text-sm font-semibold text-neutral-500">전화</dt>
-            <dd className="mt-1 text-neutral-900">{place.phone}</dd>
+            <dd className="mt-1">
+              <PhoneLink placeId={place.id} phone={place.phone} />
+            </dd>
           </div>
         )}
       </dl>

@@ -1,5 +1,6 @@
-import { CalendarDays, Lock, Phone } from "lucide-react";
+import { CalendarDays, Lock } from "lucide-react";
 import type { Place } from "@/types/place";
+import PhoneLink from "@/components/PhoneLink";
 
 /**
  * 예약 칸 (현재 비작동 — 준비 중 상태).
@@ -70,13 +71,12 @@ export default function ReservationBox({ place }: { place: Place }) {
           <>
             {" "}
             지금은 전화로 문의해 주세요.{" "}
-            <a
-              href={`tel:${place.phone}`}
+            <PhoneLink
+              placeId={place.id}
+              phone={place.phone}
               className="inline-flex items-center gap-1 font-semibold text-forest-700 underline underline-offset-2"
-            >
-              <Phone className="h-3 w-3" strokeWidth={2.2} />
-              {place.phone}
-            </a>
+              iconClassName="h-3 w-3"
+            />
           </>
         ) : (
           <> 운영 여부와 예약은 방문 전 확인해 주세요.</>

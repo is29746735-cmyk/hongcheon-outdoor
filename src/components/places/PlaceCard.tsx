@@ -1,17 +1,61 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { Fish, MapPin, Trees } from "lucide-react";
 import type { Place } from "@/types/place";
 import { CATEGORY_LABELS } from "@/constants";
 import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
+import { trackListingEvent } from "@/lib/listing-events";
+import { getSessionId } from "@/lib/session-id";
+
+type Referrer = "home" | "search" | "saved" | "direct";
+
+/** 같은 세션·페이지 로드 동안 장소별 impression 중복 집계 방지 */
+const impressed = new Set<string>();
 
 interface PlaceCardProps {
   place: Place;
   /** 지정 시 카드 클릭이 페이지 이동 대신 이 콜백(슬라이드오버)을 호출 */
   onSelect?: (place: Place) => void;
+  /** 지정 시 카드가 뷰포트에 들어오면 impression 이벤트를 1회 기록 */
+  impressionReferrer?: Referrer;
 }
 
-export default function PlaceCard({ place, onSelect }: PlaceCardProps) {
+export default function PlaceCard({
+  place,
+  onSelect,
+  impressionReferrer,
+}: PlaceCardProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // 노출(impression) 집계 — 카드가 절반 이상 보이면 1회만 기록
+  useEffect(() => {
+    if (!impressionReferrer) return;
+    if (impressed.has(place.id)) return;
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !impressed.has(place.id)) {
+            impressed.add(place.id);
+            trackListingEvent(place.id, "impression", {
+              sessionId: getSessionId(),
+              referrer: impressionReferrer,
+            });
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [place.id, impressionReferrer]);
+
   // onSelect 가 있으면 버튼(슬라이드오버), 없으면 상세 페이지 링크
   const Trigger = ({
     children,
@@ -35,7 +79,10 @@ export default function PlaceCard({ place, onSelect }: PlaceCardProps) {
     );
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+    <div
+      ref={rootRef}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+    >
       <Trigger className="relative block">
         <PlaceImage place={place} className="aspect-[4/3]" />
         {/* 하단 그라디언트 */}
@@ -92,7 +139,7 @@ export default function PlaceCard({ place, onSelect }: PlaceCardProps) {
               </span>
             </div>
           )}
-          <MapLinkButtons place={place} compact />
+          <MapLinkButtons place={place} compact referrer={impressionReferrer} />
         </div>
       </div>
     </div>

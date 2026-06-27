@@ -1,14 +1,23 @@
+"use client";
+
 import type { Place } from "@/types/place";
 import { getMapLinks } from "@/lib/map-links";
+import { trackListingEvent } from "@/lib/listing-events";
+import { getSessionId } from "@/lib/session-id";
+
+type Referrer = "home" | "search" | "saved" | "direct";
 
 /** 장소를 네이버·카카오·구글 지도에서 여는 링크 버튼 모음 */
 export default function MapLinkButtons({
   place,
   compact = false,
+  referrer,
 }: {
   place: Place;
   /** 카드 등 좁은 공간용 작은 버튼 */
   compact?: boolean;
+  /** 클릭 집계용 유입 출처 */
+  referrer?: Referrer;
 }) {
   const links = getMapLinks(place);
 
@@ -39,6 +48,14 @@ export default function MapLinkButtons({
 
   const size = compact ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm";
 
+  // 지도 앱으로 이동하는 클릭을 집계 (UX 영향 없이 비동기 기록)
+  const onMapClick = () => {
+    trackListingEvent(place.id, "map_click", {
+      sessionId: getSessionId(),
+      referrer,
+    });
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       {items.map((item) => (
@@ -47,6 +64,8 @@ export default function MapLinkButtons({
           href={item.href}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onMapClick}
+          aria-label={`${item.label}에서 보기 (새 창)`}
           className={`rounded-full font-medium transition ${size} ${item.className}`}
         >
           {compact ? item.short : `${item.label}에서 보기`}

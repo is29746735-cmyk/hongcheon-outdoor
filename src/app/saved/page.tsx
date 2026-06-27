@@ -7,7 +7,12 @@ import { getPlaceById } from "@/data/places";
 import LoginPromptButton from "@/components/LoginPromptButton";
 import SavedList, { type SavedItem } from "@/components/SavedList";
 
-export const metadata: Metadata = { title: "저장한 장소" };
+export const metadata: Metadata = {
+  title: "저장한 장소",
+  description: "내가 저장한 홍천강 낚시터·캠핑장·차박지를 한곳에서 다시 봅니다.",
+  // 개인화된 비공개 페이지 — 검색엔진 색인 제외
+  robots: { index: false, follow: false },
+};
 
 export default async function SavedPage() {
   const session = await auth().catch(() => null);
