@@ -36,7 +36,23 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: PageProps): Metadata {
   const place = getPlaceById(params.id);
   if (!place) return { title: "장소를 찾을 수 없습니다" };
-  return { title: place.name, description: place.summary };
+  const ogImage = place.thumbnail ?? "/og-default.png";
+  return {
+    title: place.name,
+    description: place.summary,
+    openGraph: {
+      title: place.name,
+      description: place.summary,
+      type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: place.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: place.name,
+      description: place.summary,
+      images: [ogImage],
+    },
+  };
 }
 
 export default function SpotDetailPage({ params }: PageProps) {

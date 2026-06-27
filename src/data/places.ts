@@ -31,30 +31,6 @@ const PLACES: Place[] = [
     tags: ["오토캠핑", "공공운영", "홍천강", "수상레포츠"],
     activities: ["bonfire"],
     featured: true,
-    // ⚠️ 예시(placeholder) 데이터 — 실제 검증된 상호로 교체 가능
-    nearbyShops: [
-      {
-        name: "굴지리 민물매운탕",
-        category: "food",
-        description: "메기·빠가사리 매운탕으로 알려진 강변 식당가.",
-        distance: "차로 5분",
-        mapQuery: "홍천 북방면 굴지리 매운탕",
-      },
-      {
-        name: "북방 캠핑·낚시용품",
-        category: "rental",
-        description: "텐트·화로대·낚시 장비 대여 및 판매.",
-        distance: "차로 7분",
-        mapQuery: "홍천 북방면 낚시용품",
-      },
-      {
-        name: "홍천강 전망 카페",
-        category: "cafe",
-        description: "강이 보이는 통창 카페. 캠핑 후 휴식 코스로 좋아요.",
-        distance: "차로 8분",
-        mapQuery: "홍천강 카페",
-      },
-    ],
   },
   {
     id: "dodam-camping",
@@ -77,23 +53,6 @@ const PLACES: Place[] = [
     tags: ["가족", "차박가능", "리버뷰", "1급수"],
     activities: ["bonfire"],
     featured: true,
-    // ⚠️ 예시(placeholder) 데이터 — 실제 검증된 상호로 교체 가능
-    nearbyShops: [
-      {
-        name: "서면 토속 닭갈비",
-        category: "food",
-        description: "홍천 명물 닭갈비·메밀 막국수 전문점.",
-        distance: "차로 6분",
-        mapQuery: "홍천 서면 닭갈비",
-      },
-      {
-        name: "개야리 물놀이용품 대여",
-        category: "rental",
-        description: "튜브·구명조끼·다슬기 채집통 대여.",
-        distance: "도보 5분",
-        mapQuery: "홍천 서면 개야리 물놀이",
-      },
-    ],
   },
   {
     id: "mogok-bambeol",
@@ -117,23 +76,6 @@ const PLACES: Place[] = [
     tags: ["유원지", "차박성지", "견지낚시", "물놀이"],
     activities: ["gyeonji", "bonfire"],
     featured: true,
-    // ⚠️ 예시(placeholder) 데이터 — 실제 검증된 상호로 교체 가능
-    nearbyShops: [
-      {
-        name: "모곡 강변 매점·평상",
-        category: "store",
-        description: "유원지 내 매점·평상 대여, 간단한 먹거리.",
-        distance: "도보 3분",
-        mapQuery: "홍천 모곡밤벌유원지 매점",
-      },
-      {
-        name: "모곡리 견지낚시점",
-        category: "rental",
-        description: "견지·플라잉 채비와 미끼 판매.",
-        distance: "차로 5분",
-        mapQuery: "홍천 서면 모곡리 낚시",
-      },
-    ],
   },
   {
     id: "jarabawi-auto-camping",

@@ -38,15 +38,22 @@ export const metadata: Metadata = {
     title: SITE.name,
     description: SITE.description,
     url: SITE.url,
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE.name} — 홍천 캠핑·낚시·차박 큐레이션`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE.name,
     description: SITE.description,
+    images: ["/og-default.png"],
   },
   robots: { index: true, follow: true },
-  // TODO: 공유 미리보기 이미지(og:image)는 현장 사진 확보 후
-  //       src/app/opengraph-image.(png|tsx) 추가로 연결 예정
 };
 
 export default function RootLayout({
