@@ -15,7 +15,7 @@ import type { Place } from "@/types/place";
 import { KAKAO_KEY, loadKakaoSdk } from "@/lib/kakao";
 
 /**
- * AI 추천 코스 — 장소 인근의 실제(카카오 등록) 맛집·관광지·카페를 찾아
+ * 주변 연계 코스 — 장소 인근의 실제(카카오 등록) 맛집·관광지·카페를 찾아
  * 최근접 이웃(nearest-neighbor)으로 동선을 최적화해 지도에 선으로 표시한다.
  * 가까운 연계가 어려운 지역이면 동선을 그리지 않고 주변 추천 활동만 안내한다.
  * (모든 장소는 카카오 DB의 실제 등록 장소 — 임의 생성하지 않음)
@@ -257,7 +257,7 @@ export default function CourseMap({ place }: { place: Place }) {
     <section className="mt-8">
       <h2 className="flex items-center gap-2 text-lg font-bold text-neutral-900">
         <RouteIcon className="h-5 w-5 text-forest-600" strokeWidth={2} />
-        AI 추천 코스
+        주변 연계 코스
       </h2>
       <p className="mt-1 text-sm text-neutral-600">
         이 장소 주변의 실제 등록된 맛집·관광지·카페를 가까운 순으로 이어 동선을

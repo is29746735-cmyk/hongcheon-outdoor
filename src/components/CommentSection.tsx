@@ -96,6 +96,9 @@ export default function CommentSection({
         setLoggedIn(d.loggedIn);
         setMyReviewId(d.myReviewId);
       })
+      .catch(() => {
+        // 리뷰 로드 실패 시 빈 상태로 안전하게 노출 (섹션이 멈추지 않도록)
+      })
       .finally(() => {
         if (active) setHydrated(true);
       });
@@ -218,7 +221,7 @@ export default function CommentSection({
           </span>
         </div>
       ) : (
-        <p className="mt-2 text-sm text-neutral-400">
+        <p className="mt-2 text-sm text-neutral-500">
           {hydrated ? "현재 리뷰가 없습니다." : "리뷰 불러오는 중…"}
         </p>
       )}

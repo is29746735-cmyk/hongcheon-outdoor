@@ -266,7 +266,9 @@ export async function GET() {
     forecast: base.forecast,
   };
 
+  // CDN에서 60초 캐시(+5분 stale-while-revalidate)로 외부 API(기상청·Open-Meteo) 호출량 제한.
+  // 데이터 granularity가 1~15분이라 60초 캐시는 신선도 손실이 거의 없다.
   return NextResponse.json(body, {
-    headers: { "Cache-Control": "no-store" },
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
   });
 }

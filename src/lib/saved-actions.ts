@@ -10,6 +10,7 @@ export type SaveState = { loggedIn: boolean; saved: boolean };
 
 /** 현재 사용자가 이 장소를 저장했는지 + 로그인 여부 */
 export async function getSaveState(placeId: string): Promise<SaveState> {
+  if (!db) return { loggedIn: false, saved: false };
   const session = await auth().catch(() => null);
   const userId = session?.user?.id;
   if (!userId) return { loggedIn: false, saved: false };
@@ -28,6 +29,7 @@ export async function getSaveState(placeId: string): Promise<SaveState> {
 
 /** 저장 토글. 비로그인 시 loggedIn:false 반환(클라이언트가 로그인 유도). */
 export async function toggleSave(placeId: string): Promise<SaveState> {
+  if (!db) return { loggedIn: false, saved: false };
   const session = await auth().catch(() => null);
   const userId = session?.user?.id;
   if (!userId) return { loggedIn: false, saved: false };

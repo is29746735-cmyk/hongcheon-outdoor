@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   X,
@@ -23,6 +23,7 @@ import { getSpotDetail } from "@/data/mockData";
 import { getDirectionsLink } from "@/lib/map-links";
 import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 interface SpotSlideOverProps {
   place: Place | null;
@@ -76,6 +77,8 @@ export default function SpotSlideOver({
 }: SpotSlideOverProps) {
   const detail = place ? getSpotDetail(place.id) : undefined;
   const [copied, setCopied] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+  useFocusTrap(open && !!place, panelRef);
 
   // 장소가 바뀌면 복사 상태 초기화
   useEffect(() => {
@@ -135,6 +138,7 @@ export default function SpotSlideOver({
 
       {/* 우측 패널 */}
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label={place ? `${place.name} 상세 정보` : "상세 정보"}

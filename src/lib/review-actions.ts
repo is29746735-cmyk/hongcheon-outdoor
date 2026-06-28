@@ -6,6 +6,10 @@ import { auth } from "@/auth";
 import { db, schema } from "@/db";
 import { getPlaceById } from "@/data/places";
 import { checkReviewContent } from "@/lib/contentFilter";
+import { rateLimit } from "@/lib/rate-limit";
+
+/** 한줄평 최대 길이 (서버 강제 — 클라이언트 maxLength는 우회 가능) */
+const MAX_CONTENT_LEN = 100;
 
 export type ReviewDTO = {
   id: string;
@@ -57,6 +61,9 @@ function fmtDist(m: number): string {
 
 /** 장소의 리뷰 목록 + 현재 사용자 상태(로그인/내 리뷰) */
 export async function loadReviews(placeId: string): Promise<ReviewLoad> {
+  // DB 미설정/장애 시 빈 목록으로 안전하게 폴백 (상세 페이지가 죽지 않도록)
+  if (!db) return { loggedIn: false, myReviewId: null, reviews: [] };
+
   const session = await auth().catch(() => null);
   const userId = session?.user?.id ?? null;
 
@@ -100,14 +107,21 @@ export async function createReview(
   content: string,
   coords: { lat: number; lng: number; accuracy: number },
 ): Promise<ReviewResult> {
+  if (!db) return { ok: false, error: "현재 리뷰를 저장할 수 없어요. 잠시 후 다시 시도해 주세요." };
   const session = await auth().catch(() => null);
   const userId = session?.user?.id;
   const userName = session?.user?.name ?? "회원";
   if (!userId) return { ok: false, error: "로그인이 필요합니다." };
 
+  // 연타 방어: 1분당 5회
+  if (!rateLimit(`review:${userId}`, 5, 60_000))
+    return { ok: false, error: "너무 잦은 요청이에요. 잠시 후 다시 시도해 주세요." };
+
   const text = content.trim();
   if (!text || rating < 1 || rating > 5)
     return { ok: false, error: "별점과 한줄평을 확인해주세요." };
+  if (text.length > MAX_CONTENT_LEN)
+    return { ok: false, error: `한줄평은 ${MAX_CONTENT_LEN}자 이내로 작성해 주세요.` };
 
   const existing = await db
     .select({ id: schema.reviews.id })
@@ -181,14 +195,21 @@ export async function updateReview(
   rating: number,
   content: string,
 ): Promise<ReviewResult> {
+  if (!db) return { ok: false, error: "현재 리뷰를 수정할 수 없어요. 잠시 후 다시 시도해 주세요." };
   const session = await auth().catch(() => null);
   const userId = session?.user?.id;
   const userName = session?.user?.name ?? "회원";
   if (!userId) return { ok: false, error: "로그인이 필요합니다." };
 
+  // 연타 방어: 1분당 5회
+  if (!rateLimit(`review-edit:${userId}`, 5, 60_000))
+    return { ok: false, error: "너무 잦은 요청이에요. 잠시 후 다시 시도해 주세요." };
+
   const text = content.trim();
   if (!text || rating < 1 || rating > 5)
     return { ok: false, error: "별점과 한줄평을 확인해주세요." };
+  if (text.length > MAX_CONTENT_LEN)
+    return { ok: false, error: `한줄평은 ${MAX_CONTENT_LEN}자 이내로 작성해 주세요.` };
 
   const rows = await db
     .select({

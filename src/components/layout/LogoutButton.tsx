@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { signOut } from "next-auth/react";
 import { LogOut, UserRound, X } from "lucide-react";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 /**
  * 헤더 로그아웃 버튼 + 확인 모달.
@@ -15,6 +16,8 @@ export default function LogoutButton({ name }: { name: string }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [pending, setPending] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(open && mounted, panelRef);
 
   useEffect(() => setMounted(true), []);
 
@@ -64,7 +67,10 @@ export default function LogoutButton({ name }: { name: string }) {
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => !pending && setOpen(false)}
             />
-            <div className="relative z-10 w-full max-w-sm rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl">
+            <div
+              ref={panelRef}
+              className="relative z-10 w-full max-w-sm rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl"
+            >
               <button
                 type="button"
                 onClick={() => setOpen(false)}

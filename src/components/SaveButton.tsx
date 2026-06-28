@@ -20,12 +20,16 @@ export default function SaveButton({ placeId }: { placeId: string }) {
 
   useEffect(() => {
     let active = true;
-    getSaveState(placeId).then((s) => {
-      if (active) {
-        setState(s);
-        setReady(true);
-      }
-    });
+    getSaveState(placeId)
+      .then((s) => {
+        if (active) setState(s);
+      })
+      .catch(() => {
+        // 상태 조회 실패 시 비로그인 기본값 유지
+      })
+      .finally(() => {
+        if (active) setReady(true);
+      });
     return () => {
       active = false;
     };

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { signIn } from "next-auth/react";
 import { LogIn, X } from "lucide-react";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 type Props = {
   kakao: boolean;
@@ -45,6 +46,8 @@ function NaverMark() {
 export default function LoginDialog({ kakao, google, naver }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(open && mounted, panelRef);
 
   useEffect(() => {
     setMounted(true);
@@ -95,7 +98,10 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setOpen(false)}
             />
-            <div className="relative z-10 w-full max-w-sm rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl">
+            <div
+              ref={panelRef}
+              className="relative z-10 w-full max-w-sm rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl"
+            >
               <button
                 type="button"
                 onClick={() => setOpen(false)}
