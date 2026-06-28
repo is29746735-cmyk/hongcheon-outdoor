@@ -66,6 +66,81 @@ hongcheon-tour/
 | `/map`        | `src/app/map/page.tsx`            | 지도 페이지 |
 | `/places/:id` | `src/app/places/[id]/page.tsx`    | 상세 페이지 |
 
+## 공개 API (봇·외부 서비스용)
+
+홍천 아웃도어는 텔레그램 봇이나 외부 서비스가 홍천 장소 데이터를 가져갈 수 있도록
+공개 읽기 API를 제공합니다. 인증이 필요 없고 CORS가 열려 있어 서버사이드(Python 등)와
+브라우저 양쪽에서 호출할 수 있습니다.
+
+### `GET /api/places`
+
+| 쿼리 파라미터 | 값                                   | 설명                                  |
+| ------------- | ------------------------------------ | ------------------------------------- |
+| `category`    | `camping` \| `fishing` \| `carcamping` | 카테고리 필터 (생략 시 전체)          |
+| `featured`    | `true`                               | 추천 장소만                           |
+| `q`           | 검색어                               | 이름·소개·태그에서 포함 검색          |
+
+예시:
+
+```bash
+# 추천 장소만
+curl "https://hongcheon-outdoor-kv6c.vercel.app/api/places?featured=true"
+
+# 낚시터 중 '쏘가리' 검색
+curl "https://hongcheon-outdoor-kv6c.vercel.app/api/places?category=fishing&q=쏘가리"
+```
+
+응답(요약):
+
+```json
+{
+  "count": 3,
+  "places": [
+    {
+      "id": "hongcheongang-auto-camping",
+      "name": "홍천강오토캠핑장",
+      "category": "camping",
+      "summary": "홍천군이 운영하는 공공 오토캠핑장. 홍천강까지 데크로 연결됩니다.",
+      "region": "강원특별자치도 홍천군 북방면 굴지강변로 322",
+      "phone": "033-430-2498",
+      "location": { "lat": 37.690281, "lng": 127.787231 },
+      "tags": ["오토캠핑", "공공운영", "홍천강", "수상레포츠"],
+      "activities": ["bonfire"],
+      "official": true,
+      "connectedFishing": true,
+      "sourceUrl": "https://www.hongcheon.go.kr/tour/contents.do?key=1879",
+      "mapQuery": "홍천강오토캠핑장",
+      "featured": true
+    }
+  ]
+}
+```
+
+> 내부 전용 필드(예: `partnerId`)는 응답에서 제외됩니다. 데이터는 CDN에서 1시간
+> 캐시됩니다.
+
+### `GET /api/river-status`
+
+홍천강 인근 실시간 날씨(기온·강수·하늘상태)와 오늘 예보, 아웃도어 활동 지수를
+반환합니다. 봇에서 "오늘 낚시 가도 돼?" 같은 응답에 활용할 수 있습니다.
+
+### 파이썬 예제
+
+`examples/telegram_bot_places.py` 에 위 API를 호출해 텔레그램 봇에서 쓰는
+복붙용 예제가 있습니다. `fetch_places()` 함수만 가져다 써도 됩니다.
+
+```python
+import requests
+
+BASE = "https://hongcheon-outdoor-kv6c.vercel.app"
+places = requests.get(f"{BASE}/api/places", params={"featured": "true"}).json()["places"]
+for p in places:
+    print(p["name"], "-", p["summary"])
+```
+
+> ⚠️ 봇 토큰(BotFather)·시크릿은 코드나 깃 저장소에 직접 넣지 말고 환경변수로
+> 관리하세요.
+
 ## 이미지 정책
 
 각 장소의 사진은 현재 **"(업로드 예정)" 플레이스홀더**로 표시됩니다.

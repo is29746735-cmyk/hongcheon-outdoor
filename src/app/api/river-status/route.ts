@@ -268,7 +268,11 @@ export async function GET() {
 
   // CDN에서 60초 캐시(+5분 stale-while-revalidate)로 외부 API(기상청·Open-Meteo) 호출량 제한.
   // 데이터 granularity가 1~15분이라 60초 캐시는 신선도 손실이 거의 없다.
+  // CORS 허용 — 텔레그램 봇·외부 위젯(브라우저 포함)에서 호출 가능.
   return NextResponse.json(body, {
-    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+    headers: {
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      "Access-Control-Allow-Origin": "*",
+    },
   });
 }
