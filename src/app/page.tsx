@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import HeroSearch from "@/components/HeroSearch";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function HomePage() {
   return (

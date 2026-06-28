@@ -24,6 +24,7 @@ import ReservationBox from "@/components/ReservationBox";
 import FishingGuide from "@/components/FishingGuide";
 import SpotTracker from "@/components/SpotTracker";
 import PhoneLink from "@/components/PhoneLink";
+import { buildPlaceJsonLd } from "@/lib/place-jsonld";
 
 interface PageProps {
   params: { id: string };
@@ -41,6 +42,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: place.name,
     description: place.summary,
+    alternates: { canonical: `/spots/${place.id}` },
     openGraph: {
       title: place.name,
       description: place.summary,
@@ -63,6 +65,12 @@ export default function SpotDetailPage({ params }: PageProps) {
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildPlaceJsonLd(place)),
+        }}
+      />
       <SpotTracker placeId={place.id} />
       <Link
         href="/#list"

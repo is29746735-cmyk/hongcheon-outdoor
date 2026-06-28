@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Place, PlaceCategory } from "@/types/place";
+import { CATEGORY_LABELS } from "@/constants";
 import { CategoryIcon } from "@/components/icons";
 
 /**
@@ -29,6 +30,8 @@ interface PlaceImageProps {
   /** 컨테이너 클래스 (aspect-ratio, rounded 등) */
   className?: string;
   sizes?: string;
+  /** alt 텍스트 오버라이드 (기본값: "이름 — 카테고리, 소재지") */
+  alt?: string;
 }
 
 export default function PlaceImage({
@@ -36,8 +39,11 @@ export default function PlaceImage({
   src,
   className = "",
   sizes = "(max-width: 768px) 100vw, 400px",
+  alt,
 }: PlaceImageProps) {
   const url = src ?? place.thumbnail;
+  const altText =
+    alt ?? `${place.name} — ${CATEGORY_LABELS[place.category]}, ${place.region}`;
 
   if (!url || isPlaceholder(url)) {
     return (
@@ -71,7 +77,7 @@ export default function PlaceImage({
     <div className={`relative overflow-hidden bg-neutral-100 ${className}`}>
       <Image
         src={url}
-        alt={place.name}
+        alt={altText}
         fill
         sizes={sizes}
         className="object-cover"
