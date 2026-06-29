@@ -38,9 +38,27 @@ export interface DailyForecast {
   message: string;
 }
 
+/** 일자별 예보 (오늘 포함 N일치) */
+export interface DayForecast {
+  /** 날짜 (YYYY-MM-DD, Asia/Seoul) */
+  date: string;
+  /** 하늘/강수 상태 텍스트 (예: 맑음, 비) */
+  skyText: string;
+  /** 최고 기온(°C) — 없으면 null */
+  tempMax: number | null;
+  /** 최저 기온(°C) — 없으면 null */
+  tempMin: number | null;
+  /** 강수확률(%) — 없으면 null */
+  precipProbability: number | null;
+  /** 비/눈 예보 여부 */
+  willPrecipitate: boolean;
+}
+
 /** API 라우트가 반환하는 최종 응답 형태 */
 export interface RiverStatusResponse extends RiverStatus {
   index: OutdoorIndex;
   /** 오늘의 예보 (없으면 null) */
   forecast: DailyForecast | null;
+  /** 오늘 포함 며칠치 일자별 예보 (오늘 이후는 정확도가 낮음) */
+  days: DayForecast[];
 }

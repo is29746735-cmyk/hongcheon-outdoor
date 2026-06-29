@@ -3,6 +3,7 @@ import { computeOutdoorIndex } from "@/lib/outdoor-index";
 import { HONGCHEON_RIVER_CENTER } from "@/constants";
 import type {
   DailyForecast,
+  DayForecast,
   RiverStatus,
   RiverStatusResponse,
 } from "@/types/river";
@@ -53,15 +54,55 @@ interface OpenMeteoResponse {
     weather_code?: number;
   };
   daily?: {
+    time?: string[];
     weather_code?: number[];
     precipitation_probability_max?: number[];
     precipitation_sum?: number[];
+    temperature_2m_max?: number[];
+    temperature_2m_min?: number[];
   };
 }
 
 /** WMO 코드가 눈 계열인지 */
 function isSnowCode(code: number | undefined): boolean {
   return code != null && [71, 73, 75, 77, 85, 86].includes(code);
+}
+
+/** 강수(비/눈) 예보 여부 판정 — 오늘·일자별 예보 공용 */
+function willPrecipitate(
+  code: number | undefined,
+  prob: number | null,
+  sum: number
+): boolean {
+  return (
+    isSnowCode(code) ||
+    (code != null && code >= 51) || // 이슬비 이상
+    (prob != null && prob >= 50) ||
+    sum >= 0.5
+  );
+}
+
+/** °C 반올림(없으면 null) */
+function round(n: number | undefined): number | null {
+  return n == null ? null : Math.round(n);
+}
+
+/** 오늘 포함 일자별 예보 배열 생성 */
+function buildDays(daily: OpenMeteoResponse["daily"]): DayForecast[] {
+  if (!daily?.time) return [];
+  return daily.time.map((date, i) => {
+    const code = daily.weather_code?.[i];
+    const prob = daily.precipitation_probability_max?.[i] ?? null;
+    const sum = daily.precipitation_sum?.[i] ?? 0;
+    return {
+      date,
+      skyText: weatherCodeToText(code),
+      tempMax: round(daily.temperature_2m_max?.[i]),
+      tempMin: round(daily.temperature_2m_min?.[i]),
+      precipProbability: prob,
+      willPrecipitate: willPrecipitate(code, prob, sum),
+    };
+  });
 }
 
 /** 오늘의 예보 요약 생성 */
@@ -72,17 +113,13 @@ function buildForecast(daily: OpenMeteoResponse["daily"]): DailyForecast | null 
   const sum = daily.precipitation_sum?.[0] ?? 0;
 
   const snow = isSnowCode(code);
-  const willPrecipitate =
-    snow ||
-    (code != null && code >= 51) || // 이슬비 이상
-    (prob != null && prob >= 50) ||
-    sum >= 0.5;
+  const willPrecip = willPrecipitate(code, prob, sum);
 
   const probText = prob != null ? ` (강수확률 ${prob}%)` : "";
   let message: string;
   if (snow) {
     message = `오늘 눈 예보가 있습니다${probText}`;
-  } else if (willPrecipitate) {
+  } else if (willPrecip) {
     message = `오늘 비 예보가 있습니다${probText}`;
   } else if (code != null && code <= 1) {
     message = "오늘은 대체로 맑겠습니다";
@@ -90,20 +127,22 @@ function buildForecast(daily: OpenMeteoResponse["daily"]): DailyForecast | null 
     message = "오늘은 비 예보가 없습니다";
   }
 
-  return { willPrecipitate, precipProbability: prob, message };
+  return { willPrecipitate: willPrecip, precipProbability: prob, message };
 }
 
-/** Open-Meteo 호출 후 현재 상태 + 오늘 예보로 정규화 */
+/** Open-Meteo 호출 후 현재 상태 + 오늘 예보 + 일자별 예보로 정규화 */
 async function fetchFromOpenMeteo(): Promise<{
   status: RiverStatus;
   forecast: DailyForecast | null;
+  days: DayForecast[];
 }> {
   const params = new URLSearchParams({
     latitude: String(HONGCHEON_RIVER_CENTER.lat),
     longitude: String(HONGCHEON_RIVER_CENTER.lng),
     current: "temperature_2m,precipitation,weather_code",
-    daily: "weather_code,precipitation_probability_max,precipitation_sum",
-    forecast_days: "1",
+    daily:
+      "weather_code,precipitation_probability_max,precipitation_sum,temperature_2m_max,temperature_2m_min",
+    forecast_days: "4", // 오늘 + 3일
     timezone: "Asia/Seoul",
   });
 
@@ -134,6 +173,7 @@ async function fetchFromOpenMeteo(): Promise<{
       source: "live",
     },
     forecast: buildForecast(json.daily),
+    days: buildDays(json.daily),
   };
 }
 
@@ -225,7 +265,11 @@ async function fetchFromKma(): Promise<{
 }
 
 /** 외부 API 장애 시 사용하는 예시 데이터 */
-function mockStatus(): { status: RiverStatus; forecast: DailyForecast | null } {
+function mockStatus(): {
+  status: RiverStatus;
+  forecast: DailyForecast | null;
+  days: DayForecast[];
+} {
   return {
     status: {
       location: LOCATION_NAME,
@@ -236,6 +280,7 @@ function mockStatus(): { status: RiverStatus; forecast: DailyForecast | null } {
       source: "mock",
     },
     forecast: null,
+    days: [],
   };
 }
 
@@ -264,6 +309,7 @@ export async function GET() {
     ...status,
     index: computeOutdoorIndex(status, base.forecast),
     forecast: base.forecast,
+    days: base.days,
   };
 
   // CDN에서 60초 캐시(+5분 stale-while-revalidate)로 외부 API(기상청·Open-Meteo) 호출량 제한.

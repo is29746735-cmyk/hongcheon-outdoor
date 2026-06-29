@@ -7,8 +7,11 @@ import {
   Lightbulb,
   CarFront,
   Building2,
+  ShoppingBag,
 } from "lucide-react";
 import { getAllPlaces, getPlaceById } from "@/data/places";
+import { getGearByCategory } from "@/data/gear";
+import GearGrid from "@/components/gear/GearGrid";
 import { getSpotDetail } from "@/data/mockData";
 import { CATEGORY_LABELS } from "@/constants";
 import { formatRating } from "@/lib/utils";
@@ -62,6 +65,11 @@ export default function SpotDetailPage({ params }: PageProps) {
   const place = getPlaceById(params.id);
   if (!place) notFound();
   const detail = getSpotDetail(place.id);
+
+  // 이 장소에 맞는 준비물(용품) 추천 — 낚시 스팟은 낚시용품, 그 외는 캠핑용품
+  const gearCategory = place.category === "fishing" ? "fishing" : "camping";
+  const gearHeading = gearCategory === "fishing" ? "낚시 준비물" : "캠핑 준비물";
+  const relatedGear = getGearByCategory(gearCategory).slice(0, 4);
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
@@ -271,6 +279,32 @@ export default function SpotDetailPage({ params }: PageProps) {
           </span>
         ))}
       </div>
+
+      {/* 함께 준비하면 좋은 용품 (클릭 시 설명·구매 팁·주의문) */}
+      {relatedGear.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">
+                <ShoppingBag className="h-4 w-4" strokeWidth={2} />
+              </span>
+              {gearHeading}
+            </h2>
+            <Link
+              href={`/gear#${gearCategory}`}
+              className="shrink-0 text-sm font-semibold text-forest-600 transition-colors hover:text-forest-700"
+            >
+              용품 더 보기 →
+            </Link>
+          </div>
+          <div className="mt-4">
+            <GearGrid
+              items={relatedGear}
+              gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            />
+          </div>
+        </section>
+      )}
 
       {place.sourceUrl && (
         <p className="mt-8 text-xs text-neutral-400">

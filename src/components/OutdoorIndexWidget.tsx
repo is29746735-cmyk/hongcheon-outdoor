@@ -7,13 +7,37 @@ import {
   OctagonAlert,
   RefreshCw,
   CloudRain,
+  CloudSnow,
+  Cloud,
   Sun,
   type LucideIcon,
 } from "lucide-react";
 import type {
+  DayForecast,
   OutdoorIndexLevel,
   RiverStatusResponse,
 } from "@/types/river";
+
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+
+/** 일자 라벨: 오늘 / 내일 / 요일 */
+function dayLabel(dateStr: string, index: number): string {
+  if (index === 0) return "오늘";
+  if (index === 1) return "내일";
+  const d = new Date(`${dateStr}T00:00:00+09:00`);
+  const wd = d.getDay();
+  return Number.isNaN(wd) ? dateStr.slice(5) : WEEKDAYS[wd];
+}
+
+/** 하늘 상태 텍스트 → 아이콘 */
+function dayIcon(d: DayForecast): LucideIcon {
+  const t = d.skyText ?? "";
+  if (t.includes("눈")) return CloudSnow;
+  if (d.willPrecipitate || t.includes("비") || t.includes("소나기"))
+    return CloudRain;
+  if (t.includes("흐") || t.includes("구름") || t.includes("안개")) return Cloud;
+  return Sun;
+}
 
 /** 지수 레벨별 스타일 */
 const LEVEL_STYLES: Record<
@@ -179,6 +203,48 @@ export default function OutdoorIndexWidget({
             <Sun className="h-4 w-4 shrink-0" strokeWidth={2} />
           )}
           <span>오늘의 예보 · {data.forecast.message}</span>
+        </div>
+      )}
+
+      {/* 3일 예보 (오늘 + 이후) */}
+      {data.days && data.days.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-neutral-500">예보</p>
+          <div className="mt-2 grid grid-cols-4 gap-2">
+            {data.days.slice(0, 4).map((d, i) => {
+              const Icon = dayIcon(d);
+              return (
+                <div
+                  key={d.date}
+                  className="rounded-xl bg-white/70 px-1.5 py-2.5 text-center"
+                >
+                  <p className="text-xs font-bold text-neutral-700">
+                    {dayLabel(d.date, i)}
+                  </p>
+                  <Icon
+                    className="mx-auto mt-1.5 h-5 w-5 text-neutral-500"
+                    strokeWidth={2}
+                  />
+                  <p className="mt-1.5 text-xs font-semibold tabular-nums text-neutral-900">
+                    {d.tempMax != null ? `${d.tempMax}°` : "—"}
+                    <span className="ml-1 font-normal text-neutral-400">
+                      {d.tempMin != null ? `${d.tempMin}°` : ""}
+                    </span>
+                  </p>
+                  {d.precipProbability != null && (
+                    <p className="mt-0.5 text-[11px] font-medium tabular-nums text-sky-700">
+                      강수 {d.precipProbability}%
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {data.days.length > 1 && (
+            <p className="mt-2 text-[11px] leading-relaxed text-neutral-400">
+              오늘 이후 예보는 정확하지 않을 수 있습니다.
+            </p>
+          )}
         </div>
       )}
 
