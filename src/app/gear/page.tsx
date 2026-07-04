@@ -4,7 +4,7 @@ import GearCatalog from "@/components/gear/GearCatalog";
 export const metadata: Metadata = {
   title: "낚시·캠핑 용품",
   description:
-    "홍천강 낚시와 캠핑에 필요한 용품을 한곳에서. 쿠팡·네이버 등 쇼핑몰에서 바로 찾아볼 수 있도록 정리했습니다.",
+    "홍천강 낚시·캠핑 준비물부터 감성 아이템·먹거리까지 한곳에서. 품목별 구매 팁과 실사용 주의사항을 함께 정리했습니다.",
   alternates: { canonical: "/gear" },
 };
 
@@ -19,9 +19,9 @@ export default function GearPage() {
         </p>
 
         <p className="mt-5 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs leading-relaxed text-neutral-500">
-          쇼핑 버튼은 제휴(쿠팡 파트너스·네이버 등) 링크로 운영될 예정이며, 구매 시
-          일정 수수료를 받을 수 있습니다. 현재는 예시로, 실제 링크는 아직 연결되어
-          있지 않습니다.
+          쇼핑 버튼은 쿠팡 파트너스 링크로 운영될 예정입니다. 이 페이지는 쿠팡
+          파트너스 활동의 일환으로, 구매 시 일정 수수료를 받을 수 있습니다. 현재는
+          예시로, 실제 링크는 아직 연결되어 있지 않습니다.
         </p>
       </header>
 

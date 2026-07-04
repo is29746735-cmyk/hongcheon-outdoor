@@ -75,6 +75,24 @@ export const reviews = sqliteTable("review", {
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
 });
 
+// ── 앱 전용: 장소별 경험담·사진 (커뮤니티) ─────────────────────
+// 리뷰(현장 GPS 인증·1인1리뷰)와 달리, 활동 후 자랑용이라 로그인만 요구.
+// 사진은 Vercel Blob URL을 저장(imageUrl). 사진 없는 글도 허용.
+export const experiencePosts = sqliteTable("experiencePost", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  placeId: text("placeId").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  imageUrl: text("imageUrl"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 // ── 앱 전용: 제휴 파트너(업체 과금 B2B) ────────────────────────
 // tier: 'free'=무료 검증 리스팅 | 'affiliate'=유료 제휴(갤러리·예약연결·뱃지·우선노출)
 // verified/affiliate는 별도 플래그 — 절대 한 축에 섞지 말 것(브랜드 철칙)

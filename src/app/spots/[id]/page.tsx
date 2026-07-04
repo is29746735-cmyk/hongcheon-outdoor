@@ -27,6 +27,7 @@ import ReservationBox from "@/components/ReservationBox";
 import FishingGuide from "@/components/FishingGuide";
 import SpotTracker from "@/components/SpotTracker";
 import PhoneLink from "@/components/PhoneLink";
+import ExperienceSection from "@/components/ExperienceSection";
 import { buildPlaceJsonLd } from "@/lib/place-jsonld";
 
 interface PageProps {
@@ -322,6 +323,9 @@ export default function SpotDetailPage({ params }: PageProps) {
 
       {/* 함께 방문하면 좋은 로컬 스토어 (주변 실제 가게 실시간 검색) */}
       {place.location && <NearbyShops place={place} />}
+
+      {/* 방문자 경험담·사진 (커뮤니티 · 로그인 기반) */}
+      <ExperienceSection placeId={place.id} />
 
       {/* 이용자 리뷰 (DB · 로그인 기반) */}
       <CommentSection placeId={place.id} location={place.location} />

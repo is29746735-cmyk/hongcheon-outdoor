@@ -1,12 +1,14 @@
 "use client";
 
-import { Fish, Tent } from "lucide-react";
+import { Fish, Tent, Sparkles, Utensils } from "lucide-react";
 import { getGearByCategory, type GearCategory } from "@/data/gear";
 import GearGrid from "@/components/gear/GearGrid";
 
 const SECTIONS: { key: GearCategory; label: string; Icon: typeof Fish }[] = [
-  { key: "fishing", label: "낚시용품", Icon: Fish },
   { key: "camping", label: "캠핑용품", Icon: Tent },
+  { key: "fishing", label: "낚시용품", Icon: Fish },
+  { key: "aesthetic", label: "감성 아이템", Icon: Sparkles },
+  { key: "food", label: "먹거리", Icon: Utensils },
 ];
 
 export default function GearCatalog() {
