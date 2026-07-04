@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Tent, Fish, Sparkles, Utensils, ArrowRight } from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import HeroSearch from "@/components/HeroSearch";
@@ -6,6 +8,14 @@ import HeroSearch from "@/components/HeroSearch";
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
+
+/** 홈 → 용품 진입용 카테고리 바로가기 */
+const GEAR_CATS = [
+  { key: "camping", label: "캠핑용품", Icon: Tent },
+  { key: "fishing", label: "낚시용품", Icon: Fish },
+  { key: "aesthetic", label: "감성 아이템", Icon: Sparkles },
+  { key: "food", label: "먹거리", Icon: Utensils },
+] as const;
 
 export default function HomePage() {
   return (
@@ -53,6 +63,49 @@ export default function HomePage() {
       <div className="mx-auto mt-12 max-w-6xl px-4">
         <PlaceBrowser />
       </div>
+
+      {/* 용품 준비하기 — 홈에서 바로 용품으로 가는 진입점 */}
+      <section className="mx-auto mt-16 max-w-6xl px-4">
+        <div className="rounded-2xl border border-neutral-200 bg-sand-50 p-6 sm:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <span className="inline-block rounded-full bg-forest-100 px-2.5 py-1 text-xs font-bold text-forest-700">
+                준비물
+              </span>
+              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-forest-800">
+                캠핑·낚시 용품 준비하기
+              </h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-neutral-600">
+                떠나기 전 필요한 준비물을 한곳에서. 품목별 구매 팁과 실사용
+                주의사항까지 정리했어요.
+              </p>
+            </div>
+            <Link
+              href="/gear"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-forest-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-700"
+            >
+              용품 전체 보기
+              <ArrowRight size={16} strokeWidth={2.2} />
+            </Link>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {GEAR_CATS.map(({ key, label, Icon }) => (
+              <Link
+                key={key}
+                href={`/gear#${key}`}
+                className="flex items-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 py-3.5 transition hover:border-forest-300 hover:shadow-card"
+              >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-forest-50 text-forest-700">
+                  <Icon size={18} strokeWidth={2} />
+                </span>
+                <span className="text-sm font-bold text-neutral-800">
+                  {label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

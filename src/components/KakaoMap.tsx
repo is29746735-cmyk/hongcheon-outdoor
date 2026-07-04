@@ -145,7 +145,7 @@ export default function KakaoMap({
           // 카테고리 색상 핀 (HTML 커스텀 오버레이)
           const el = document.createElement("div");
           el.title = place.name;
-          el.style.cssText = `cursor:pointer;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
+          el.style.cssText = `pointer-events:auto;cursor:pointer;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
           el.innerHTML = `<span style="display:flex;transform:rotate(45deg);">${categoryMarkerSvg(
             place.category,
             "#fff",
@@ -180,7 +180,7 @@ export default function KakaoMap({
           const pos = new kakao.maps.LatLng(charger.lat, charger.lng);
           const el = document.createElement("div");
           el.title = charger.name;
-          el.style.cssText = `cursor:pointer;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${EV_COLOR};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
+          el.style.cssText = `pointer-events:auto;cursor:pointer;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${EV_COLOR};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;`;
           el.innerHTML = `<span style="display:flex;transform:rotate(45deg);">${evMarkerSvg(
             "#fff",
             14
@@ -273,7 +273,9 @@ export default function KakaoMap({
         className ?? "h-[60vh]"
       }`}
     >
-      <div ref={elRef} className="isolate h-full w-full" />
+      {/* 지도 타일은 pointer-events:none — 빈 곳 터치가 페이지 스크롤로 관통되게.
+          (고정 개요 지도라 드래그/줌 불필요) 마커만 pointer-events:auto로 클릭 살림. */}
+      <div ref={elRef} className="pointer-events-none isolate h-full w-full" />
       {status !== "ready" && (
         <div className="absolute inset-0 flex items-center justify-center bg-neutral-50/90 px-4 text-center text-sm text-neutral-500 backdrop-blur-sm">
           {status === "loading" ? (

@@ -169,7 +169,7 @@ export default function PlaceBrowser() {
           places={allPlaces}
           activeCategory={f.category}
           visibleIds={visibleIds}
-          className="h-[440px]"
+          className="h-[300px] sm:h-[440px]"
         />
       </div>
 
