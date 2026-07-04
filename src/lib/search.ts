@@ -50,6 +50,19 @@ function matchesQuery(place: Place, query: string): boolean {
   return false;
 }
 
+/**
+ * 범용 텍스트 매칭 — 띄어쓰기 무시 부분일치 + (검색어에 초성이 있으면) 초성 매칭.
+ * 검색어가 비면 true. 용품 등 장소 외 목록 검색에도 재사용.
+ */
+export function textMatches(haystack: string, query: string): boolean {
+  const q = normalize(query);
+  if (!q) return true;
+  const hay = normalize(haystack);
+  if (hay.includes(q)) return true;
+  if (hasJamo(q)) return toChoseong(hay).includes(toChoseong(q));
+  return false;
+}
+
 /** 한 장소의 전체 태그(속성 태그 + 일반 태그) */
 function placeTagSet(place: Place): Set<string> {
   return new Set([...(place.filterTags ?? []), ...place.tags]);
