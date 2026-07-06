@@ -36,7 +36,7 @@ export default function HeroSearch() {
           e.preventDefault();
           emitSearch({ query: q.trim() });
         }}
-        className="flex items-center gap-1.5 rounded-2xl bg-white p-1.5 shadow-lg shadow-forest-900/25 ring-1 ring-black/5"
+        className="flex items-center gap-1.5 rounded-2xl bg-white p-1.5 shadow-xl shadow-forest-900/30 ring-1 ring-black/5"
       >
         <Search
           className="ml-2.5 h-5 w-5 shrink-0 text-neutral-400"
@@ -52,7 +52,7 @@ export default function HeroSearch() {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-forest-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
+          className="shrink-0 rounded-xl bg-ember-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-ember-600"
         >
           검색
         </button>

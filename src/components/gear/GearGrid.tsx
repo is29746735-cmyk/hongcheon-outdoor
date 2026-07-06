@@ -20,10 +20,10 @@ function ShopButton({ shop }: { shop: ShopLink }) {
         href={shop.url}
         target="_blank"
         rel="noopener noreferrer sponsored nofollow"
-        className="inline-flex items-center gap-1.5 rounded-xl bg-forest-600 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-forest-700"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-ember-500 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-ember-600"
       >
         <ShoppingBag size={15} strokeWidth={2.2} />
-        {shop.store}에서 보기
+        {shop.store} 최저가 보기
       </a>
     );
   }

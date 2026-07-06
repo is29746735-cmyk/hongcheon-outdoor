@@ -16,11 +16,11 @@ function isPlaceholder(src?: string): boolean {
   return !src || src.includes("placeholder");
 }
 
-/** 카테고리별 플레이스홀더 그라데이션 (지도 마커 색 체계와 일치) */
+/** 카테고리별 플레이스홀더 그라데이션 — 자연 팔레트(캠핑=숲, 낚시=강물, 차박=노을) */
 const CATEGORY_GRADIENT: Record<PlaceCategory, string> = {
   camping: "from-forest-500 to-forest-700",
-  fishing: "from-sky-500 to-sky-700",
-  carcamping: "from-amber-400 to-amber-600",
+  fishing: "from-river-400 to-river-600",
+  carcamping: "from-ember-300 to-clay-500",
 };
 
 interface PlaceImageProps {
@@ -51,21 +51,24 @@ export default function PlaceImage({
         <div
           className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${CATEGORY_GRADIENT[place.category]}`}
         >
-          {/* 등고선 텍스처 (깊이감) */}
+          {/* 부드러운 빛 (좌상단 하이라이트) */}
+          <div className="absolute -left-6 -top-8 h-28 w-28 rounded-full bg-white/20 blur-2xl" />
+          {/* 등고선 텍스처(시그니처) */}
           <svg
             aria-hidden
-            className="absolute inset-0 h-full w-full opacity-[0.18]"
+            className="absolute inset-0 h-full w-full opacity-[0.2]"
             viewBox="0 0 400 300"
             preserveAspectRatio="none"
             fill="none"
             stroke="#fff"
             strokeWidth="1.5"
           >
-            <path d="M-10 90 C 80 60,160 120,250 85 S 410 70,420 100" />
-            <path d="M-10 150 C 90 125,170 180,260 145 S 410 135,420 160" />
-            <path d="M-10 210 C 70 185,180 235,250 205 S 410 200,420 220" />
+            <path d="M-10 70 C 80 45,160 105,250 70 S 410 55,420 85" />
+            <path d="M-10 125 C 90 100,170 155,260 120 S 410 110,420 135" />
+            <path d="M-10 185 C 70 160,180 210,250 180 S 410 175,420 195" />
+            <path d="M-10 245 C 100 220,190 268,270 238 S 410 235,420 255" />
           </svg>
-          <span className="relative grid h-14 w-14 place-items-center rounded-2xl bg-white/20 text-white ring-1 ring-white/25 backdrop-blur-sm">
+          <span className="relative grid h-14 w-14 place-items-center rounded-2xl bg-white/20 text-white ring-1 ring-white/30 backdrop-blur-sm">
             <CategoryIcon category={place.category} className="h-7 w-7" />
           </span>
         </div>
