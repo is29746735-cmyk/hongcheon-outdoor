@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mountain } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/constants";
 import AuthButton from "@/components/layout/AuthButton";
+import MobileNav from "@/components/layout/MobileNav";
 
 export default function Header() {
   return (
@@ -15,22 +16,22 @@ export default function Header() {
             {SITE.name}
           </span>
         </Link>
-        {/* 모바일: 메뉴가 폭을 넘으면 가로 스크롤(스크롤바 숨김) — 로고·로그인은 항상 노출 */}
-        <div className="flex min-w-0 items-center gap-1">
-          <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto text-sm font-semibold [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex items-center gap-1">
+          {/* 데스크톱(md+): 인라인 메뉴 */}
+          <nav className="hidden items-center gap-0.5 text-sm font-semibold md:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="shrink-0 rounded-full px-3 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
+                className="rounded-full px-3 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="shrink-0">
-            <AuthButton />
-          </div>
+          <AuthButton />
+          {/* 모바일(<md): 햄버거 메뉴 */}
+          <MobileNav />
         </div>
       </div>
     </header>
