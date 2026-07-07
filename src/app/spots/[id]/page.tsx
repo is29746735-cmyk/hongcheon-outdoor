@@ -120,7 +120,7 @@ export default function SpotDetailPage({ params }: PageProps) {
             </span>
           )}
           {place.connectedFishing && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-sky-600 px-3 py-1 text-xs font-semibold text-white">
+            <span className="inline-flex items-center gap-1 rounded-full bg-river-500 px-3 py-1 text-xs font-semibold text-white">
               <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
               캠핑+낚시
             </span>
@@ -160,8 +160,8 @@ export default function SpotDetailPage({ params }: PageProps) {
 
       {/* 캠핑 ↔ 낚시 연계 강조 */}
       {place.connectedFishing && place.connectionNote && (
-        <section className="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-5">
-          <h2 className="flex items-center gap-1.5 text-sm font-bold text-sky-800">
+        <section className="mt-6 rounded-2xl border border-river-200 bg-river-50 p-5">
+          <h2 className="flex items-center gap-1.5 text-sm font-bold text-river-700">
             <Fish className="h-4 w-4" strokeWidth={2} />
             캠핑 + 낚시 연계 포인트
           </h2>
@@ -281,24 +281,32 @@ export default function SpotDetailPage({ params }: PageProps) {
         ))}
       </div>
 
-      {/* 함께 준비하면 좋은 용품 (클릭 시 설명·구매 팁·주의문) */}
+      {/* 함께 준비하면 좋은 용품 — 커머스 진입점(엠버 강조, 홈과 동일 언어) */}
       {relatedGear.length > 0 && (
-        <section className="mt-8">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">
-                <ShoppingBag className="h-4 w-4" strokeWidth={2} />
+        <section className="relative mt-8 overflow-hidden rounded-3xl border border-ember-100 bg-gradient-to-br from-sand-50 to-ember-50 p-6">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-ember-100/50 blur-2xl" />
+          <div className="relative flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ember-500 text-white">
+                <ShoppingBag className="h-5 w-5" strokeWidth={2} />
               </span>
-              {gearHeading}
-            </h2>
+              <div>
+                <span className="inline-flex items-center gap-1 rounded-full bg-ember-500/10 px-2 py-0.5 text-[11px] font-bold text-ember-700">
+                  쿠팡 최저가
+                </span>
+                <h2 className="mt-0.5 text-base font-extrabold text-forest-900">
+                  {gearHeading}
+                </h2>
+              </div>
+            </div>
             <Link
               href={`/gear#${gearCategory}`}
-              className="shrink-0 text-sm font-semibold text-forest-600 transition-colors hover:text-forest-700"
+              className="shrink-0 text-sm font-bold text-ember-600 transition-colors hover:text-ember-700"
             >
-              용품 더 보기 →
+              더 보기 →
             </Link>
           </div>
-          <div className="mt-4">
+          <div className="relative mt-5">
             <GearGrid
               items={relatedGear}
               gridClassName="grid grid-cols-1 gap-4 sm:grid-cols-2"

@@ -25,9 +25,9 @@ const CAUTION_ICONS = [Ban, Waves, TriangleAlert, MapPinOff, Leaf] as const;
  */
 export default function FishingGuide() {
   return (
-    <section className="mt-6 rounded-3xl border border-sky-200 bg-sky-50/70 p-6">
+    <section className="mt-6 rounded-3xl border border-river-200 bg-river-50/70 p-6">
       <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
-        <span className="grid h-8 w-8 place-items-center rounded-xl bg-sky-100 text-sky-700">
+        <span className="grid h-8 w-8 place-items-center rounded-xl bg-river-100 text-river-700">
           <Fish className="h-4 w-4" strokeWidth={2} />
         </span>
         낚시 전 확인 · 금어기와 주의사항
@@ -78,7 +78,7 @@ export default function FishingGuide() {
           const Icon = CAUTION_ICONS[i] ?? TriangleAlert;
           return (
             <li key={c.title} className="flex gap-3">
-              <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white text-sky-700">
+              <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white text-river-700">
                 <Icon className="h-4 w-4" strokeWidth={2} />
               </span>
               <div>
@@ -93,7 +93,7 @@ export default function FishingGuide() {
       </ul>
 
       {/* 출처 · 면책 */}
-      <div className="mt-5 border-t border-sky-200 pt-3">
+      <div className="mt-5 border-t border-river-200 pt-3">
         <p className="text-[11px] leading-relaxed text-neutral-500">
           규정은 개정되거나 수역·구간에 따라 달라질 수 있습니다. 방문 전 최신
           정보를 확인하세요.
@@ -105,7 +105,7 @@ export default function FishingGuide() {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-sky-700 hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-river-700 hover:underline"
             >
               <ExternalLink className="h-3 w-3" strokeWidth={2} />
               {s.label}
