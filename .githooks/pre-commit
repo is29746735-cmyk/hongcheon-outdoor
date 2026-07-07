@@ -1,0 +1,46 @@
+#!/bin/sh
+# ─────────────────────────────────────────────────────────────
+# 커밋 전 시크릿 유출 1차 차단 (바이브코딩 보안 체크리스트: pre-commit 훅)
+# 오탐으로 자동커밋 워크플로가 조용히 막히지 않도록, '확실한' 패턴만 차단한다.
+# 활성화: git config core.hooksPath .githooks   (이 저장소에 이미 설정됨)
+# 오탐 우회: git commit --no-verify
+# ─────────────────────────────────────────────────────────────
+
+found=""
+
+# 1) .env 파일(예시/샘플 제외)이 스테이징되면 차단 — .gitignore 백스톱
+files=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
+for f in $files; do
+  base=$(basename "$f")
+  case "$base" in
+    *.example|*.sample|*.template) continue ;;
+  esac
+  case "$base" in
+    .env|.env.*|*.env) found="$found
+  [env 파일] $f" ;;
+  esac
+done
+
+# 2) 추가된 라인에서 고신뢰 시크릿 패턴 탐지
+#    (개인키 블록 / AWS / Google API 키 / Slack / GitHub 토큰 /
+#     알려진 시크릿 env에 실제값 대입)
+hits=$(git diff --cached -U0 --diff-filter=ACM 2>/dev/null \
+  | grep -E '^\+[^+]' \
+  | grep -nE '(-----BEGIN [A-Z ]*PRIVATE KEY-----|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|xox[baprs]-[0-9A-Za-z-]{10,}|ghp_[0-9A-Za-z]{36}|(AUTH_SECRET|TURSO_AUTH_TOKEN|BLOB_READ_WRITE_TOKEN|AUTH_KAKAO_SECRET|AUTH_GOOGLE_SECRET|AUTH_NAVER_SECRET|KMA_SERVICE_KEY)[ ]*[:=][ ]*["'"'"']?[A-Za-z0-9_-]{16,})' \
+  2>/dev/null | head -5)
+if [ -n "$hits" ]; then
+  found="$found
+  [시크릿 패턴]
+$hits"
+fi
+
+if [ -n "$found" ]; then
+  echo "🚫 커밋 차단 — 시크릿으로 보이는 내용이 감지됐습니다:" >&2
+  echo "$found" >&2
+  echo "" >&2
+  echo "  · 실제 시크릿이면 제거 후 .env.local(gitignore됨)로 옮기세요." >&2
+  echo "  · 오탐이면: git commit --no-verify" >&2
+  exit 1
+fi
+
+exit 0
