@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Camera, ImagePlus, Trash2, X, Loader2 } from "lucide-react";
 import {
   loadExperiences,
@@ -13,7 +14,11 @@ import LoginPromptButton from "@/components/LoginPromptButton";
 const MAX_BODY_LEN = 500;
 
 /** 업로드 전 클라이언트에서 이미지 리사이즈(용량·비용 절감). 실패 시 원본 반환. */
-async function compressImage(file: File, maxDim = 1280, quality = 0.82): Promise<Blob> {
+async function compressImage(
+  file: File,
+  maxDim = 1280,
+  quality = 0.82,
+): Promise<Blob> {
   try {
     const bmp = await createImageBitmap(file);
     const scale = Math.min(1, maxDim / Math.max(bmp.width, bmp.height));
@@ -110,7 +115,9 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
         error?: string;
       };
       if (!json.ok || !json.post) {
-        setError(json.error ?? "등록에 실패했어요. 잠시 후 다시 시도해 주세요.");
+        setError(
+          json.error ?? "등록에 실패했어요. 잠시 후 다시 시도해 주세요.",
+        );
         return;
       }
       setPosts((prev) => [json.post as ExperienceDTO, ...prev]);
@@ -133,17 +140,25 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
 
   return (
     <section className="mt-8">
-      <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
-        <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">
-          <Camera className="h-4 w-4" strokeWidth={2} />
-        </span>
-        경험담 · 사진
-        {posts.length > 0 && (
-          <span className="text-sm font-semibold tabular-nums text-neutral-400">
-            {posts.length}
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">
+            <Camera className="h-4 w-4" strokeWidth={2} />
           </span>
-        )}
-      </h2>
+          경험담 · 사진
+          {posts.length > 0 && (
+            <span className="text-sm font-semibold tabular-nums text-neutral-400">
+              {posts.length}
+            </span>
+          )}
+        </h2>
+        <Link
+          href="/experiences"
+          className="shrink-0 text-sm font-semibold text-river-600 transition-colors hover:text-river-700"
+        >
+          전체 보기 →
+        </Link>
+      </div>
       <p className="mt-1.5 text-sm text-neutral-500">
         다녀온 후 사진과 경험을 남겨보세요. 다른 분들에게 큰 도움이 됩니다.
       </p>
@@ -207,7 +222,10 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
                   className="inline-flex items-center gap-1.5 rounded-xl bg-forest-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-forest-700 disabled:opacity-50"
                 >
                   {submitting && (
-                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.2} />
+                    <Loader2
+                      className="h-4 w-4 animate-spin"
+                      strokeWidth={2.2}
+                    />
                   )}
                   {submitting ? "올리는 중…" : "올리기"}
                 </button>
@@ -255,7 +273,9 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
               </p>
               <div className="mt-3 flex items-center justify-between text-xs text-neutral-400">
                 <span>
-                  <span className="font-semibold text-neutral-600">{p.name}</span>
+                  <span className="font-semibold text-neutral-600">
+                    {p.name}
+                  </span>
                   {" · "}
                   {formatDate(p.createdAt)}
                 </span>
