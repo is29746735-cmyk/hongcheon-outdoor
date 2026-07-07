@@ -52,6 +52,7 @@ export const ACTIVITY_LABELS: Record<Activity, string> = {
 export const NAV_LINKS = [
   { href: "/", label: "홈" },
   { href: "/#list", label: "장소" },
-  { href: "/saved", label: "저장" },
   { href: "/gear", label: "용품" },
+  { href: "/experiences", label: "경험담" },
+  { href: "/saved", label: "저장" },
 ] as const;

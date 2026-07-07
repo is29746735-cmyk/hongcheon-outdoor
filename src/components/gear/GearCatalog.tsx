@@ -1,7 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Fish, Tent, Sparkles, Utensils, Search, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Fish,
+  Tent,
+  Sparkles,
+  Utensils,
+  Search,
+  X,
+  LayoutGrid,
+} from "lucide-react";
 import { getGearByCategory, type GearCategory } from "@/data/gear";
 import { textMatches } from "@/lib/search";
 import GearGrid from "@/components/gear/GearGrid";
@@ -13,10 +21,69 @@ const SECTIONS: { key: GearCategory; label: string; Icon: typeof Fish }[] = [
   { key: "food", label: "먹거리", Icon: Utensils },
 ];
 
+type CatFilter = GearCategory | "all";
+
+/** 카테고리 필터 pill (선택 시 채워짐 / 낚시는 river 톤) */
+function FilterPill({
+  active,
+  onClick,
+  Icon,
+  label,
+  tone,
+}: {
+  active: boolean;
+  onClick: () => void;
+  Icon: typeof Fish;
+  label: string;
+  tone: "forest" | "river";
+}) {
+  const styles =
+    tone === "river"
+      ? active
+        ? "bg-river-500 text-white"
+        : "bg-river-50 text-river-700 hover:bg-river-100"
+      : active
+        ? "bg-forest-600 text-white"
+        : "bg-forest-50 text-forest-700 hover:bg-forest-100";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${styles}`}
+    >
+      <Icon size={15} strokeWidth={2.2} />
+      {label}
+    </button>
+  );
+}
+
 export default function GearCatalog() {
   const [query, setQuery] = useState("");
+  const [activeCat, setActiveCat] = useState<CatFilter>("all");
 
-  // 검색어로 필터링한 섹션별 아이템 (검색 대상: 이름·설명·태그)
+  // 다른 페이지(홈·상세)에서 /gear#fishing 처럼 넘어오면 해당 종류만 선택
+  useEffect(() => {
+    const applyHash = () => {
+      const h = window.location.hash.replace("#", "");
+      if (SECTIONS.some((s) => s.key === h)) setActiveCat(h as GearCategory);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
+  const selectCat = (cat: CatFilter) => {
+    setActiveCat(cat);
+    // 공유·뒤로가기용 URL 해시 동기화(스크롤 없이)
+    const url =
+      cat === "all"
+        ? window.location.pathname + window.location.search
+        : `#${cat}`;
+    history.replaceState(null, "", url);
+  };
+
+  // 검색어로 필터링한 종류별 아이템 (검색 대상: 이름·설명·태그)
   const filtered = useMemo(
     () =>
       SECTIONS.map((s) => ({
@@ -30,6 +97,13 @@ export default function GearCatalog() {
 
   const searching = query.trim().length > 0;
   const totalResults = filtered.reduce((n, s) => n + s.items.length, 0);
+
+  // 검색 중이면 전체에서 매칭, 아니면 선택한 종류(또는 전체)만 표시
+  const visible = searching
+    ? filtered
+    : activeCat === "all"
+      ? filtered
+      : filtered.filter((s) => s.key === activeCat);
 
   return (
     <>
@@ -59,22 +133,25 @@ export default function GearCatalog() {
         )}
       </div>
 
-      {/* 카테고리 바로가기 (검색 중이 아닐 때만) */}
+      {/* 종류 필터 (검색 중이 아닐 때만) — 누르면 그 종류만 표시 */}
       {!searching && (
         <nav className="mt-4 flex flex-wrap gap-2">
+          <FilterPill
+            active={activeCat === "all"}
+            onClick={() => selectCat("all")}
+            Icon={LayoutGrid}
+            label="전체"
+            tone="forest"
+          />
           {SECTIONS.map(({ key, label, Icon }) => (
-            <a
+            <FilterPill
               key={key}
-              href={`#${key}`}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
-                key === "fishing"
-                  ? "bg-river-50 text-river-700 hover:bg-river-100"
-                  : "bg-forest-50 text-forest-700 hover:bg-forest-100"
-              }`}
-            >
-              <Icon size={15} strokeWidth={2.2} />
-              {label}
-            </a>
+              active={activeCat === key}
+              onClick={() => selectCat(key)}
+              Icon={Icon}
+              label={label}
+              tone={key === "fishing" ? "river" : "forest"}
+            />
           ))}
         </nav>
       )}
@@ -95,17 +172,21 @@ export default function GearCatalog() {
         </p>
       )}
 
-      {filtered.map(({ key, label, Icon, items }) => {
-        if (items.length === 0) return null; // 검색 결과 없는 섹션 숨김
+      {visible.map(({ key, label, Icon, items }) => {
+        if (items.length === 0) return null; // 검색 결과 없는 종류 숨김
         return (
-          <section key={key} id={key} className="mt-10 scroll-mt-20">
+          <section key={key} id={key} className="mt-8 scroll-mt-20">
             <div className="flex items-center gap-2">
               <Icon
-                className={key === "fishing" ? "text-river-600" : "text-forest-600"}
+                className={
+                  key === "fishing" ? "text-river-600" : "text-forest-600"
+                }
                 size={22}
                 strokeWidth={2.2}
               />
-              <h2 className="text-xl font-extrabold text-forest-800">{label}</h2>
+              <h2 className="text-xl font-extrabold text-forest-800">
+                {label}
+              </h2>
               <span className="text-sm font-semibold tabular-nums text-neutral-400">
                 {items.length}
               </span>
