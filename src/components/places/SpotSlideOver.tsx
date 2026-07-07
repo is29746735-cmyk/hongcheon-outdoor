@@ -182,7 +182,7 @@ export default function SpotSlideOver({
             </p>
 
             {place.connectedFishing && (
-              <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-sky-600 px-2.5 py-1 text-xs font-bold text-white">
+              <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-river-500 px-2.5 py-1 text-xs font-bold text-white">
                 <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
                 캠핑+낚시 연계
               </span>

@@ -81,7 +81,7 @@ export default function PlaceCard({
   return (
     <div
       ref={rootRef}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+      className="group flex flex-col overflow-hidden rounded-3xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-200 hover:shadow-card-hover"
     >
       <Trigger className="relative block">
         <PlaceImage place={place} className="aspect-[4/3]" />
@@ -91,7 +91,7 @@ export default function PlaceCard({
           {CATEGORY_LABELS[place.category]}
         </span>
         {place.connectedFishing && (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-sky-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-river-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
             <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
             캠핑+낚시
           </span>

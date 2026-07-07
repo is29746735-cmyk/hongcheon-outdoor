@@ -66,7 +66,11 @@ export default function GearCatalog() {
             <a
               key={key}
               href={`#${key}`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-forest-50 px-3.5 py-2 text-sm font-semibold text-forest-700 transition-colors hover:bg-forest-100"
+              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
+                key === "fishing"
+                  ? "bg-river-50 text-river-700 hover:bg-river-100"
+                  : "bg-forest-50 text-forest-700 hover:bg-forest-100"
+              }`}
             >
               <Icon size={15} strokeWidth={2.2} />
               {label}
@@ -96,7 +100,11 @@ export default function GearCatalog() {
         return (
           <section key={key} id={key} className="mt-10 scroll-mt-20">
             <div className="flex items-center gap-2">
-              <Icon className="text-forest-600" size={22} strokeWidth={2.2} />
+              <Icon
+                className={key === "fishing" ? "text-river-600" : "text-forest-600"}
+                size={22}
+                strokeWidth={2.2}
+              />
               <h2 className="text-xl font-extrabold text-forest-800">{label}</h2>
               <span className="text-sm font-semibold tabular-nums text-neutral-400">
                 {items.length}

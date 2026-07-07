@@ -118,8 +118,8 @@ export default function PlaceBrowser() {
                 onClick={() => f.toggleFishingType(ft.value)}
                 className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                   on
-                    ? "bg-sky-600 text-white"
-                    : "bg-sand-100 text-neutral-600 hover:bg-sky-50 hover:text-sky-700"
+                    ? "bg-river-500 text-white"
+                    : "bg-sand-100 text-neutral-600 hover:bg-river-50 hover:text-river-700"
                 }`}
               >
                 {ft.label}
@@ -175,9 +175,9 @@ export default function PlaceBrowser() {
 
       {/* 캠핑 + 낚시 연계 강조 */}
       {showConnectedSection && connected.length > 0 && (
-        <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50 p-5">
+        <section className="mt-8 rounded-2xl border border-river-200 bg-river-50 p-5">
           <h2 className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-forest-800">
-            <Fish className="h-5 w-5 text-sky-600" strokeWidth={2} />
+            <Fish className="h-5 w-5 text-river-600" strokeWidth={2} />
             캠핑하며 낚시까지 — 연계 추천
           </h2>
           <p className="mt-1 text-sm text-neutral-600">
