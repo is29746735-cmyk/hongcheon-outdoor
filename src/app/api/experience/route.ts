@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { db, schema } from "@/db";
 import { getPlaceById } from "@/data/places";
 import { checkReviewContent } from "@/lib/contentFilter";
+import { moderateImage } from "@/lib/moderate-image";
 import { rateLimit } from "@/lib/rate-limit";
 import type { ExperienceDTO } from "@/lib/experience-actions";
 
@@ -61,9 +62,20 @@ export async function POST(req: NextRequest) {
       return err("이미지 파일만 올릴 수 있어요.");
     if (file.size > MAX_IMAGE_BYTES)
       return err("사진 용량이 너무 큽니다. 8MB 이하로 올려 주세요.");
+
+    // 바이트를 한 번만 읽어 AI 검열과 업로드에 재사용
+    const bytes = Buffer.from(await file.arrayBuffer());
+
+    // AI 사진 검열 — 부적절(음란·폭력 등) 이미지 차단 (OPENAI_API_KEY 있을 때만 동작)
+    const mod = await moderateImage(bytes, file.type);
+    if (mod.flagged)
+      return err(
+        "부적절한 사진으로 판단되어 등록할 수 없어요. 다른 사진을 사용해 주세요.",
+      );
+
     const ext = file.type === "image/png" ? "png" : "jpg";
     try {
-      const blob = await put(`experience/${placeId}/${id}.${ext}`, file, {
+      const blob = await put(`experience/${placeId}/${id}.${ext}`, bytes, {
         access: "public",
         contentType: file.type,
       });
