@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Camera } from "lucide-react";
 import ExperienceFeed from "@/components/ExperienceFeed";
+import { getAllPlaces } from "@/data/places";
 
 export const metadata: Metadata = {
   title: "경험담 · 사진",
@@ -10,6 +11,13 @@ export const metadata: Metadata = {
 };
 
 export default function ExperiencesPage() {
+  // 작성 폼의 장소 선택용 — 서버에서 목록을 만들어 전달(클라 번들 최소화)
+  const places = getAllPlaces().map((p) => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+  }));
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
       {/* ── 커뮤니티 헤더 — river(강물/사람) 톤 + 등고선 시그니처 ── */}
@@ -45,7 +53,7 @@ export default function ExperiencesPage() {
         </div>
       </header>
 
-      <ExperienceFeed />
+      <ExperienceFeed places={places} />
     </main>
   );
 }
