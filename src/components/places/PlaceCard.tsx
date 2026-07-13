@@ -81,7 +81,7 @@ export default function PlaceCard({
   return (
     <div
       ref={rootRef}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-neutral-200/80 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-200 hover:shadow-card-hover"
+      className="group flex flex-col overflow-hidden rounded-3xl border border-sand-300 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-400 hover:shadow-card-hover"
     >
       <Trigger className="relative block">
         <PlaceImage place={place} className="aspect-[4/3]" />
@@ -109,7 +109,7 @@ export default function PlaceCard({
             )}
           </h3>
         </Trigger>
-        <p className="mt-1.5 flex items-center gap-1 text-xs text-neutral-500">
+        <p className="mt-1.5 flex items-center gap-1 text-xs text-neutral-600">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
           <span className="truncate">{place.region}</span>
         </p>

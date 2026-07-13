@@ -79,7 +79,7 @@ export default function PlaceBrowser() {
       />
 
       {/* 상세 필터 메뉴 */}
-      <div className="mt-3 space-y-2.5 rounded-2xl border border-neutral-200 bg-white/60 p-3.5">
+      <div className="mt-3 space-y-2.5 rounded-2xl border border-sand-300 bg-white p-3.5">
         {/* 한적함(고립도) */}
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
