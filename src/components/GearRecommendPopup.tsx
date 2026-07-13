@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   Tent,
@@ -17,14 +18,14 @@ import { getAllGear, type GearCategory, type GearItem } from "@/data/gear";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 
 /**
- * 사이트 첫 진입 시(세션당 1회) 랜덤 용품 하나를 추천하는 팝업 — 커머스 진입점.
- * 쿠팡 파트너스 연결 전 예시 단계: item.shops[].url 이 채워지면 '구매하러 가기'가
- * 자동으로 실제 제휴 링크(새 창)로 연결되고, 그전까지는 용품 페이지로 안내한다.
+ * 홈('/')에 올 때마다(방문·복귀 시) 랜덤 용품 하나를 추천하는 팝업 — 커머스 진입점.
+ * '오늘 하루 보지 않기'를 체크한 뒤 닫으면 24시간 동안 숨긴다(localStorage).
  *
- * 노출 빈도 = 세션당 1회(SESSION_KEY). '매 방문'으로 바꾸려면 아래 sessionStorage
- * 체크를 제거, '하루 1회'는 localStorage + 날짜 비교로 교체하면 된다.
+ * 쿠팡 파트너스 연결 전 예시: item.shops[].url 이 채워지면 '구매하러 가기'가
+ * 자동으로 실제 제휴 링크(새 창)로 전환되고, 그전까지는 용품 페이지로 안내한다.
  */
-const SESSION_KEY = "hco:gear-popup-shown";
+const HIDE_KEY = "hco:gear-popup-hide-until"; // 이 시각(ms) 전까지 숨김
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const CATEGORY: Record<GearCategory, { label: string; Icon: LucideIcon }> = {
   camping: { label: "캠핑용품", Icon: Tent },
@@ -34,36 +35,58 @@ const CATEGORY: Record<GearCategory, { label: string; Icon: LucideIcon }> = {
 };
 
 export default function GearRecommendPopup() {
+  const pathname = usePathname();
   const [item, setItem] = useState<GearItem | null>(null);
+  const [dontShowToday, setDontShowToday] = useState(false);
+  const dontShowRef = useRef(false);
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(!!item, panelRef);
 
-  // 최초 마운트 시 세션 확인 후 랜덤 추천 (클라이언트 전용 — SSR 플래시 없음)
+  // 체크 상태를 ref에 동기화(닫기 시 최신값 참조용)
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
-    } catch {
-      // 스토리지 차단(시크릿 모드 등) — 그냥 1회 노출로 진행
+    dontShowRef.current = dontShowToday;
+  }, [dontShowToday]);
+
+  // 홈에 올 때마다 노출. '하루 숨김'이 설정돼 있으면 건너뛴다. 홈이 아니면 닫는다.
+  useEffect(() => {
+    if (pathname !== "/") {
+      setItem(null);
+      return;
     }
+    let hideUntil = 0;
+    try {
+      hideUntil = Number(localStorage.getItem(HIDE_KEY)) || 0;
+    } catch {
+      /* 스토리지 차단(시크릿 등) — 무시하고 노출 */
+    }
+    if (Date.now() < hideUntil) return;
+
     const all = getAllGear();
     if (all.length === 0) return;
     const picked = all[Math.floor(Math.random() * all.length)];
     const timer = setTimeout(() => {
+      setDontShowToday(false); // 새로 열 때 체크 초기화
       setItem(picked);
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  const close = () => {
+    if (dontShowRef.current) {
       try {
-        sessionStorage.setItem(SESSION_KEY, "1");
+        localStorage.setItem(HIDE_KEY, String(Date.now() + ONE_DAY));
       } catch {
         /* noop */
       }
-    }, 700);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+    setItem(null);
+  };
 
   // ESC 닫기 + 배경 스크롤 잠금
   useEffect(() => {
     if (!item) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setItem(null);
+      if (e.key === "Escape") close();
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -71,11 +94,11 @@ export default function GearRecommendPopup() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
   if (!item) return null;
 
-  const close = () => setItem(null);
   const { label, Icon } = CATEGORY[item.category];
   const buyUrl = item.shops.find((s) => s.url)?.url;
 
@@ -193,7 +216,18 @@ export default function GearRecommendPopup() {
             </button>
           </div>
 
-          <p className="mt-3 text-[11px] leading-relaxed text-neutral-400">
+          {/* 오늘 하루 보지 않기 — 체크 후 닫으면 24시간 숨김 */}
+          <label className="mt-3 flex cursor-pointer select-none items-center justify-center gap-2 border-t border-sand-300 pt-3 text-xs font-medium text-neutral-500">
+            <input
+              type="checkbox"
+              checked={dontShowToday}
+              onChange={(e) => setDontShowToday(e.target.checked)}
+              className="h-3.5 w-3.5 accent-forest-600"
+            />
+            오늘 하루 보지 않기
+          </label>
+
+          <p className="mt-2.5 text-[11px] leading-relaxed text-neutral-400">
             쿠팡 파트너스 예시입니다. 실제 제휴 링크는 준비 중이며, 연결 시 구매
             금액의 일정 수수료를 받을 수 있습니다.
           </p>
