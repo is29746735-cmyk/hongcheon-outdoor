@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import GearRecommendPopup from "@/components/GearRecommendPopup";
+import { auth } from "@/auth";
 import { SITE } from "@/constants";
 
 export const metadata: Metadata = {
@@ -49,18 +50,23 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 로그인 사용자 식별자(비로그인은 null) — 용품 팝업의 '하루 숨김'을 계정별로
+  // 구분해, 로그아웃하거나 다른 계정으로 로그인하면 다시 노출되도록 한다.
+  const session = await auth().catch(() => null);
+  const userKey = session?.user?.id ?? null;
+
   return (
     <html lang="ko">
       <body className="flex min-h-screen flex-col bg-sand-50 text-neutral-800 antialiased">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <GearRecommendPopup />
+        <GearRecommendPopup userKey={userKey} />
       </body>
     </html>
   );

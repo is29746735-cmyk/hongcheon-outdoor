@@ -21,11 +21,38 @@ import { useFocusTrap } from "@/lib/useFocusTrap";
  * 홈('/')에 올 때마다(방문·복귀 시) 랜덤 용품 하나를 추천하는 팝업 — 커머스 진입점.
  * '오늘 하루 보지 않기'를 체크한 뒤 닫으면 24시간 동안 숨긴다(localStorage).
  *
+ * 숨김은 '누가 숨겼는지'(로그인 사용자 id, 비로그인은 'anon')와 함께 저장하고,
+ * 현재 로그인 사용자와 일치할 때만 적용한다. 따라서 로그아웃하거나 다른 계정으로
+ * 로그인하면(식별자가 달라지면) 24시간 안이라도 다시 노출된다.
+ *
  * 쿠팡 파트너스 연결 전 예시: item.shops[].url 이 채워지면 '구매하러 가기'가
  * 자동으로 실제 제휴 링크(새 창)로 전환되고, 그전까지는 용품 페이지로 안내한다.
  */
-const HIDE_KEY = "hco:gear-popup-hide-until"; // 이 시각(ms) 전까지 숨김
+const HIDE_KEY = "hco:gear-popup-hide-until"; // { until: ms, user } — until 전까지 user에게만 숨김
 const ONE_DAY = 24 * 60 * 60 * 1000;
+const ANON = "anon";
+
+type HideRecord = { until: number; user: string };
+
+/** 저장된 숨김 기록을 읽는다. 형식이 안 맞으면(구버전 등) null. */
+function readHide(): HideRecord | null {
+  try {
+    const raw = localStorage.getItem(HIDE_KEY);
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      typeof (parsed as HideRecord).until === "number" &&
+      typeof (parsed as HideRecord).user === "string"
+    ) {
+      return parsed as HideRecord;
+    }
+  } catch {
+    /* 스토리지 차단(시크릿 등)·파싱 실패 — 숨김 없음으로 취급 */
+  }
+  return null;
+}
 
 const CATEGORY: Record<GearCategory, { label: string; Icon: LucideIcon }> = {
   camping: { label: "캠핑용품", Icon: Tent },
@@ -34,7 +61,11 @@ const CATEGORY: Record<GearCategory, { label: string; Icon: LucideIcon }> = {
   food: { label: "먹거리", Icon: Utensils },
 };
 
-export default function GearRecommendPopup() {
+export default function GearRecommendPopup({
+  userKey,
+}: {
+  userKey: string | null;
+}) {
   const pathname = usePathname();
   const [item, setItem] = useState<GearItem | null>(null);
   const [dontShowToday, setDontShowToday] = useState(false);
@@ -42,24 +73,28 @@ export default function GearRecommendPopup() {
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(!!item, panelRef);
 
+  // 현재 사용자 식별자(비로그인은 'anon'). 닫기 시 최신값을 쓰도록 ref에도 동기화.
+  const currentUser = userKey ?? ANON;
+  const currentUserRef = useRef(currentUser);
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
+
   // 체크 상태를 ref에 동기화(닫기 시 최신값 참조용)
   useEffect(() => {
     dontShowRef.current = dontShowToday;
   }, [dontShowToday]);
 
-  // 홈에 올 때마다 노출. '하루 숨김'이 설정돼 있으면 건너뛴다. 홈이 아니면 닫는다.
+  // 홈에 올 때마다 노출. 현재 사용자가 설정한 '하루 숨김'이 유효하면 건너뛴다.
+  // (로그아웃/계정 전환으로 식별자가 달라지면 이전 숨김은 무시돼 다시 노출됨.)
+  // 홈이 아니면 닫는다.
   useEffect(() => {
     if (pathname !== "/") {
       setItem(null);
       return;
     }
-    let hideUntil = 0;
-    try {
-      hideUntil = Number(localStorage.getItem(HIDE_KEY)) || 0;
-    } catch {
-      /* 스토리지 차단(시크릿 등) — 무시하고 노출 */
-    }
-    if (Date.now() < hideUntil) return;
+    const hide = readHide();
+    if (hide && hide.user === currentUser && Date.now() < hide.until) return;
 
     const all = getAllGear();
     if (all.length === 0) return;
@@ -69,12 +104,16 @@ export default function GearRecommendPopup() {
       setItem(picked);
     }, 700);
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, currentUser]);
 
   const close = () => {
     if (dontShowRef.current) {
       try {
-        localStorage.setItem(HIDE_KEY, String(Date.now() + ONE_DAY));
+        const record: HideRecord = {
+          until: Date.now() + ONE_DAY,
+          user: currentUserRef.current,
+        };
+        localStorage.setItem(HIDE_KEY, JSON.stringify(record));
       } catch {
         /* noop */
       }
