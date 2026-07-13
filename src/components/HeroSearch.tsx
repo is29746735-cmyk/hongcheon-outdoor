@@ -36,7 +36,7 @@ export default function HeroSearch() {
           e.preventDefault();
           emitSearch({ query: q.trim() });
         }}
-        className="flex items-center gap-1.5 rounded-2xl bg-white p-1.5 shadow-xl shadow-forest-900/30 ring-1 ring-black/5"
+        className="flex items-center gap-1.5 rounded-sm bg-white p-1.5 shadow-lg shadow-black/20 ring-1 ring-black/5"
       >
         <Search
           className="ml-2.5 h-5 w-5 shrink-0 text-neutral-400"
@@ -64,7 +64,7 @@ export default function HeroSearch() {
             key={c.value}
             type="button"
             onClick={() => emitSearch({ category: c.value })}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-white/15 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
           >
             {c.value !== "all" && (
               <CategoryIcon

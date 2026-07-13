@@ -50,7 +50,7 @@ function FilterPill({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${styles}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm px-3.5 py-2 text-sm font-semibold transition-colors ${styles}`}
     >
       <Icon size={15} strokeWidth={2.2} />
       {label}
@@ -126,7 +126,7 @@ export default function GearCatalog() {
             type="button"
             onClick={() => setQuery("")}
             aria-label="검색어 지우기"
-            className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
+            className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-sm text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
           >
             <X className="h-4 w-4" strokeWidth={2.2} />
           </button>

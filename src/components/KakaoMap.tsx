@@ -300,7 +300,7 @@ export default function KakaoMap({
           {info && (
             <div className="absolute inset-x-2.5 top-2.5 z-30 flex items-start gap-2.5 rounded-xl bg-white/95 px-3.5 py-2.5 shadow-lg ring-1 ring-black/5 backdrop-blur">
               <span
-                className="mt-1 h-3 w-3 shrink-0 rounded-full"
+                className="mt-1 h-3 w-3 shrink-0 rounded-sm"
                 style={{ background: info.color }}
               />
               <div className="min-w-0 flex-1">
@@ -324,7 +324,7 @@ export default function KakaoMap({
                 type="button"
                 onClick={() => setInfo(null)}
                 aria-label="닫기"
-                className="-mr-1 shrink-0 rounded-full p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
+                className="-mr-1 shrink-0 rounded-sm p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
               >
                 <X className="h-4 w-4" strokeWidth={2.2} />
               </button>
@@ -338,7 +338,7 @@ export default function KakaoMap({
                 (c) => (
                   <div key={c} className="flex items-center gap-1.5">
                     <span
-                      className="grid h-4 w-4 place-items-center rounded-full text-white"
+                      className="grid h-4 w-4 place-items-center rounded-sm text-white"
                       style={{ background: CATEGORY_COLORS[c] }}
                     >
                       <CategoryIcon category={c} className="h-2.5 w-2.5" />
@@ -350,7 +350,7 @@ export default function KakaoMap({
               {activeCategory === "carcamping" && (
                 <div className="mt-0.5 flex items-center gap-1.5 border-t border-neutral-200 pt-1">
                   <span
-                    className="grid h-4 w-4 place-items-center rounded-full text-white"
+                    className="grid h-4 w-4 place-items-center rounded-sm text-white"
                     style={{ background: EV_COLOR }}
                   >
                     <EvIcon className="h-2.5 w-2.5" />
@@ -362,7 +362,7 @@ export default function KakaoMap({
           )}
 
           {/* 현재 필터 배지 — 표시 중인 스팟 수 */}
-          <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs text-neutral-600 shadow-md ring-1 ring-black/5">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-sm bg-white/90 px-3 py-1 text-xs text-neutral-600 shadow-md ring-1 ring-black/5">
             {visibleIds ? `${visibleCount}곳 표시 중` : "전체 스팟"}
           </div>
         </>

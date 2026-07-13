@@ -118,7 +118,7 @@ export default function ExperienceFeed({ places }: { places: PlacePick[] }) {
                 {/* 장소 칩 (river 톤) */}
                 <Link
                   href={`/spots/${p.placeId}`}
-                  className="inline-flex w-fit items-center gap-1 rounded-full bg-river-50 px-2.5 py-1 text-xs font-bold text-river-700 transition-colors hover:bg-river-100"
+                  className="inline-flex w-fit items-center gap-1 rounded-sm bg-river-50 px-2.5 py-1 text-xs font-bold text-river-700 transition-colors hover:bg-river-100"
                 >
                   <MapPin className="h-3 w-3" strokeWidth={2.4} />
                   {p.placeName}

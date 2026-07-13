@@ -46,7 +46,7 @@ function Tags({ tags }: { tags?: string[] }) {
       {tags.map((t) => (
         <span
           key={t}
-          className="rounded-full bg-forest-50 px-2.5 py-1 text-xs font-medium text-forest-700"
+          className="rounded-sm bg-forest-50 px-2.5 py-1 text-xs font-medium text-forest-700"
         >
           #{t}
         </span>
@@ -91,7 +91,7 @@ function GearModal({ item, onClose }: { item: GearItem; onClose: () => void }) {
           type="button"
           onClick={onClose}
           aria-label="닫기"
-          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
+          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-sm text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
         >
           <X className="h-4 w-4" strokeWidth={2.2} />
         </button>
@@ -123,7 +123,7 @@ function GearModal({ item, onClose }: { item: GearItem; onClose: () => void }) {
                   key={tip}
                   className="flex gap-2 text-sm leading-relaxed text-neutral-600"
                 >
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-forest-400" />
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-sm bg-forest-400" />
                   {tip}
                 </li>
               ))}
@@ -147,7 +147,7 @@ function GearModal({ item, onClose }: { item: GearItem; onClose: () => void }) {
                   key={c}
                   className="flex gap-2 text-sm leading-relaxed text-neutral-700"
                 >
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#fe9800]" />
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-sm bg-[#fe9800]" />
                   {c}
                 </li>
               ))}

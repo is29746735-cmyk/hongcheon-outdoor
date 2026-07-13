@@ -12,7 +12,7 @@ export default function LoginPromptButton({
     <button
       type="button"
       onClick={() => window.dispatchEvent(new Event("hco:open-login"))}
-      className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
+      className="inline-flex items-center gap-1.5 rounded-sm bg-forest-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
     >
       <LogIn className="h-4 w-4" strokeWidth={2.2} />
       {label}

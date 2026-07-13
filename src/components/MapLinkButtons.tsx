@@ -66,7 +66,7 @@ export default function MapLinkButtons({
           rel="noopener noreferrer"
           onClick={onMapClick}
           aria-label={`${item.label}에서 보기 (새 창)`}
-          className={`rounded-full font-medium transition ${size} ${item.className}`}
+          className={`rounded-sm font-medium transition ${size} ${item.className}`}
         >
           {compact ? item.short : `${item.label}에서 보기`}
         </a>

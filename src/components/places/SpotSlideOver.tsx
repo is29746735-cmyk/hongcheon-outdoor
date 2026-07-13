@@ -148,14 +148,14 @@ export default function SpotSlideOver({
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between border-b border-neutral-200 bg-white/80 px-5 py-4 backdrop-blur">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-forest-700 px-3 py-1 text-xs font-bold text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-sm bg-forest-700 px-3 py-1 text-xs font-bold text-white">
             {place ? CATEGORY_LABELS[place.category] : ""}
           </span>
           <button
             type="button"
             onClick={onClose}
             aria-label="닫기"
-            className="grid h-9 w-9 place-items-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-forest-700"
+            className="grid h-9 w-9 place-items-center rounded-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-forest-700"
           >
             <X className="h-5 w-5" strokeWidth={2.2} />
           </button>
@@ -182,7 +182,7 @@ export default function SpotSlideOver({
             </p>
 
             {place.connectedFishing && (
-              <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-river-500 px-2.5 py-1 text-xs font-bold text-white">
+              <span className="mt-3 inline-flex items-center gap-1 rounded-sm bg-river-500 px-2.5 py-1 text-xs font-bold text-white">
                 <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
                 캠핑+낚시 연계
               </span>
@@ -221,7 +221,7 @@ export default function SpotSlideOver({
                   {detail.facilities.map((fac) => (
                     <li
                       key={fac}
-                      className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200"
+                      className="inline-flex items-center gap-1 rounded-sm bg-white px-2.5 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200"
                     >
                       <CircleCheck
                         className="h-3.5 w-3.5 text-forest-500"
@@ -274,7 +274,7 @@ export default function SpotSlideOver({
               <button
                 type="button"
                 onClick={copyLink}
-                className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold transition ${
+                className={`inline-flex items-center justify-center gap-1.5 rounded-sm px-4 py-2.5 text-sm font-bold transition ${
                   copied
                     ? "bg-forest-50 text-forest-700 ring-1 ring-forest-200"
                     : "bg-white text-neutral-700 ring-1 ring-neutral-300 hover:border-neutral-400 hover:bg-neutral-50"
@@ -297,7 +297,7 @@ export default function SpotSlideOver({
                 href={getDirectionsLink(place)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-forest-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-forest-800"
+                className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-forest-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-forest-800"
               >
                 <Navigation className="h-4 w-4" strokeWidth={2.2} />
                 길찾기
@@ -319,7 +319,7 @@ export default function SpotSlideOver({
           <div className="border-t border-neutral-200 bg-white/80 px-5 py-3.5 backdrop-blur">
             <Link
               href={`/spots/${place.id}`}
-              className="flex w-full items-center justify-center gap-1.5 rounded-full bg-forest-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-forest-800"
+              className="flex w-full items-center justify-center gap-1.5 rounded-sm bg-forest-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-forest-800"
             >
               상세 페이지로 더 보기
               <ArrowRight className="h-4 w-4" strokeWidth={2.2} />

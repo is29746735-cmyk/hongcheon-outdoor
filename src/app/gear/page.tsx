@@ -28,10 +28,10 @@ export default function GearPage() {
           <path d="M-20 160 C 280 120, 520 200, 780 150 S 1180 130, 1230 170" />
           <path d="M-20 230 C 240 190, 540 270, 800 220 S 1180 210, 1230 240" />
         </svg>
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-ember-100/50 blur-2xl" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-sm bg-ember-100/50 blur-2xl" />
 
         <div className="relative">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-ember-500 px-2.5 py-1 text-xs font-bold text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-sm bg-ember-500 px-2.5 py-1 text-xs font-bold text-white">
             <ShoppingBag className="h-3.5 w-3.5" strokeWidth={2.4} />
             준비물 · 쿠팡 최저가
           </span>

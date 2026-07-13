@@ -87,11 +87,11 @@ export default function PlaceCard({
         <PlaceImage place={place} className="aspect-[4/3]" />
         {/* 하단 그라디언트 */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
-        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-forest-700 shadow-sm backdrop-blur">
+        <span className="absolute left-3 top-3 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-bold text-forest-700 shadow-sm backdrop-blur">
           {CATEGORY_LABELS[place.category]}
         </span>
         {place.connectedFishing && (
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-river-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-sm bg-river-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
             <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
             캠핑+낚시
           </span>

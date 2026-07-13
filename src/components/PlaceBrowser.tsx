@@ -92,7 +92,7 @@ export default function PlaceBrowser() {
                 key={o.value}
                 type="button"
                 onClick={() => f.setMinIsolation(o.value)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-sm px-3 py-1 text-xs font-medium transition-colors ${
                   on
                     ? "bg-forest-600 text-white"
                     : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
@@ -116,7 +116,7 @@ export default function PlaceBrowser() {
                 key={ft.value}
                 type="button"
                 onClick={() => f.toggleFishingType(ft.value)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-sm px-3 py-1 text-xs font-medium transition-colors ${
                   on
                     ? "bg-river-500 text-white"
                     : "bg-sand-100 text-neutral-600 hover:bg-river-50 hover:text-river-700"
@@ -140,7 +140,7 @@ export default function PlaceBrowser() {
                 key={t}
                 type="button"
                 onClick={() => f.toggleTag(t)}
-                className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
                   on
                     ? "bg-forest-600 text-white"
                     : "bg-sand-100 text-neutral-600 hover:bg-forest-50 hover:text-forest-700"
@@ -208,7 +208,7 @@ export default function PlaceBrowser() {
                 <CategoryIcon category={group.category} className="h-5 w-5" />
               </span>
               {CATEGORY_LABELS[group.category]}
-              <span className="rounded-full bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
+              <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
                 {group.items.length}곳
               </span>
             </h2>

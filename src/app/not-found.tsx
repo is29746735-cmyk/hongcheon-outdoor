@@ -12,7 +12,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-6 rounded-full bg-forest-600 px-6 py-3 font-semibold text-white hover:bg-forest-700"
+        className="mt-6 rounded-sm bg-forest-600 px-6 py-3 font-semibold text-white hover:bg-forest-700"
       >
         홈으로 가기
       </Link>

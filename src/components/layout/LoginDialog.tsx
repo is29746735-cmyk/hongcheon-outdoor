@@ -79,7 +79,7 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-3.5 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
+        className="inline-flex items-center gap-1.5 rounded-sm bg-forest-600 px-3.5 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
       >
         <LogIn className="h-4 w-4" strokeWidth={2.2} />
         로그인
@@ -106,7 +106,7 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="닫기"
-                className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
+                className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-sm text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600"
               >
                 <X className="h-4 w-4" strokeWidth={2.2} />
               </button>

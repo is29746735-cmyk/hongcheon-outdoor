@@ -155,7 +155,7 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
                   type="button"
                   onClick={() => pickFile(null)}
                   aria-label="사진 제거"
-                  className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-black/50 text-white transition hover:bg-black/70"
+                  className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-sm bg-black/50 text-white transition hover:bg-black/70"
                 >
                   <X className="h-4 w-4" strokeWidth={2.2} />
                 </button>

@@ -231,7 +231,7 @@ export default function NearbyShops({ place }: { place: Place }) {
                   </span>
                   <div className="min-w-0">
                     <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${shop.chip}`}
+                      className={`inline-block rounded-sm px-2 py-0.5 text-[11px] font-bold ${shop.chip}`}
                     >
                       {shop.label}
                     </span>
@@ -268,7 +268,7 @@ export default function NearbyShops({ place }: { place: Place }) {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full bg-forest-50 px-2.5 py-1 text-xs font-semibold text-forest-700 transition hover:bg-forest-100"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-sm bg-forest-50 px-2.5 py-1 text-xs font-semibold text-forest-700 transition hover:bg-forest-100"
                   >
                     <Navigation className="h-3 w-3" strokeWidth={2.2} />
                     길찾기

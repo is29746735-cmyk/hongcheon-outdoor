@@ -202,7 +202,7 @@ export default function CommentSection({
           <MessageSquare className="h-4 w-4" strokeWidth={2} />
         </span>
         이용자 리뷰
-        <span className="rounded-full bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
+        <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
           {reviews.length}
         </span>
       </h2>
@@ -235,7 +235,7 @@ export default function CommentSection({
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event("hco:open-login"))}
-            className="inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-forest-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-forest-700"
           >
             <LogIn className="h-4 w-4" strokeWidth={2.2} />
             로그인하고 리뷰 쓰기
@@ -250,13 +250,13 @@ export default function CommentSection({
           className="mt-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-card"
         >
           {editing ? (
-            <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+            <p className="mb-3 inline-flex items-center gap-1.5 rounded-sm bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
               <Pencil className="h-3.5 w-3.5" strokeWidth={2} />
               리뷰 수정 중 — 수정은 현장이 아니어도 가능합니다
             </p>
           ) : (
             location && (
-              <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-forest-50 px-3 py-1.5 text-xs font-semibold text-forest-700">
+              <p className="mb-3 inline-flex items-center gap-1.5 rounded-sm bg-forest-50 px-3 py-1.5 text-xs font-semibold text-forest-700">
                 <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
                 리뷰는 현장(스팟 근처)에서만 등록됩니다
               </p>
@@ -360,7 +360,7 @@ export default function CommentSection({
           <button
             type="button"
             onClick={startEdit}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-forest-700 ring-1 ring-forest-200 transition hover:bg-forest-100"
+            className="inline-flex shrink-0 items-center gap-1 rounded-sm bg-white px-3 py-1.5 text-xs font-bold text-forest-700 ring-1 ring-forest-200 transition hover:bg-forest-100"
           >
             <Pencil className="h-3.5 w-3.5" strokeWidth={2.2} />
             수정
@@ -377,14 +377,14 @@ export default function CommentSection({
               className="rounded-xl border border-neutral-200 bg-white p-4 transition hover:border-forest-200 hover:shadow-card"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sand-100 text-forest-700">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-sm bg-sand-100 text-forest-700">
                   <UserRound className="h-4 w-4" strokeWidth={2} />
                 </span>
                 <span className="text-sm font-bold text-neutral-900">
                   {r.name}
                 </span>
                 {r.mine && (
-                  <span className="rounded-full bg-forest-50 px-1.5 py-0.5 text-[10px] font-bold text-forest-600">
+                  <span className="rounded-sm bg-forest-50 px-1.5 py-0.5 text-[10px] font-bold text-forest-600">
                     내 리뷰
                   </span>
                 )}

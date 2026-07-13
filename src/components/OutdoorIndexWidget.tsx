@@ -157,7 +157,7 @@ export default function OutdoorIndexWidget({
         <button
           type="button"
           onClick={() => load()}
-          className="rounded-full border border-neutral-300 px-3 py-1 text-neutral-600 hover:border-forest-500 hover:text-forest-600"
+          className="rounded-sm border border-neutral-300 px-3 py-1 text-neutral-600 hover:border-forest-500 hover:text-forest-600"
         >
           다시 시도
         </button>
@@ -179,7 +179,7 @@ export default function OutdoorIndexWidget({
       <div className="mt-2 flex items-center gap-3">
         <style.icon className={`h-7 w-7 ${style.iconColor}`} strokeWidth={2.2} />
         <span
-          className={`rounded-full px-4 py-1.5 text-xl font-bold text-white ${style.badge}`}
+          className={`rounded-sm px-4 py-1.5 text-xl font-bold text-white ${style.badge}`}
         >
           {data.index.label}
         </span>
@@ -271,7 +271,7 @@ export default function OutdoorIndexWidget({
           {formatTime(data.observedAt)} 기준
         </span>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium">
+          <span className="rounded-sm bg-white/70 px-2.5 py-1 text-xs font-medium">
             {data.source === "kma"
               ? "기상청 실측"
               : data.source === "live"
@@ -282,7 +282,7 @@ export default function OutdoorIndexWidget({
             type="button"
             onClick={() => load()}
             disabled={refreshing}
-            className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium hover:text-forest-600 disabled:opacity-60"
+            className="inline-flex items-center gap-1 rounded-sm bg-white/70 px-2.5 py-1 text-xs font-medium hover:text-forest-600 disabled:opacity-60"
             aria-label="새로고침"
             title={
               lastUpdated

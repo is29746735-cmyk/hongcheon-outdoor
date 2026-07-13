@@ -48,7 +48,7 @@ export default function SavedList({ initial }: { initial: SavedItem[] }) {
         </p>
         <Link
           href="/#list"
-          className="mt-4 inline-block rounded-full bg-forest-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
+          className="mt-4 inline-block rounded-sm bg-forest-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
         >
           장소 둘러보기
         </Link>
@@ -67,7 +67,7 @@ export default function SavedList({ initial }: { initial: SavedItem[] }) {
           >
             <Link href={`/spots/${place.id}`} className="block pr-24">
               <div className="flex items-center gap-2">
-                <span className="rounded-full bg-forest-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+                <span className="rounded-sm bg-forest-600 px-2.5 py-0.5 text-xs font-semibold text-white">
                   {CATEGORY_LABELS[place.category]}
                 </span>
                 <span className="truncate text-xs text-neutral-400">
@@ -86,7 +86,7 @@ export default function SavedList({ initial }: { initial: SavedItem[] }) {
               onClick={() => unsave(place.id)}
               disabled={pendingId === place.id}
               aria-label={`${place.name} 저장 취소`}
-              className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50"
+              className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600 transition hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50"
             >
               <BookmarkX className="h-3.5 w-3.5" strokeWidth={2.2} />
               {pendingId === place.id ? "취소 중…" : "저장 취소"}

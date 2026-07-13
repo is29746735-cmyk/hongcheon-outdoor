@@ -24,7 +24,7 @@ export default function EmptyState({ onReset }: EmptyStateProps) {
       <button
         type="button"
         onClick={onReset}
-        className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-forest-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-forest-800 hover:shadow-md"
+        className="mt-6 inline-flex items-center gap-1.5 rounded-sm bg-forest-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-forest-800 hover:shadow-md"
       >
         <RotateCcw className="h-4 w-4" strokeWidth={2.2} />
         필터 초기화

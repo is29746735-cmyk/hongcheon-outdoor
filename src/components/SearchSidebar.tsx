@@ -67,7 +67,7 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-sm border px-4 py-2 text-sm font-medium transition-colors ${
         active
           ? "border-forest-600 bg-forest-600 text-white"
           : "border-neutral-300 bg-white text-neutral-700 hover:border-forest-500 hover:text-forest-600"

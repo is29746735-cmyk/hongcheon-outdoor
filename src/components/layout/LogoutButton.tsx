@@ -48,7 +48,7 @@ export default function LogoutButton({ name }: { name: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-3 py-1.5 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-200"
+        className="inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-3 py-1.5 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-200"
       >
         <LogOut className="h-4 w-4" strokeWidth={2} />
         로그아웃
@@ -76,7 +76,7 @@ export default function LogoutButton({ name }: { name: string }) {
                 onClick={() => setOpen(false)}
                 disabled={pending}
                 aria-label="닫기"
-                className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 disabled:opacity-50"
+                className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-sm text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 disabled:opacity-50"
               >
                 <X className="h-4 w-4" strokeWidth={2.2} />
               </button>

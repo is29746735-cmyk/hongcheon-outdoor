@@ -37,7 +37,7 @@ export default function SpotActions({ place }: { place: Place }) {
         type="button"
         onClick={copyLink}
         aria-live="polite"
-        className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold transition ${
+        className={`inline-flex items-center justify-center gap-1.5 rounded-sm px-4 py-2.5 text-sm font-bold transition ${
           copied
             ? "bg-forest-50 text-forest-700 ring-1 ring-forest-200"
             : "bg-white text-neutral-700 ring-1 ring-neutral-300 hover:bg-neutral-50"
@@ -59,7 +59,7 @@ export default function SpotActions({ place }: { place: Place }) {
         href={getDirectionsLink(place)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-forest-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-forest-800"
+        className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-forest-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-forest-800"
       >
         <Navigation className="h-4 w-4" strokeWidth={2.2} />
         길찾기

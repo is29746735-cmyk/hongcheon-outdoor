@@ -23,7 +23,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-full px-3 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
+                className="rounded-sm px-3 py-2 text-neutral-600 transition-colors hover:bg-forest-50 hover:text-forest-700"
               >
                 {link.label}
               </Link>

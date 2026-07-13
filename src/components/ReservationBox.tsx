@@ -24,7 +24,7 @@ export default function ReservationBox({ place }: { place: Place }) {
           </span>
           예약
         </h2>
-        <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-500">
+        <span className="inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-500">
           <Lock className="h-3 w-3" strokeWidth={2.2} />
           준비 중
         </span>

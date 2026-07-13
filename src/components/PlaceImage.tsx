@@ -52,7 +52,7 @@ export default function PlaceImage({
           className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${CATEGORY_GRADIENT[place.category]}`}
         >
           {/* 부드러운 빛 (좌상단 하이라이트) */}
-          <div className="absolute -left-6 -top-8 h-28 w-28 rounded-full bg-white/20 blur-2xl" />
+          <div className="absolute -left-6 -top-8 h-28 w-28 rounded-sm bg-white/20 blur-2xl" />
           {/* 등고선 텍스처(시그니처) */}
           <svg
             aria-hidden

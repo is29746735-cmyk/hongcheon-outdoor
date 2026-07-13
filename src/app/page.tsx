@@ -51,12 +51,12 @@ export default function HomePage() {
           <path d="M-20 500 C 260 445, 560 545, 810 480 S 1180 465, 1230 505" />
         </svg>
         {/* 강물빛 글로우 */}
-        <div className="pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-full bg-river-300/25 blur-3xl" />
-        <div className="pointer-events-none absolute -left-16 top-40 h-56 w-56 rounded-full bg-forest-400/20 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-sm bg-river-300/25 blur-3xl" />
+        <div className="pointer-events-none absolute -left-16 top-40 h-56 w-56 rounded-sm bg-forest-400/20 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl px-4 pb-32 pt-14 text-center sm:pt-20">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/25 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-ember-400" />
+          <span className="inline-flex items-center gap-1.5 rounded-sm bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white ring-1 ring-white/25 backdrop-blur">
+            <span className="h-1.5 w-1.5 bg-ember-400" />
             강원 홍천 · 캠핑 · 낚시 · 차박
           </span>
           <h1 className="mx-auto mt-6 max-w-2xl text-[2.1rem] font-extrabold leading-[1.12] tracking-tight text-white sm:text-[3.2rem]">
@@ -73,17 +73,17 @@ export default function HomePage() {
           {/* 신뢰 스탯 */}
           <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-medium text-white/85">
             <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-ember-300" strokeWidth={2.2} />
+              <ShieldCheck className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
               검증 <span className="font-bold tabular-nums">{placeCount}</span>곳
             </span>
             <span className="h-3 w-px bg-white/25" />
             <span className="inline-flex items-center gap-1.5">
-              <Gauge className="h-4 w-4 text-ember-300" strokeWidth={2.2} />
+              <Gauge className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
               실시간 아웃도어 지수
             </span>
             <span className="h-3 w-px bg-white/25" />
             <span className="inline-flex items-center gap-1.5">
-              <BadgeCheck className="h-4 w-4 text-ember-300" strokeWidth={2.2} />
+              <BadgeCheck className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
               무협찬 큐레이션
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function HomePage() {
 
       {/* 오늘의 아웃도어 지수 — 히어로 위로 살짝 겹치는 카드 */}
       <div className="relative z-10 mx-auto -mt-20 max-w-6xl px-4">
-        <div className="rounded-2xl shadow-card">
+        <div className="rounded-sm shadow-card">
           <OutdoorIndexWidget />
         </div>
       </div>
@@ -102,45 +102,52 @@ export default function HomePage() {
         <PlaceBrowser />
       </div>
 
-      {/* ── 용품 준비하기 — 커머스 진입점(엠버 강조) ── */}
+      {/* ── 용품 준비하기 — 커머스 진입점(그레이-그린 박스 + 오렌지 강조) ── */}
       <section className="mx-auto mt-16 max-w-6xl px-4">
-        <div className="relative overflow-hidden rounded-3xl border border-ember-100 bg-gradient-to-br from-sand-50 to-ember-50 p-6 sm:p-8">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-ember-100/50 blur-2xl" />
+        <div className="relative overflow-hidden rounded-sm bg-moss-700 p-6 text-white sm:p-8">
+          {/* 등고선/그리드 시그니처(옅게) */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(0deg,transparent 0 33px,#fff 33px 34px),repeating-linear-gradient(90deg,transparent 0 33px,#fff 33px 34px)",
+            }}
+          />
+          <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-sm bg-ember-500/10 blur-3xl" />
           <div className="relative flex flex-wrap items-end justify-between gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-ember-500 px-2.5 py-1 text-xs font-bold text-white">
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white/60">
                 <ShoppingBagGlyph />
                 준비물 · 쿠팡 최저가
               </span>
-              <h2 className="mt-2.5 text-2xl font-extrabold tracking-tight text-forest-900 sm:text-[1.7rem]">
+              <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-[1.7rem]">
                 떠나기 전, 용품 준비하기
               </h2>
-              <p className="mt-1.5 max-w-md text-sm leading-relaxed text-neutral-600">
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/70">
                 캠핑·낚시 필수품부터 감성 아이템·먹거리까지. 품목별 구매 팁과
                 실사용 주의사항을 함께 정리했어요.
               </p>
             </div>
             <Link
               href="/gear"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-ember-500 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-ember-600"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-sm bg-ember-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-ember-600"
             >
               용품 전체 보기
               <ArrowRight size={16} strokeWidth={2.4} />
             </Link>
           </div>
-          <div className="relative mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="relative mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {GEAR_CATS.map(({ key, label, Icon }) => (
               <Link
                 key={key}
                 href={`/gear#${key}`}
-                className="group flex items-center gap-2.5 rounded-2xl border border-neutral-200/80 bg-white px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-ember-300 hover:shadow-card"
+                className="group flex items-center gap-2.5 rounded-sm border border-white/10 bg-white/[0.06] px-4 py-3.5 transition-colors hover:border-ember-400/60 hover:bg-white/[0.1]"
               >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ember-50 text-ember-600 transition-colors group-hover:bg-ember-500 group-hover:text-white">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10 text-white transition-colors group-hover:bg-ember-500 group-hover:text-white">
                   <Icon size={18} strokeWidth={2} />
                 </span>
-                <span className="text-sm font-bold text-neutral-800">
-                  {label}
-                </span>
+                <span className="text-sm font-bold text-white">{label}</span>
               </Link>
             ))}
           </div>

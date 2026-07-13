@@ -295,7 +295,7 @@ export default function CourseMap({ place }: { place: Place }) {
             )}
             <ol className="mt-3 space-y-2">
               <li className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white px-3 py-2.5">
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-forest-600 text-white">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-sm bg-forest-600 text-white">
                   <MapPin className="h-4 w-4" strokeWidth={2} />
                 </span>
                 <div className="min-w-0">
@@ -320,7 +320,7 @@ export default function CourseMap({ place }: { place: Place }) {
                     className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white px-3 py-2.5"
                   >
                     <span
-                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white"
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-sm text-white"
                       style={{ background: s.color }}
                     >
                       <Icon className="h-4 w-4" strokeWidth={2} />
@@ -351,7 +351,7 @@ export default function CourseMap({ place }: { place: Place }) {
                         )},${s.lat},${s.lng}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 rounded-full bg-forest-50 px-2 py-0.5 text-[11px] font-semibold text-forest-700 hover:bg-forest-100"
+                        className="inline-flex items-center gap-0.5 rounded-sm bg-forest-50 px-2 py-0.5 text-[11px] font-semibold text-forest-700 hover:bg-forest-100"
                       >
                         <Navigation className="h-3 w-3" strokeWidth={2.2} />
                         길찾기

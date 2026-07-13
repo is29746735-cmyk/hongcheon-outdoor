@@ -112,22 +112,22 @@ export default function SpotDetailPage({ params }: PageProps) {
       {/* 헤더 (풀폭) */}
       <header className="mt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-forest-600 px-3 py-1 text-xs font-semibold text-white">
+          <span className="rounded-sm bg-forest-600 px-3 py-1 text-xs font-semibold text-white">
             {CATEGORY_LABELS[place.category]}
           </span>
           {place.official && (
-            <span className="rounded-full bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
+            <span className="rounded-sm bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
               공식 운영
             </span>
           )}
           {place.connectedFishing && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-river-500 px-3 py-1 text-xs font-semibold text-white">
+            <span className="inline-flex items-center gap-1 rounded-sm bg-river-500 px-3 py-1 text-xs font-semibold text-white">
               <Fish className="h-3.5 w-3.5" strokeWidth={2.2} />
               캠핑+낚시
             </span>
           )}
           {place.partnerId && (
-            <span className="rounded-full border border-forest-300 bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
+            <span className="rounded-sm border border-forest-300 bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700">
               검증 제휴처
             </span>
           )}
@@ -232,7 +232,7 @@ export default function SpotDetailPage({ params }: PageProps) {
                 {detail.facilities.map((f) => (
                   <li
                     key={f}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-sand-100 px-3 py-1.5 text-sm font-medium text-neutral-700"
+                    className="inline-flex items-center gap-1.5 rounded-sm bg-sand-100 px-3 py-1.5 text-sm font-medium text-neutral-700"
                   >
                     <CircleCheck
                       className="h-4 w-4 text-forest-500"
@@ -295,7 +295,7 @@ export default function SpotDetailPage({ params }: PageProps) {
             {place.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-forest-50 px-3 py-1 text-sm text-forest-700"
+                className="rounded-sm bg-forest-50 px-3 py-1 text-sm text-forest-700"
               >
                 #{tag}
               </span>
@@ -305,14 +305,14 @@ export default function SpotDetailPage({ params }: PageProps) {
           {/* 함께 준비하면 좋은 용품 — 커머스 진입점(엠버 강조, 홈과 동일 언어) */}
           {relatedGear.length > 0 && (
             <section className="relative mt-8 overflow-hidden rounded-3xl border border-ember-100 bg-gradient-to-br from-sand-50 to-ember-50 p-6">
-              <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-ember-100/50 blur-2xl" />
+              <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-sm bg-ember-100/50 blur-2xl" />
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ember-500 text-white">
                     <ShoppingBag className="h-5 w-5" strokeWidth={2} />
                   </span>
                   <div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-ember-500/10 px-2 py-0.5 text-[11px] font-bold text-ember-700">
+                    <span className="inline-flex items-center gap-1 rounded-sm bg-ember-500/10 px-2 py-0.5 text-[11px] font-bold text-ember-700">
                       쿠팡 최저가
                     </span>
                     <h2 className="mt-0.5 text-base font-extrabold text-forest-900">
