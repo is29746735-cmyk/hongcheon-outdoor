@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState, useCallback, useEffect } from "react";
-import type { Place } from "@/types/place";
+import { useMemo, useState, useCallback, useEffect, type ReactNode } from "react";
+import type { Place, PlaceCategory } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
+import { getGearByCategory, type GearCategory } from "@/data/gear";
+import InFeedGearCard from "@/components/gear/InFeedGearCard";
 import {
   groupByCategory,
   getConnectedPlaces,
@@ -53,6 +55,15 @@ export default function PlaceBrowser() {
     () => getConnectedPlaces(allPlaces).slice(0, 6),
     [allPlaces]
   );
+
+  // 인피드 용품 추천 — 보고 있는 카테고리(필터, 없으면 첫 그룹)에 맞춰 관련 용품 1개.
+  // 낚시 스팟은 낚시용품, 그 외(캠핑·차박)는 캠핑용품. 첫 그룹 격자에만 한 장 끼운다.
+  const inFeedGear = useMemo(() => {
+    const contextCat: PlaceCategory =
+      f.category !== "all" ? f.category : groups[0]?.category ?? "camping";
+    const gearCat: GearCategory = contextCat === "fishing" ? "fishing" : "camping";
+    return getGearByCategory(gearCat)[0] ?? null;
+  }, [f.category, groups]);
 
   const showConnectedSection = f.activeCount === 0;
   const visibleIds = useMemo(
@@ -201,29 +212,40 @@ export default function PlaceBrowser() {
       {f.filtered.length === 0 ? (
         <EmptyState onReset={f.reset} />
       ) : (
-        groups.map((group) => (
-          <section key={group.category} className="mt-12">
-            <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-forest-800">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
-                <CategoryIcon category={group.category} className="h-5 w-5" />
-              </span>
-              {CATEGORY_LABELS[group.category]}
-              <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
-                {group.items.length}곳
-              </span>
-            </h2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {group.items.map((place) => (
-                <PlaceCard
-                  key={place.id}
-                  place={place}
-                  onSelect={openSpot}
-                  impressionReferrer="home"
-                />
-              ))}
-            </div>
-          </section>
-        ))
+        groups.map((group, gi) => {
+          const cells: ReactNode[] = group.items.map((place) => (
+            <PlaceCard
+              key={place.id}
+              place={place}
+              onSelect={openSpot}
+              impressionReferrer="home"
+            />
+          ));
+          // 첫 그룹에만 인피드 용품 카드 1장을 3번째 자리(없으면 끝)에 끼운다.
+          if (gi === 0 && inFeedGear) {
+            cells.splice(
+              Math.min(2, cells.length),
+              0,
+              <InFeedGearCard key="in-feed-gear" item={inFeedGear} />
+            );
+          }
+          return (
+            <section key={group.category} className="mt-12">
+              <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-forest-800">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
+                  <CategoryIcon category={group.category} className="h-5 w-5" />
+                </span>
+                {CATEGORY_LABELS[group.category]}
+                <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-600">
+                  {group.items.length}곳
+                </span>
+              </h2>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {cells}
+              </div>
+            </section>
+          );
+        })
       )}
 
       {/* 우측 슬라이드오버 상세 보기 */}
