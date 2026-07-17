@@ -196,7 +196,11 @@ export default function CommentSection({
   const showForm = loggedIn && (!alreadyReviewed || editing);
 
   return (
-    <section className="mt-8" aria-label="이용자 리뷰">
+    <section
+      id="reviews"
+      className="mt-8 scroll-mt-24"
+      aria-label="이용자 리뷰"
+    >
       <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
         <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">
           <MessageSquare className="h-4 w-4" strokeWidth={2} />

@@ -114,7 +114,7 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
   };
 
   return (
-    <section className="mt-8">
+    <section id="experiences" className="mt-8 scroll-mt-24">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-base font-extrabold text-neutral-900">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-50 text-forest-700">

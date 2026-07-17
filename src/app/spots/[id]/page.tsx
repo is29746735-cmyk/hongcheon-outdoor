@@ -8,6 +8,8 @@ import {
   CarFront,
   Building2,
   ShoppingBag,
+  Camera,
+  MessageSquare,
 } from "lucide-react";
 import { getAllPlaces, getPlaceById } from "@/data/places";
 import { getGearByCategory } from "@/data/gear";
@@ -142,6 +144,27 @@ export default function SpotDetailPage({ params }: PageProps) {
         </h1>
         <p className="mt-2 text-neutral-600">{place.summary}</p>
       </header>
+
+      {/* 아래 커뮤니티 섹션으로 바로가기 (같은 페이지 내 앵커 이동) */}
+      <nav
+        aria-label="섹션 바로가기"
+        className="mt-5 flex gap-2.5"
+      >
+        <a
+          href="#experiences"
+          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-sm border border-forest-600 bg-white px-4 py-2.5 text-sm font-bold text-forest-700 transition-colors hover:bg-forest-50"
+        >
+          <Camera className="h-4 w-4" strokeWidth={2} />
+          경험담·사진
+        </a>
+        <a
+          href="#reviews"
+          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-sm border border-forest-600 bg-white px-4 py-2.5 text-sm font-bold text-forest-700 transition-colors hover:bg-forest-50"
+        >
+          <MessageSquare className="h-4 w-4" strokeWidth={2} />
+          리뷰
+        </a>
+      </nav>
 
       {/* ── 2단: 본문(좌) + sticky 액션 사이드바(우) ── */}
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_21rem]">
