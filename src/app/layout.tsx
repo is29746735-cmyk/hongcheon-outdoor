@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import RadiusLab from "@/components/dev/RadiusLab";
 import { SITE } from "@/constants";
 
 export const metadata: Metadata = {
@@ -60,8 +59,6 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        {/* 디자인 비교용 — 개발 환경에서만 렌더(프로덕션 미노출) */}
-        {process.env.NODE_ENV === "development" && <RadiusLab />}
       </body>
     </html>
   );
