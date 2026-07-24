@@ -68,16 +68,18 @@ const config: Config = {
           "sans-serif",
         ],
       },
-      // 각진 사각 — 전역 radius를 2px로 (full 만 원형 유지: 아바타·스피너·토글 썸)
+      // radius 토큰을 CSS 변수로 위임(값은 globals.css). 기본값은 현행 각진 2px 그대로.
+      // 변수화하면 rounded-t-2xl 같은 방향 변형까지 한 번에 바뀌어, 완화안을 라이브 비교할 수 있다.
+      // (full 만 원형 고정: 아바타·스피너·토글 썸)
       borderRadius: {
         none: "0px",
-        sm: "2px",
-        DEFAULT: "2px",
-        md: "2px",
-        lg: "2px",
-        xl: "2px",
-        "2xl": "2px",
-        "3xl": "2px",
+        sm: "var(--r-sm)",
+        DEFAULT: "var(--r-sm)",
+        md: "var(--r-md)",
+        lg: "var(--r-lg)",
+        xl: "var(--r-xl)",
+        "2xl": "var(--r-2xl)",
+        "3xl": "var(--r-3xl)",
         full: "9999px",
       },
       boxShadow: {

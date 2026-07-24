@@ -8,6 +8,37 @@
   /* Pretendard(오픈소스)로 교체 — 한·영·숫자 광학 균형 (DESIGN.md 정합) */
   --font-sans: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo",
     "Malgun Gothic", system-ui, sans-serif;
+
+  /* ── radius 스케일 — 1안(현행): 전부 각진 2px ──────────────────
+   * 아래 html[data-radius="..."] 로 완화안을 라이브 전환해 비교한다(개발 전용 RadiusLab).
+   * 원칙: radius는 면적에 비례해야 한다 — 작은 배지의 2px은 '의도적 날카로움',
+   * 큰 카드의 2px은 '미완성'으로 읽힌다. */
+  --r-sm: 2px; /* 배지·칩·작은 버튼 */
+  --r-md: 2px;
+  --r-lg: 2px;
+  --r-xl: 2px; /* 아이콘 칩 */
+  --r-2xl: 2px; /* 모달·바텀시트·패널 */
+  --r-3xl: 2px; /* 큰 카드 */
+}
+
+/* 3안 — 면적비례(추천): 작은 요소는 날카롭게 남겨 시그니처를 지키고, 큰 면·시트만 완화 */
+html[data-radius="proportional"] {
+  --r-sm: 3px;
+  --r-md: 4px;
+  --r-lg: 6px;
+  --r-xl: 8px;
+  --r-2xl: 12px;
+  --r-3xl: 14px;
+}
+
+/* 4안 — 따뜻하게: 친근하지만 각진 차별성은 희석됨 */
+html[data-radius="warm"] {
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+  --r-xl: 12px;
+  --r-2xl: 18px;
+  --r-3xl: 22px;
 }
 
 html,
