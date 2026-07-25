@@ -139,7 +139,7 @@ export default function SpotDetailPage({ params }: PageProps) {
             </span>
           )}
         </div>
-        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-forest-800 sm:text-4xl">
+        <h1 className="mt-3 text-3xl font-extrabold text-forest-800 sm:text-4xl">
           {place.name}
         </h1>
         <p className="mt-2 text-neutral-600">{place.summary}</p>
@@ -335,7 +335,7 @@ export default function SpotDetailPage({ params }: PageProps) {
                     <ShoppingBag className="h-5 w-5" strokeWidth={2} />
                   </span>
                   <div>
-                    <span className="inline-flex items-center gap-1 rounded-sm bg-ember-500/10 px-2 py-0.5 text-[11px] font-bold text-ember-700">
+                    <span className="inline-flex items-center gap-1 rounded-sm bg-ember-500/10 px-2 py-0.5 text-[13px] font-bold text-ember-700">
                       쿠팡 최저가
                     </span>
                     <h2 className="mt-0.5 text-base font-extrabold text-forest-900">

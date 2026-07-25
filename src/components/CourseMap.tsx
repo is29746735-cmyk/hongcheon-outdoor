@@ -333,7 +333,9 @@ export default function CourseMap({ place }: { place: Place }) {
                           {s.label}
                         </span>
                       </p>
-                      <p className="truncate text-xs text-neutral-500">
+                      {/* 주소는 번지수까지 필요해서 한 줄로 자르지 않는다
+                          (NearbyShops 의 주소 표기와 동일하게 두 줄까지 허용) */}
+                      <p className="line-clamp-2 text-xs leading-relaxed text-neutral-500">
                         {s.address}
                       </p>
                     </div>
@@ -351,7 +353,7 @@ export default function CourseMap({ place }: { place: Place }) {
                         )},${s.lat},${s.lng}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 rounded-sm bg-forest-50 px-2 py-0.5 text-[11px] font-semibold text-forest-700 hover:bg-forest-100"
+                        className="inline-flex items-center gap-0.5 rounded-sm bg-forest-50 px-2 py-0.5 text-[13px] font-semibold text-forest-700 hover:bg-forest-100"
                       >
                         <Navigation className="h-3 w-3" strokeWidth={2.2} />
                         길찾기

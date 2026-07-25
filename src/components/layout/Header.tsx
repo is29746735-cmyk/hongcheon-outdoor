@@ -12,7 +12,7 @@ export default function Header() {
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-forest-600 text-white shadow-sm">
             <Mountain size={18} strokeWidth={2.2} />
           </span>
-          <span className="hidden text-base font-extrabold tracking-tight text-forest-800 sm:inline">
+          <span className="hidden text-base font-extrabold text-forest-800 sm:inline">
             {SITE.name}
           </span>
         </Link>

@@ -54,7 +54,7 @@ function QuickFact({
       >
         {icon}
       </span>
-      <span className="text-[11px] font-medium text-neutral-400">{label}</span>
+      <span className="text-[13px] font-medium text-neutral-400">{label}</span>
       <span
         className={`text-sm font-bold ${
           ok === false ? "text-neutral-400" : "text-forest-800"
@@ -170,7 +170,7 @@ export default function SpotSlideOver({
               sizes="(max-width: 768px) 100vw, 440px"
             />
 
-            <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-forest-800">
+            <h2 className="mt-4 text-2xl font-extrabold text-forest-800">
               {place.name}
             </h2>
             <p className="mt-1.5 flex items-center gap-1 text-sm text-neutral-500">

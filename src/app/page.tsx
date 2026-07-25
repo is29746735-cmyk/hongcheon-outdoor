@@ -59,7 +59,7 @@ export default function HomePage() {
             <span className="h-1.5 w-1.5 bg-ember-400" />
             강원 홍천 · 캠핑 · 낚시 · 차박
           </span>
-          <h1 className="mx-auto mt-6 max-w-2xl text-[2.1rem] font-extrabold leading-[1.12] tracking-tight text-white sm:text-[3.2rem]">
+          <h1 className="mx-auto mt-6 max-w-2xl text-[2.1rem] font-extrabold leading-[1.12] text-white sm:text-[3.2rem]">
             홍천강, 오늘
             <br className="sm:hidden" /> 어디로 떠날까요?
           </h1>
@@ -117,11 +117,11 @@ export default function HomePage() {
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-sm bg-ember-500/10 blur-3xl" />
           <div className="relative flex flex-wrap items-end justify-between gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white/60">
+              <span className="inline-flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.12em] text-white/60">
                 <ShoppingBagGlyph />
                 준비물 · 쿠팡 최저가
               </span>
-              <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-[1.7rem]">
+              <h2 className="mt-3 text-2xl font-extrabold text-white sm:text-[1.7rem]">
                 떠나기 전, 용품 준비하기
               </h2>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-white/70">

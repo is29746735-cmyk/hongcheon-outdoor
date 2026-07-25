@@ -35,7 +35,7 @@ export default function GearPage() {
             <ShoppingBag className="h-3.5 w-3.5" strokeWidth={2.4} />
             준비물 · 쿠팡 최저가
           </span>
-          <h1 className="mt-2.5 text-2xl font-extrabold tracking-tight text-forest-900 sm:text-[1.9rem]">
+          <h1 className="mt-2.5 text-2xl font-extrabold text-forest-900 sm:text-[1.9rem]">
             떠나기 전, 용품 준비하기
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-600">

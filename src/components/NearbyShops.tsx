@@ -231,7 +231,7 @@ export default function NearbyShops({ place }: { place: Place }) {
                   </span>
                   <div className="min-w-0">
                     <span
-                      className={`inline-block rounded-sm px-2 py-0.5 text-[11px] font-bold ${shop.chip}`}
+                      className={`inline-block rounded-sm px-2 py-0.5 text-[13px] font-bold ${shop.chip}`}
                     >
                       {shop.label}
                     </span>
@@ -249,7 +249,7 @@ export default function NearbyShops({ place }: { place: Place }) {
                 {shop.phone && (
                   <a
                     href={`tel:${shop.phone}`}
-                    className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-neutral-500 transition hover:text-forest-600"
+                    className="mt-1.5 inline-flex items-center gap-1 text-[13px] text-neutral-500 transition hover:text-forest-600"
                   >
                     <Phone className="h-3 w-3" strokeWidth={2} />
                     {shop.phone}
@@ -257,7 +257,7 @@ export default function NearbyShops({ place }: { place: Place }) {
                 )}
 
                 <div className="mt-auto flex items-center justify-between gap-2 pt-3.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-500">
+                  <span className="inline-flex items-center gap-1 text-[13px] font-medium text-neutral-500">
                     <MapPin
                       className="h-3 w-3 shrink-0 text-forest-500"
                       strokeWidth={2}
@@ -280,7 +280,7 @@ export default function NearbyShops({ place }: { place: Place }) {
         </div>
       )}
 
-      <p className="mt-2 text-[11px] text-neutral-600">
+      <p className="mt-2 text-[13px] text-neutral-600">
         * 카카오 등록 정보 기준 종류별 가장 가까운 한 곳입니다. 표시 거리는 직선
         거리이며, 실제 차로·도보 시간과 영업 여부는 길찾기(카카오맵)에서
         확인하세요.

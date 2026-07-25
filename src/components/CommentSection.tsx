@@ -388,7 +388,7 @@ export default function CommentSection({
                   {r.name}
                 </span>
                 {r.mine && (
-                  <span className="rounded-sm bg-forest-50 px-1.5 py-0.5 text-[10px] font-bold text-forest-600">
+                  <span className="rounded-sm bg-forest-50 px-1.5 py-0.5 text-[12px] font-bold text-forest-600">
                     내 리뷰
                   </span>
                 )}
@@ -406,7 +406,7 @@ export default function CommentSection({
         </ul>
       )}
 
-      <p className="mt-3 text-[11px] leading-relaxed text-neutral-600">
+      <p className="mt-3 text-[13px] leading-relaxed text-neutral-600">
         * 리뷰는 로그인 후 작성되며, 욕설·스팸 필터 / 1인 1리뷰(수정 가능) / 현장(GPS)
         인증이 적용됩니다.
       </p>

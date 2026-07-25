@@ -202,8 +202,8 @@ export default function PlaceBrowser() {
           )}
         </FacetRow>
 
-        <p className="pt-0.5 text-[11px] leading-relaxed text-neutral-500">
-          같은 줄에서 여러 개를 고르면 <b className="font-semibold">둘 중 하나라도</b>{" "}
+        <p className="pt-0.5 text-[13px] font-medium leading-relaxed text-neutral-500">
+          같은 줄에서 여러 개를 고르면 <b className="font-bold">둘 중 하나라도</b>{" "}
           해당하는 곳이 남습니다. 줄이 다르면 조건이 겹쳐서 적용됩니다.
         </p>
 
@@ -260,7 +260,7 @@ export default function PlaceBrowser() {
       {/* 캠핑 + 낚시 연계 강조 */}
       {showConnectedSection && connected.length > 0 && (
         <section className="mt-8 rounded-2xl border border-river-200 bg-river-50 p-5">
-          <h2 className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-forest-800">
+          <h2 className="flex items-center gap-2 text-xl font-extrabold text-forest-800">
             <Fish className="h-5 w-5 text-river-600" strokeWidth={2} />
             캠핑하며 낚시까지 — 연계 추천
           </h2>
@@ -287,7 +287,7 @@ export default function PlaceBrowser() {
       ) : f.sort === "recommended" ? (
         groups.map((group, gi) => (
           <section key={group.category} className="mt-12">
-            <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-forest-800">
+            <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold text-forest-800">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
                 <CategoryIcon category={group.category} className="h-5 w-5" />
               </span>
@@ -303,7 +303,7 @@ export default function PlaceBrowser() {
         ))
       ) : (
         <section className="mt-12">
-          <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold tracking-tight text-forest-800">
+          <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold text-forest-800">
             {sortLabel}
             <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold tabular-nums text-forest-600">
               {f.filtered.length}곳
@@ -336,7 +336,7 @@ function FacetRow({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      <span className="w-full text-xs font-semibold text-neutral-500 sm:mr-1 sm:w-14 sm:shrink-0">
+      <span className="w-full text-xs font-bold text-neutral-500 sm:mr-1 sm:w-14 sm:shrink-0">
         {label}
       </span>
       {children}
@@ -376,7 +376,7 @@ function FilterChip({
       onClick={onClick}
       disabled={dead}
       aria-pressed={active}
-      className={`inline-flex min-h-[44px] items-center gap-1 rounded-sm px-3 text-xs font-medium transition-colors ${
+      className={`inline-flex min-h-[44px] items-center gap-1 rounded-sm px-3 text-xs font-semibold transition-colors ${
         active
           ? on
           : dead
@@ -388,7 +388,7 @@ function FilterChip({
       {/* 괄호로 감싸야 라벨과 섞이지 않는다 — 없으면 "5점1"·"전체12"로 붙어 읽힌다 */}
       {count != null && (
         <span
-          className={`tabular-nums text-[10px] ${
+          className={`tabular-nums text-[12px] font-semibold ${
             active ? "text-white/75" : "text-neutral-500"
           }`}
         >

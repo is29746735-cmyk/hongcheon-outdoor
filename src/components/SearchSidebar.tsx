@@ -79,7 +79,7 @@ function Chip({
       onClick={onClick}
       disabled={dead}
       aria-pressed={active}
-      className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm border px-4 text-sm font-medium transition-colors ${
+      className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm border px-4 text-sm font-semibold transition-colors ${
         active
           ? "border-forest-600 bg-forest-600 text-white"
           : dead
@@ -91,7 +91,7 @@ function Chip({
       {/* 괄호 필수 — 없으면 "전체12"처럼 라벨과 붙어 읽힌다 */}
       {count != null && (
         <span
-          className={`tabular-nums text-[11px] ${
+          className={`tabular-nums text-[13px] ${
             active ? "text-white/75" : "text-neutral-500"
           }`}
         >

@@ -42,7 +42,7 @@ export default function ExperiencesPage() {
             <Camera className="h-3.5 w-3.5" strokeWidth={2.4} />
             방문자 커뮤니티
           </span>
-          <h1 className="mt-2.5 text-2xl font-extrabold tracking-tight text-forest-900 sm:text-[1.9rem]">
+          <h1 className="mt-2.5 text-2xl font-extrabold text-forest-900 sm:text-[1.9rem]">
             경험담 · 사진 모아보기
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-600">

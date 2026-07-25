@@ -94,7 +94,7 @@ export default function FishingGuide() {
 
       {/* 출처 · 면책 */}
       <div className="mt-5 border-t border-river-200 pt-3">
-        <p className="text-[11px] leading-relaxed text-neutral-500">
+        <p className="text-[13px] leading-relaxed text-neutral-500">
           규정은 개정되거나 수역·구간에 따라 달라질 수 있습니다. 방문 전 최신
           정보를 확인하세요.
         </p>
@@ -105,7 +105,7 @@ export default function FishingGuide() {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-river-700 hover:underline"
+              className="inline-flex items-center gap-1 text-[13px] font-medium text-river-700 hover:underline"
             >
               <ExternalLink className="h-3 w-3" strokeWidth={2} />
               {s.label}

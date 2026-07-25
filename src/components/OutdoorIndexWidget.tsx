@@ -173,7 +173,7 @@ export default function OutdoorIndexWidget({
       aria-label="오늘의 홍천강 아웃도어 지수"
     >
       {/* 지수 + 설명 */}
-      <p className="text-sm font-semibold tracking-tight text-neutral-600">
+      <p className="text-sm font-semibold text-neutral-600">
         오늘의 홍천강 아웃도어 지수
       </p>
       <div className="mt-2 flex items-center gap-3">
@@ -232,7 +232,7 @@ export default function OutdoorIndexWidget({
                     </span>
                   </p>
                   {d.precipProbability != null && (
-                    <p className="mt-0.5 text-[11px] font-medium tabular-nums text-sky-700">
+                    <p className="mt-0.5 text-[13px] font-medium tabular-nums text-sky-700">
                       강수 {d.precipProbability}%
                     </p>
                   )}
@@ -241,7 +241,7 @@ export default function OutdoorIndexWidget({
             })}
           </div>
           {data.days.length > 1 && (
-            <p className="mt-2 text-[11px] leading-relaxed text-neutral-600">
+            <p className="mt-2 text-[13px] leading-relaxed text-neutral-600">
               오늘 이후 예보는 정확하지 않을 수 있습니다.
             </p>
           )}

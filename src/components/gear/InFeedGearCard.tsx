@@ -51,7 +51,7 @@ export default function InFeedGearCard({ item }: { item: GearItem }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-ember-600">
+        <span className="text-[13px] font-bold uppercase tracking-[0.08em] text-ember-600">
           {label} · 쿠팡 최저가
         </span>
         <h3 className="mt-1 text-[15px] font-bold leading-snug text-neutral-900 transition-colors group-hover:text-ember-700">
@@ -66,7 +66,7 @@ export default function InFeedGearCard({ item }: { item: GearItem }) {
             {item.tags.slice(0, 3).map((t) => (
               <span
                 key={t}
-                className="rounded-md bg-sand-100 px-2 py-0.5 text-[11px] font-medium text-neutral-600"
+                className="rounded-md bg-sand-100 px-2 py-0.5 text-[13px] font-medium text-neutral-600"
               >
                 #{t}
               </span>
@@ -92,7 +92,7 @@ export default function InFeedGearCard({ item }: { item: GearItem }) {
               <ArrowRight size={15} strokeWidth={2.2} />
             </Link>
           )}
-          <p className="mt-2 text-center text-[11px] text-neutral-600">
+          <p className="mt-2 text-center text-[13px] text-neutral-600">
             쿠팡 파트너스 예시 · 제휴 링크 준비 중
           </p>
         </div>

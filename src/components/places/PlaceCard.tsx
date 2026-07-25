@@ -103,7 +103,7 @@ export default function PlaceCard({
           <h3 className="text-[15px] font-bold leading-snug text-neutral-900 transition-colors group-hover:text-forest-700">
             {place.name}
             {place.official && (
-              <span className="ml-1.5 align-middle rounded bg-forest-50 px-1.5 py-0.5 text-[10px] font-bold text-forest-600">
+              <span className="ml-1.5 align-middle rounded bg-forest-50 px-1.5 py-0.5 text-[12px] font-bold text-forest-600">
                 공식
               </span>
             )}
@@ -121,7 +121,7 @@ export default function PlaceCard({
           {place.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-md bg-sand-100 px-2 py-0.5 text-[11px] font-medium text-neutral-600"
+              className="rounded-md bg-sand-100 px-2 py-0.5 text-[13px] font-medium text-neutral-600"
             >
               #{tag}
             </span>
