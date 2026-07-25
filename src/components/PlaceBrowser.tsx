@@ -1,10 +1,9 @@
 "use client";
 
 import { useMemo, useState, useCallback, useEffect, type ReactNode } from "react";
-import type { Place, PlaceCategory } from "@/types/place";
+import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
-import { getGearByCategory, type GearCategory } from "@/data/gear";
-import InFeedGearCard from "@/components/gear/InFeedGearCard";
+import GearPromoBand from "@/components/gear/GearPromoBand";
 import {
   groupByCategory,
   getConnectedPlaces,
@@ -67,15 +66,6 @@ export default function PlaceBrowser() {
     [allPlaces]
   );
 
-  // 인피드 용품 추천 — 보고 있는 카테고리(필터, 없으면 첫 그룹)에 맞춰 관련 용품 1개.
-  // 낚시 스팟은 낚시용품, 그 외(캠핑·차박)는 캠핑용품. 첫 격자에만 한 장 끼운다.
-  const inFeedGear = useMemo(() => {
-    const contextCat: PlaceCategory =
-      f.category !== "all" ? f.category : groups[0]?.category ?? "camping";
-    const gearCat: GearCategory = contextCat === "fishing" ? "fishing" : "camping";
-    return getGearByCategory(gearCat)[0] ?? null;
-  }, [f.category, groups]);
-
   const showConnectedSection = f.activeCount === 0;
   const visibleIds = useMemo(
     () => new Set(f.filtered.map((p) => p.id)),
@@ -103,9 +93,13 @@ export default function PlaceBrowser() {
   }, []);
   const closeSpot = useCallback(() => setSlideOpen(false), []);
 
-  /** 카드 셀 만들기 — withGear면 3번째 자리(없으면 끝)에 인피드 용품 카드 한 장 */
+  /**
+   * 카드 셀 만들기 — 장소 카드만. 예전에는 3번째 자리에 인피드 용품 카드를 한 장
+   * 끼웠는데, 장소를 훑는 흐름을 끊는다는 판단으로 2026-07-25에 없애고
+   * 용품 진입은 목록 앞의 배너(GearPromoBand) 하나로 모았다.
+   */
   const cellsFor = useCallback(
-    (items: Place[], withGear: boolean): ReactNode[] => {
+    (items: Place[]): ReactNode[] => {
       const cells: ReactNode[] = items.map((place) => (
         <PlaceCard
           key={place.id}
@@ -114,16 +108,9 @@ export default function PlaceBrowser() {
           impressionReferrer="home"
         />
       ));
-      if (withGear && inFeedGear) {
-        cells.splice(
-          Math.min(2, cells.length),
-          0,
-          <InFeedGearCard key="in-feed-gear" item={inFeedGear} />
-        );
-      }
       return cells;
     },
-    [inFeedGear, openSpot]
+    [openSpot]
   );
 
   const sortLabel =
@@ -281,11 +268,18 @@ export default function PlaceBrowser() {
         </section>
       )}
 
+      {/*
+        용품 진입 배너 — 연계 추천과 장소 목록 사이(2026-07-25 사용자 지정 위치).
+        필터를 걸면 연계 추천이 사라지므로 이 배너가 결과보다 먼저 나오게 되는데,
+        그때는 찾는 걸 먼저 보여줘야 하니 목록 아래로 내린다.
+      */}
+      {showConnectedSection && <GearPromoBand className="mt-12" />}
+
       {/* 목록 — 결과 0건이면 Empty State / 추천순이면 카테고리별 / 그 외는 정렬된 단일 목록 */}
       {f.filtered.length === 0 ? (
         <EmptyState onReset={f.reset} />
       ) : f.sort === "recommended" ? (
-        groups.map((group, gi) => (
+        groups.map((group) => (
           <section key={group.category} className="mt-12">
             <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold text-forest-800">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
@@ -297,7 +291,7 @@ export default function PlaceBrowser() {
               </span>
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {cellsFor(group.items, gi === 0)}
+              {cellsFor(group.items)}
             </div>
           </section>
         ))
@@ -310,10 +304,13 @@ export default function PlaceBrowser() {
             </span>
           </h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {cellsFor(f.filtered, true)}
+            {cellsFor(f.filtered)}
           </div>
         </section>
       )}
+
+      {/* 필터·정렬 중이면 배너를 목록 뒤로 (위 주석 참조) */}
+      {!showConnectedSection && <GearPromoBand className="mt-12" />}
 
       {/* 우측 슬라이드오버 상세 보기 */}
       <SpotSlideOver place={selected} open={slideOpen} onClose={closeSpot} />
