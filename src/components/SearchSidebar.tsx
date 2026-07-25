@@ -88,13 +88,14 @@ function Chip({
       }`}
     >
       {children}
+      {/* 괄호 필수 — 없으면 "전체12"처럼 라벨과 붙어 읽힌다 */}
       {count != null && (
         <span
           className={`tabular-nums text-[11px] ${
             active ? "text-white/75" : "text-neutral-500"
           }`}
         >
-          {count}
+          ({count})
         </span>
       )}
     </button>

@@ -139,13 +139,10 @@ export default function PlaceBrowser() {
         onCategoryChange={f.setCategory}
       />
 
-      {/* 상세 필터 메뉴 — 칩 옆 숫자는 그 칩을 골랐을 때 남는 장소 수 */}
+      {/* 상세 필터 메뉴 — 칩 옆 괄호 숫자는 그 칩을 골랐을 때 남는 장소 수 */}
       <div className="mt-3 space-y-2 rounded-2xl border border-sand-300 bg-white p-3.5">
         {/* 한적함(고립도) */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
-            한적함
-          </span>
+        <FacetRow label="한적함">
           {ISOLATION_THRESHOLDS.map((v) => (
             <FilterChip
               key={v}
@@ -157,13 +154,10 @@ export default function PlaceBrowser() {
               {ISOLATION_LABELS[v]}
             </FilterChip>
           ))}
-        </div>
+        </FacetRow>
 
         {/* 낚시 종류 */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
-            낚시 종류
-          </span>
+        <FacetRow label="낚시 종류">
           {FISHING_TYPES.map((ft) => (
             <FilterChip
               key={ft.value}
@@ -175,13 +169,10 @@ export default function PlaceBrowser() {
               {ft.label}
             </FilterChip>
           ))}
-        </div>
+        </FacetRow>
 
         {/* 속성 태그 */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 w-14 shrink-0 text-xs font-semibold text-neutral-500">
-            태그
-          </span>
+        <FacetRow label="태그">
           {visibleTags.map((t) => (
             <FilterChip
               key={t}
@@ -209,7 +200,7 @@ export default function PlaceBrowser() {
               />
             </button>
           )}
-        </div>
+        </FacetRow>
 
         <p className="pt-0.5 text-[11px] leading-relaxed text-neutral-500">
           같은 줄에서 여러 개를 고르면 <b className="font-semibold">둘 중 하나라도</b>{" "}
@@ -331,6 +322,29 @@ export default function PlaceBrowser() {
 }
 
 /**
+ * 필터 한 줄(패싯) — 라벨 + 칩들.
+ * 모바일에서는 라벨을 `w-full`로 만들어 칩 위로 올린다. 44px 타깃 + 괄호 카운트로
+ * 칩이 넓어져, 56px 라벨 열을 옆에 두면 375px 화면에서 줄바꿈이 계속 늘어난다.
+ * sm 이상에서는 원래대로 라벨이 칩과 같은 줄에 붙는다.
+ */
+function FacetRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className="w-full text-xs font-semibold text-neutral-500 sm:mr-1 sm:w-14 sm:shrink-0">
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+/**
  * 필터 칩 — 결과 수를 함께 보여주고, 터치 타깃 44px를 보장한다.
  * 0곳이 되는 칩은 미리 비활성으로 잠근다(누른 뒤 빈 화면을 보는 일이 없도록).
  * 단 이미 고른 칩은 해제할 수 있어야 하므로 잠그지 않는다.
@@ -362,7 +376,7 @@ function FilterChip({
       onClick={onClick}
       disabled={dead}
       aria-pressed={active}
-      className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-3 text-xs font-medium transition-colors ${
+      className={`inline-flex min-h-[44px] items-center gap-1 rounded-sm px-3 text-xs font-medium transition-colors ${
         active
           ? on
           : dead
@@ -371,13 +385,14 @@ function FilterChip({
       }`}
     >
       {children}
+      {/* 괄호로 감싸야 라벨과 섞이지 않는다 — 없으면 "5점1"·"전체12"로 붙어 읽힌다 */}
       {count != null && (
         <span
           className={`tabular-nums text-[10px] ${
             active ? "text-white/75" : "text-neutral-500"
           }`}
         >
-          {count}
+          ({count})
         </span>
       )}
     </button>
