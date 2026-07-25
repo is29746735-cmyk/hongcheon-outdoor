@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Fish, MapPin, Trees } from "lucide-react";
+import { Fish, MapPin, Navigation, Trees } from "lucide-react";
 import type { Place } from "@/types/place";
 import { CATEGORY_LABELS } from "@/constants";
 import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
 import { trackListingEvent } from "@/lib/listing-events";
 import { getSessionId } from "@/lib/session-id";
+import { formatDistance } from "@/lib/geo";
 
 type Referrer = "home" | "search" | "saved" | "direct";
 
@@ -21,12 +22,15 @@ interface PlaceCardProps {
   onSelect?: (place: Place) => void;
   /** 지정 시 카드가 뷰포트에 들어오면 impression 이벤트를 1회 기록 */
   impressionReferrer?: Referrer;
+  /** 내 위치에서의 직선 거리(m). 위치 권한을 받은 경우에만 넘어온다 */
+  distanceM?: number;
 }
 
 export default function PlaceCard({
   place,
   onSelect,
   impressionReferrer,
+  distanceM,
 }: PlaceCardProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -112,6 +116,16 @@ export default function PlaceCard({
         <p className="mt-1.5 flex items-center gap-1 text-xs text-neutral-600">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
           <span className="truncate">{place.region}</span>
+          {/* 내 위치에서의 거리 — '직선'임을 반드시 밝힌다(실제 차로 거리 아님) */}
+          {distanceM != null && (
+            <span
+              className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded-sm bg-forest-50 px-1.5 py-0.5 font-bold tabular-nums text-forest-700"
+              title="내 위치에서 직선 거리"
+            >
+              <Navigation className="h-3 w-3" strokeWidth={2.4} />
+              {formatDistance(distanceM)}
+            </span>
+          )}
         </p>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-600">
           {place.summary}

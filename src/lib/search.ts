@@ -1,4 +1,10 @@
-import type { CategoryFilter, Place, PlaceCategory } from "@/types/place";
+import type {
+  CategoryFilter,
+  GeoPoint,
+  Place,
+  PlaceCategory,
+} from "@/types/place";
+import { distanceMeters } from "@/lib/geo";
 
 // 한글 초성(가나다순 19자)
 const LEAD = [
@@ -134,14 +140,20 @@ export function filterPlaces(places: Place[], opts: PlaceFilterOpts): Place[] {
 
 // ── 정렬 ────────────────────────────────────────────────────────────
 /**
- * 정렬 기준. **검증된 필드만** 제공한다 —
- * "가까운 순"은 사용자 위치·장소 간 거리 데이터가 없어서, "리뷰 많은 순"은
- * 리뷰 수를 목록 단계에서 알 수 없어서 넣지 않았다(없는 값을 추정해 팔지 않는다).
+ * 정렬 기준. **검증된 필드만** 제공한다 — "리뷰 많은 순"은 리뷰 수를 목록 단계에서
+ * 알 수 없어 넣지 않았다(없는 값을 추정해 팔지 않는다).
+ * "가까운 순"은 브라우저 위치 권한을 받은 뒤에만 동작한다(2026-07-25 추가).
  */
-export type PlaceSort = "recommended" | "rating" | "isolation" | "name";
+export type PlaceSort =
+  | "recommended"
+  | "distance"
+  | "rating"
+  | "isolation"
+  | "name";
 
 export const SORT_OPTIONS: { value: PlaceSort; label: string }[] = [
   { value: "recommended", label: "추천순 (카테고리별)" },
+  { value: "distance", label: "가까운 순 (내 위치)" },
   { value: "rating", label: "평점 높은 순" },
   { value: "isolation", label: "한적한 순" },
   { value: "name", label: "이름순" },
@@ -160,6 +172,8 @@ export function availableSortOptions(
     if (o.value === "rating") return places.some((p) => p.rating != null);
     if (o.value === "isolation")
       return places.some((p) => p.isolationScore != null);
+    // 좌표가 있는 장소가 하나라도 있어야 거리 정렬이 의미가 있다
+    if (o.value === "distance") return places.some((p) => p.location != null);
     return true;
   });
 }
@@ -168,13 +182,33 @@ const byName = (a: Place, b: Place) => a.name.localeCompare(b.name, "ko");
 
 /**
  * 정렬된 새 배열을 반환한다(입력 배열은 건드리지 않음).
- * 값이 없는 장소(평점·고립도 미검증)는 0으로 치지 않고 **항상 뒤로** 보낸다.
- * 그래야 "평점 없음"이 "평점 0점"으로 오해되지 않는다.
+ * 값이 없는 장소(평점·고립도·좌표 미확보)는 0으로 치지 않고 **항상 뒤로** 보낸다.
+ * 그래야 "평점 없음"이 "평점 0점"으로, "좌표 없음"이 "거리 0"으로 오해되지 않는다.
+ *
+ * `origin`(사용자 위치)이 없으면 거리 정렬은 계산할 수 없으므로 입력 순서를 그대로
+ * 돌려준다 — 호출부가 위치 권한을 받아 다시 부른다.
  */
-export function sortPlaces(places: Place[], sort: PlaceSort): Place[] {
+export function sortPlaces(
+  places: Place[],
+  sort: PlaceSort,
+  origin?: GeoPoint | null
+): Place[] {
   if (sort === "recommended") return places;
   const out = [...places];
   if (sort === "name") return out.sort(byName);
+
+  if (sort === "distance") {
+    if (!origin) return places;
+    return out.sort((a, b) => {
+      const ad = a.location ? distanceMeters(origin, a.location) : null;
+      const bd = b.location ? distanceMeters(origin, b.location) : null;
+      if (ad == null && bd == null) return byName(a, b);
+      if (ad == null) return 1;
+      if (bd == null) return -1;
+      return ad - bd || byName(a, b); // 가까운 순 = 오름차순
+    });
+  }
+
   const key =
     sort === "rating"
       ? (p: Place) => p.rating

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { CategoryFilter, Place } from "@/types/place";
+import { useCallback, useMemo, useState } from "react";
+import type { CategoryFilter, GeoPoint, Place } from "@/types/place";
 import {
   filterPlaces,
   sortPlaces,
@@ -10,9 +10,22 @@ import {
   countByIsolation,
   type PlaceSort,
 } from "@/lib/search";
+import { distanceMeters } from "@/lib/geo";
 
 /** 고립도 칩의 임계값 — 카운트 계산과 UI가 같은 값을 쓰도록 여기서 단일 정의 */
 export const ISOLATION_THRESHOLDS = [1, 3, 4, 5];
+
+/**
+ * 내 위치 확보 상태.
+ * `denied` 는 사용자가 거부했거나 보안 컨텍스트가 아닌 경우까지 포함한다 —
+ * 어느 쪽이든 화면에서 할 말은 "위치를 못 받았다"로 같다.
+ */
+export type LocationStatus =
+  | "idle"
+  | "asking"
+  | "granted"
+  | "denied"
+  | "unsupported";
 
 /**
  * 장소 필터·정렬 상태 + 실시간 필터링 훅.
@@ -30,7 +43,61 @@ export function usePlaceFilters(all: Place[]) {
   const [tags, setTags] = useState<string[]>([]);
   const [minIsolation, setMinIsolation] = useState(1);
   const [fishingTypes, setFishingTypes] = useState<string[]>([]);
-  const [sort, setSort] = useState<PlaceSort>("recommended");
+  const [sort, setSortState] = useState<PlaceSort>("recommended");
+
+  // ── 내 위치 (가까운 순 정렬용) ───────────────────────────────────
+  const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+
+  const requestLocation = useCallback((): Promise<GeoPoint | null> => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocationStatus("unsupported");
+      return Promise.resolve(null);
+    }
+    setLocationStatus("asking");
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          };
+          setUserLocation(loc);
+          setLocationStatus("granted");
+          resolve(loc);
+        },
+        () => {
+          // 거부·시간초과·위치 불가를 구분해봐야 화면에서 할 말은 같다
+          setLocationStatus("denied");
+          resolve(null);
+        },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 }
+      );
+    });
+  }, []);
+
+  /**
+   * 정렬 변경. '가까운 순'을 고르면 위치 권한을 먼저 받는다.
+   * 못 받으면 정렬을 되돌린다 — 고른 기준이 동작하지 않는 채로 두면
+   * 사용자는 "가까운 순인데 왜 순서가 그대로냐"로 읽는다.
+   */
+  const setSort = useCallback(
+    (next: PlaceSort) => {
+      if (next !== "distance") {
+        setSortState(next);
+        return;
+      }
+      if (userLocation) {
+        setSortState("distance");
+        return;
+      }
+      setSortState("distance");
+      requestLocation().then((loc) => {
+        if (!loc) setSortState("recommended");
+      });
+    },
+    [userLocation, requestLocation]
+  );
 
   const toggleTag = (t: string) =>
     setTags((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
@@ -59,10 +126,25 @@ export function usePlaceFilters(all: Place[]) {
           minIsolation,
           fishingTypes,
         }),
-        sort
+        sort,
+        userLocation
       ),
-    [all, query, category, tags, minIsolation, fishingTypes, sort]
+    [all, query, category, tags, minIsolation, fishingTypes, sort, userLocation]
   );
+
+  /**
+   * 장소별 내 위치로부터의 직선 거리(m). 위치를 못 받았으면 빈 Map.
+   * 카드에 거리를 붙이는 데 쓴다 — 정렬 기준과 같은 계산을 재사용해야
+   * "3번째 카드가 2번째보다 가깝다"는 모순이 안 생긴다.
+   */
+  const distances = useMemo(() => {
+    const m = new Map<string, number>();
+    if (!userLocation) return m;
+    all.forEach((p) => {
+      if (p.location) m.set(p.id, distanceMeters(userLocation, p.location));
+    });
+    return m;
+  }, [all, userLocation]);
 
   // 칩별 카운트 — 각 패싯의 기준 집합은 "그 패싯만 뺀" 조건으로 만든다.
   // (장소가 12곳이라 패싯당 한 번씩 더 훑는 비용은 무시할 수준)
@@ -112,5 +194,10 @@ export function usePlaceFilters(all: Place[]) {
     total: all.length,
     counts,
     activeCount,
+    // 내 위치 / 거리
+    userLocation,
+    locationStatus,
+    requestLocation,
+    distances,
   };
 }

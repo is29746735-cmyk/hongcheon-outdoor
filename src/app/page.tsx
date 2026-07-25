@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { ShieldCheck, Gauge, BadgeCheck } from "lucide-react";
+import Link from "next/link";
+import {
+  ShieldCheck,
+  Gauge,
+  BadgeCheck,
+  Camera,
+  ArrowRight,
+} from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import HeroSearch from "@/components/HeroSearch";
@@ -86,6 +93,35 @@ export default function HomePage() {
       <div className="mx-auto mt-12 max-w-6xl px-4">
         <PlaceBrowser />
       </div>
+
+      {/*
+        경험담 안내 — 목록을 다 훑고 내려온 사람에게 "다녀온 사람들의 이야기"를 권한다.
+        커머스 배너(GearPromoBand)와 톤이 겹치지 않게 흰 카드 + 그린 계열로 조용히 둔다.
+      */}
+      <section className="mx-auto mt-16 max-w-6xl px-4" aria-label="경험담 안내">
+        <div className="flex flex-wrap items-center justify-between gap-5 rounded-3xl border border-forest-200 bg-white p-6 sm:p-7">
+          <div className="min-w-0">
+            <span className="inline-flex items-center gap-1.5 text-[13px] font-bold text-forest-600">
+              <Camera className="h-4 w-4" strokeWidth={2.2} />
+              방문자 경험담
+            </span>
+            <h2 className="mt-2 text-xl font-extrabold text-forest-800 sm:text-2xl">
+              경험담이 궁금하신가요?
+            </h2>
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-neutral-600">
+              직접 다녀온 사람들이 남긴 사진과 이야기를 모았습니다. 진입로·주차·수위처럼
+              가 보지 않으면 알기 어려운 것들이 여기 있습니다.
+            </p>
+          </div>
+          <Link
+            href="/experiences"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-sm bg-forest-700 px-5 text-sm font-bold text-white transition-colors hover:bg-forest-800"
+          >
+            경험담 바로가기
+            <ArrowRight size={16} strokeWidth={2.4} />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

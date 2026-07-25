@@ -23,6 +23,7 @@ import { getSpotDetail } from "@/data/mockData";
 import { getDirectionsLink } from "@/lib/map-links";
 import PlaceImage from "@/components/PlaceImage";
 import MapLinkButtons from "@/components/MapLinkButtons";
+import SaveButton from "@/components/SaveButton";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 
 interface SpotSlideOverProps {
@@ -146,16 +147,18 @@ export default function SpotSlideOver({
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* 헤더 */}
-        <div className="flex items-center justify-between border-b border-neutral-200 bg-white/80 px-5 py-4 backdrop-blur">
-          <span className="inline-flex items-center gap-1.5 rounded-sm bg-forest-700 px-3 py-1 text-xs font-bold text-white">
+        {/* 헤더 — 분류 배지 옆에 저장 버튼(상세 페이지로 넘어가지 않고 바로 저장) */}
+        <div className="flex items-center gap-2 border-b border-neutral-200 bg-white/80 px-5 py-3 backdrop-blur">
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-sm bg-forest-700 px-3 py-1 text-xs font-bold text-white">
             {place ? CATEGORY_LABELS[place.category] : ""}
           </span>
+          {/* key={place.id} — 다른 장소로 바뀌면 저장 상태를 새로 받아야 한다 */}
+          {place && <SaveButton key={place.id} placeId={place.id} variant="compact" />}
           <button
             type="button"
             onClick={onClose}
             aria-label="닫기"
-            className="grid h-9 w-9 place-items-center rounded-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-forest-700"
+            className="ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-forest-700"
           >
             <X className="h-5 w-5" strokeWidth={2.2} />
           </button>

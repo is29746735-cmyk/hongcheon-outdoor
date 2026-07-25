@@ -13,7 +13,7 @@ import {
 } from "@/lib/search";
 import { CATEGORY_LABELS } from "@/constants";
 import { CategoryIcon } from "@/components/icons";
-import { ChevronDown, Fish, X } from "lucide-react";
+import { ChevronDown, Fish, Navigation, X } from "lucide-react";
 import { usePlaceFilters, ISOLATION_THRESHOLDS } from "@/lib/usePlaceFilters";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
@@ -106,11 +106,12 @@ export default function PlaceBrowser() {
           place={place}
           onSelect={openSpot}
           impressionReferrer="home"
+          distanceM={f.distances.get(place.id)}
         />
       ));
       return cells;
     },
-    [openSpot]
+    [openSpot, f.distances]
   );
 
   const sortLabel =
@@ -233,6 +234,48 @@ export default function PlaceBrowser() {
           </select>
         </label>
       </div>
+
+      {/* 내 위치 안내 — 가까운 순은 위치 권한이 있어야 동작하므로 상태를 숨기지 않는다 */}
+      {(f.locationStatus !== "idle" || f.sort === "distance") && (
+        <p
+          className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium"
+          aria-live="polite"
+        >
+          {f.locationStatus === "asking" && (
+            <span className="text-neutral-600">내 위치를 확인하는 중…</span>
+          )}
+          {f.locationStatus === "granted" && (
+            <>
+              <span className="inline-flex items-center gap-1 text-forest-700">
+                <Navigation className="h-3.5 w-3.5" strokeWidth={2.4} />
+                내 위치 기준 거리 표시 중
+              </span>
+              <span className="text-neutral-500">
+                직선 거리이며 실제 차로 거리와 다릅니다
+              </span>
+            </>
+          )}
+          {f.locationStatus === "denied" && (
+            <>
+              <span className="text-[#c6461f]">
+                위치를 받지 못해 가까운 순을 쓸 수 없습니다.
+              </span>
+              <button
+                type="button"
+                onClick={() => f.requestLocation()}
+                className="font-bold text-forest-700 underline underline-offset-2 hover:text-forest-800"
+              >
+                다시 시도
+              </button>
+            </>
+          )}
+          {f.locationStatus === "unsupported" && (
+            <span className="text-neutral-600">
+              이 브라우저에서는 위치 기능을 쓸 수 없습니다.
+            </span>
+          )}
+        </p>
+      )}
 
       {/* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */}
       <div className="mt-4">
