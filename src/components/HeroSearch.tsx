@@ -48,11 +48,11 @@ export default function HeroSearch() {
           onChange={(e) => setQ(e.target.value)}
           placeholder="캠핑장·낚시터·차박지, 지역·태그 검색"
           aria-label="장소 검색"
-          className="min-w-0 flex-1 bg-transparent px-1 py-2 text-[15px] text-neutral-800 outline-none placeholder:text-neutral-400"
+          className="min-h-[44px] min-w-0 flex-1 bg-transparent px-1 py-2 text-[15px] text-neutral-800 outline-none placeholder:text-neutral-400"
         />
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-ember-500 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-ember-600"
+          className="inline-flex min-h-[44px] shrink-0 items-center rounded-xl bg-ember-500 px-5 text-sm font-bold text-white transition hover:bg-ember-600"
         >
           검색
         </button>
@@ -64,7 +64,7 @@ export default function HeroSearch() {
             key={c.value}
             type="button"
             onClick={() => emitSearch({ category: c.value })}
-            className="inline-flex items-center gap-1.5 rounded-sm bg-white/15 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-white/15 px-3.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
           >
             {c.value !== "all" && (
               <CategoryIcon

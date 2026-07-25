@@ -360,7 +360,7 @@ export default function SpotDetailPage({ params }: PageProps) {
           )}
 
           {place.sourceUrl && (
-            <p className="mt-8 text-xs text-neutral-400">
+            <p className="mt-8 text-xs text-neutral-600">
               정보 출처:{" "}
               <a
                 href={place.sourceUrl}

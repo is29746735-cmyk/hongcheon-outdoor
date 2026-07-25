@@ -89,16 +89,22 @@ export function fishingMethods(place: Place): Set<string> {
 export interface PlaceFilterOpts {
   query?: string;
   category?: CategoryFilter;
+  /** 속성 태그 — 패싯 내 OR(고른 태그 중 하나라도 가진 곳) */
   tags?: string[];
   /** 한적함(고립도) 최소값 — 1이면 제한 없음 */
   minIsolation?: number;
-  /** 낚시 종류(AND 조건 — 선택한 종류를 모두 제공하는 곳만) */
+  /** 낚시 종류 — 패싯 내 OR(고른 종류 중 하나라도 제공하는 곳) */
   fishingTypes?: string[];
 }
 
 /**
- * 키워드 + 카테고리 + 태그(AND) + 고립도(이상) + 낚시종류(OR)로 실시간 필터링.
- * Array.prototype.filter 로 구현.
+ * 키워드 + 카테고리 + 태그 + 고립도(이상) + 낚시종류로 실시간 필터링.
+ *
+ * 패싯 모델: **패싯 안에서는 OR, 패싯 사이에서는 AND.**
+ * 즉 "루어 또는 견지가 되는 곳 중에서, 한적함 4점 이상인 곳"으로 읽힌다.
+ * (2026-07-25 수정: 이전에는 태그·낚시종류가 패싯 내에서도 AND였다. 장소가 12곳뿐이라
+ *  칩을 두 개 고르는 순간 결과가 0~1건으로 떨어져 사용자가 "사이트가 비었다"로 읽었다.
+ *  다중선택 칩은 관례상 OR로 읽히므로 코드를 관례에 맞췄다.)
  */
 export function filterPlaces(places: Place[], opts: PlaceFilterOpts): Place[] {
   const {
@@ -113,18 +119,118 @@ export function filterPlaces(places: Place[], opts: PlaceFilterOpts): Place[] {
     if (category !== "all" && place.category !== category) return false;
     if (tags.length > 0) {
       const set = placeTagSet(place);
-      if (!tags.every((t) => set.has(t))) return false;
+      if (!tags.some((t) => set.has(t))) return false;
     }
     if (minIsolation > 1 && (place.isolationScore ?? 0) < minIsolation) {
       return false;
     }
     if (fishingTypes.length > 0) {
       const methods = fishingMethods(place);
-      // 선택한 낚시 종류를 모두 제공하는 곳만 (중첩 시 AND → 없으면 빈 결과)
-      if (!fishingTypes.every((t) => methods.has(t))) return false;
+      if (!fishingTypes.some((t) => methods.has(t))) return false;
     }
     return matchesQuery(place, query);
   });
+}
+
+// ── 정렬 ────────────────────────────────────────────────────────────
+/**
+ * 정렬 기준. **검증된 필드만** 제공한다 —
+ * "가까운 순"은 사용자 위치·장소 간 거리 데이터가 없어서, "리뷰 많은 순"은
+ * 리뷰 수를 목록 단계에서 알 수 없어서 넣지 않았다(없는 값을 추정해 팔지 않는다).
+ */
+export type PlaceSort = "recommended" | "rating" | "isolation" | "name";
+
+export const SORT_OPTIONS: { value: PlaceSort; label: string }[] = [
+  { value: "recommended", label: "추천순 (카테고리별)" },
+  { value: "rating", label: "평점 높은 순" },
+  { value: "isolation", label: "한적한 순" },
+  { value: "name", label: "이름순" },
+];
+
+/**
+ * 데이터가 뒷받침하는 정렬 기준만 남긴다.
+ * 값이 한 곳도 없는 기준을 메뉴에 두면 고르는 순간 이름순으로만 동작해,
+ * "평점이 있다"는 잘못된 약속이 된다(브랜드 1번 원칙: 과장 금지).
+ * 나중에 평점 데이터가 채워지면 자동으로 다시 나타난다.
+ */
+export function availableSortOptions(
+  places: Place[]
+): { value: PlaceSort; label: string }[] {
+  return SORT_OPTIONS.filter((o) => {
+    if (o.value === "rating") return places.some((p) => p.rating != null);
+    if (o.value === "isolation")
+      return places.some((p) => p.isolationScore != null);
+    return true;
+  });
+}
+
+const byName = (a: Place, b: Place) => a.name.localeCompare(b.name, "ko");
+
+/**
+ * 정렬된 새 배열을 반환한다(입력 배열은 건드리지 않음).
+ * 값이 없는 장소(평점·고립도 미검증)는 0으로 치지 않고 **항상 뒤로** 보낸다.
+ * 그래야 "평점 없음"이 "평점 0점"으로 오해되지 않는다.
+ */
+export function sortPlaces(places: Place[], sort: PlaceSort): Place[] {
+  if (sort === "recommended") return places;
+  const out = [...places];
+  if (sort === "name") return out.sort(byName);
+  const key =
+    sort === "rating"
+      ? (p: Place) => p.rating
+      : (p: Place) => p.isolationScore;
+  return out.sort((a, b) => {
+    const av = key(a);
+    const bv = key(b);
+    if (av == null && bv == null) return byName(a, b);
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    return bv - av || byName(a, b);
+  });
+}
+
+// ── 칩별 결과 수(패싯 카운트) ────────────────────────────────────────
+/**
+ * 각 칩을 골랐을 때 몇 곳이 남는지. **같은 패싯의 형제 선택은 무시하고**
+ * 나머지 패싯만 적용한 기준 집합(base)에서 센다 — 패싯 내 OR 모델에서는
+ * 형제 칩을 더 고르면 결과가 늘어날 뿐이라, 칩의 수는 형제와 무관해야 맞다.
+ * 0인 칩을 미리 비활성으로 보여주면 "눌렀더니 빈 화면"이 사라진다.
+ */
+export function countByTag(base: Place[]): Map<string, number> {
+  const m = new Map<string, number>();
+  base.forEach((p) =>
+    placeTagSet(p).forEach((t) => m.set(t, (m.get(t) ?? 0) + 1))
+  );
+  return m;
+}
+
+export function countByFishingType(base: Place[]): Map<string, number> {
+  const m = new Map<string, number>();
+  base.forEach((p) =>
+    fishingMethods(p).forEach((t) => m.set(t, (m.get(t) ?? 0) + 1))
+  );
+  return m;
+}
+
+export function countByCategory(base: Place[]): Map<CategoryFilter, number> {
+  const m = new Map<CategoryFilter, number>([["all", base.length]]);
+  base.forEach((p) => m.set(p.category, (m.get(p.category) ?? 0) + 1));
+  return m;
+}
+
+/** 고립도는 "이상" 조건이므로 임계값별 누적 개수를 센다 */
+export function countByIsolation(
+  base: Place[],
+  thresholds: number[]
+): Map<number, number> {
+  return new Map(
+    thresholds.map((t) => [
+      t,
+      t <= 1
+        ? base.length
+        : base.filter((p) => (p.isolationScore ?? 0) >= t).length,
+    ])
+  );
 }
 
 /** 필터용 속성 태그 목록 (빈도순) */

@@ -92,7 +92,7 @@ export default function InFeedGearCard({ item }: { item: GearItem }) {
               <ArrowRight size={15} strokeWidth={2.2} />
             </Link>
           )}
-          <p className="mt-2 text-center text-[11px] text-neutral-400">
+          <p className="mt-2 text-center text-[11px] text-neutral-600">
             쿠팡 파트너스 예시 · 제휴 링크 준비 중
           </p>
         </div>

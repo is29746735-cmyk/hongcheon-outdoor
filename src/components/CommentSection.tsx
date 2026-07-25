@@ -406,7 +406,7 @@ export default function CommentSection({
         </ul>
       )}
 
-      <p className="mt-3 text-[11px] leading-relaxed text-neutral-400">
+      <p className="mt-3 text-[11px] leading-relaxed text-neutral-600">
         * 리뷰는 로그인 후 작성되며, 욕설·스팸 필터 / 1인 1리뷰(수정 가능) / 현장(GPS)
         인증이 적용됩니다.
       </p>

@@ -361,7 +361,7 @@ export default function CourseMap({ place }: { place: Place }) {
                 );
               })}
             </ol>
-            <p className="mt-2 text-xs text-neutral-400">
+            <p className="mt-2 text-xs text-neutral-600">
               ※ 동선은 직선 거리 기준 자동 제안이며, 실제 도로 경로·영업 여부는
               방문 전 확인하세요.
             </p>

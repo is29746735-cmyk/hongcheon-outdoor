@@ -280,7 +280,7 @@ export default function NearbyShops({ place }: { place: Place }) {
         </div>
       )}
 
-      <p className="mt-2 text-[11px] text-neutral-400">
+      <p className="mt-2 text-[11px] text-neutral-600">
         * 카카오 등록 정보 기준 종류별 가장 가까운 한 곳입니다. 표시 거리는 직선
         거리이며, 실제 차로·도보 시간과 영업 여부는 길찾기(카카오맵)에서
         확인하세요.

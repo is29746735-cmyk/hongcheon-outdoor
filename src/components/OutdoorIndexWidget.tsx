@@ -241,7 +241,7 @@ export default function OutdoorIndexWidget({
             })}
           </div>
           {data.days.length > 1 && (
-            <p className="mt-2 text-[11px] leading-relaxed text-neutral-400">
+            <p className="mt-2 text-[11px] leading-relaxed text-neutral-600">
               오늘 이후 예보는 정확하지 않을 수 있습니다.
             </p>
           )}

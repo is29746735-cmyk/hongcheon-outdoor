@@ -162,7 +162,7 @@ function GearModal({ item, onClose }: { item: GearItem; onClose: () => void }) {
               <ShopButton key={shop.store} shop={shop} />
             ))}
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-neutral-400">
+          <p className="mt-3 text-xs leading-relaxed text-neutral-600">
             쿠팡 파트너스 링크는 준비 중입니다(예시). 이 포스팅은 쿠팡 파트너스
             활동의 일환으로, 구매 시 일정 수수료를 받을 수 있습니다.
           </p>
