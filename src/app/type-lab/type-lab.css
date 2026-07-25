@@ -1,0 +1,84 @@
+/*
+ * 타이포 비교 실험실 전용 스타일 (개발·검토용, 실제 사이트에는 영향 없음)
+ *
+ * 목적: "폰트가 얇고 딱딱해서 오래된 정부 사이트 같다"는 지적을 눈으로 비교해 고르기.
+ * radius 완화 때 쓴 방식과 같다 — 토큰을 CSS 변수로 두고 [data-type] 로 갈아끼운다.
+ *
+ * 타이포는 Tailwind 임의값 대신 여기 평문 CSS로 적는다. 변수를 font-size/weight에
+ * 그대로 넣을 수 있고, 안(案)별 차이가 한눈에 보인다. (레이아웃·색은 Tailwind 유지)
+ */
+
+/* 비교 대상 서체 — Pretendard는 globals.css에서 이미 로드됨 */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800&display=swap");
+
+.lab {
+  font-family: var(--f);
+}
+
+/* ── A. 현재 (지금 사이트에 배포된 값 그대로) ───────────────────── */
+.lab[data-type="a"] {
+  --f: "Pretendard Variable", "Pretendard", sans-serif;
+  --fs-micro: 10px;  --fw-micro: 500;
+  --fs-fine: 11px;   --fw-fine: 400;
+  --fs-chip: 12px;   --fw-chip: 500;
+  --fs-label: 12px;  --fw-label: 600;
+  --fs-body: 14px;   --fw-body: 400;
+  --fs-card: 15px;   --fw-card: 700;
+  --fs-h2: 20px;     --fw-h2: 800;  --tr-h2: -0.025em;
+  --lh-small: 1.33;
+  --lh-body: 1.5;
+}
+
+/* ── B. Pretendard 정리 (서체 그대로, 크기·무게·자간만) ─────────── */
+.lab[data-type="b"] {
+  --f: "Pretendard Variable", "Pretendard", sans-serif;
+  --fs-micro: 12px;  --fw-micro: 600;
+  --fs-fine: 13px;   --fw-fine: 500;
+  --fs-chip: 13px;   --fw-chip: 600;
+  --fs-label: 13px;  --fw-label: 700;
+  --fs-body: 15px;   --fw-body: 400;
+  --fs-card: 16px;   --fw-card: 700;
+  --fs-h2: 21px;     --fw-h2: 800;  --tr-h2: 0;
+  --lh-small: 1.5;
+  --lh-body: 1.65;
+}
+
+/* ── C. IBM Plex Sans KR + B 스케일 (휴머니스트 서체로 딱딱함 완화 시험) ── */
+.lab[data-type="c"] {
+  --f: "IBM Plex Sans KR", "Pretendard Variable", sans-serif;
+  --fs-micro: 12px;  --fw-micro: 600;
+  --fs-fine: 13px;   --fw-fine: 500;
+  --fs-chip: 13px;   --fw-chip: 600;
+  --fs-label: 13px;  --fw-label: 700;
+  --fs-body: 15px;   --fw-body: 400;
+  --fs-card: 16px;   --fw-card: 700;
+  --fs-h2: 21px;     --fw-h2: 700;  --tr-h2: 0;
+  --lh-small: 1.5;
+  --lh-body: 1.65;
+}
+
+/* ── D. Gothic A1 + B 스케일 (기하학적 한글 서체, 9 weight) ─────── */
+.lab[data-type="d"] {
+  --f: "Gothic A1", "Pretendard Variable", sans-serif;
+  --fs-micro: 12px;  --fw-micro: 600;
+  --fs-fine: 13px;   --fw-fine: 500;
+  --fs-chip: 13px;   --fw-chip: 600;
+  --fs-label: 13px;  --fw-label: 700;
+  --fs-body: 15px;   --fw-body: 400;
+  --fs-card: 16px;   --fw-card: 700;
+  --fs-h2: 21px;     --fw-h2: 800;  --tr-h2: 0;
+  --lh-small: 1.5;
+  --lh-body: 1.65;
+}
+
+/* ── 역할별 클래스 ─────────────────────────────────────────────── */
+.lab-micro  { font-size: var(--fs-micro);  font-weight: var(--fw-micro);  font-variant-numeric: tabular-nums; }
+.lab-fine   { font-size: var(--fs-fine);   font-weight: var(--fw-fine);   line-height: var(--lh-small); }
+.lab-chip   { font-size: var(--fs-chip);   font-weight: var(--fw-chip);   line-height: var(--lh-small); }
+/* 카테고리 칩은 실제 사이트에서 필터 칩보다 한 단계 크다(text-sm vs text-xs) */
+.lab-chip-lg{ font-size: var(--fs-body);   font-weight: var(--fw-chip);   line-height: var(--lh-small); }
+.lab-label  { font-size: var(--fs-label);  font-weight: var(--fw-label);  line-height: var(--lh-small); }
+.lab-body   { font-size: var(--fs-body);   font-weight: var(--fw-body);   line-height: var(--lh-body); }
+.lab-card   { font-size: var(--fs-card);   font-weight: var(--fw-card);   line-height: 1.4; }
+.lab-h2     { font-size: var(--fs-h2);     font-weight: var(--fw-h2);     letter-spacing: var(--tr-h2); line-height: 1.35; }
