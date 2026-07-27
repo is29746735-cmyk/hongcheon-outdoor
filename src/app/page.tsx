@@ -4,6 +4,7 @@ import { ShieldCheck, BadgeCheck, Camera, ArrowRight } from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import HeroPicker from "@/components/HeroPicker";
+import HeroAtmosphere from "@/components/HeroAtmosphere";
 import { getAllPlaces } from "@/data/places";
 
 export const metadata: Metadata = {
@@ -15,29 +16,20 @@ export default function HomePage() {
 
   return (
     <div className="pb-16">
-      {/* ── Hero — 강가의 하루: 강물빛 그라데이션 + 등고선 시그니처 ── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-forest-800 via-forest-700 to-river-700">
-        {/* 등고선 텍스처(시그니처) */}
-        <svg
-          aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.14]"
-          viewBox="0 0 1200 560"
-          preserveAspectRatio="none"
-          fill="none"
-          stroke="#fff"
-          strokeWidth="1.5"
-        >
-          <path d="M-20 150 C 250 90, 500 210, 760 130 S 1180 100, 1230 160" />
-          <path d="M-20 240 C 280 180, 520 300, 780 220 S 1180 190, 1230 250" />
-          <path d="M-20 330 C 240 270, 540 390, 800 310 S 1180 290, 1230 340" />
-          <path d="M-20 420 C 300 360, 560 470, 820 400 S 1180 380, 1230 430" />
-          <path d="M-20 500 C 260 445, 560 545, 810 480 S 1180 465, 1230 505" />
-        </svg>
-        {/* 강물빛 글로우 */}
-        <div className="pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-sm bg-river-300/25 blur-3xl" />
-        <div className="pointer-events-none absolute -left-16 top-40 h-56 w-56 rounded-sm bg-forest-400/20 blur-3xl" />
+      {/*
+        ── Hero — 홍천강의 지금 ──
+        등고선 텍스처(물결) 대신 살아 있는 배경을 둔다(2026-07-27).
+        시간대·계절·현재 날씨에 따라 하늘이 바뀌고, 아래에서는 모닥불이 탄다.
+        마우스·손가락이 지나가면 그 자리에 바람이 인다. 자세한 규칙은
+        `HeroAtmosphere` / `lib/atmosphere.ts` 참조.
+        (등고선 시그니처는 /gear·/experiences·장소 카드에 그대로 남아 있다.)
 
-        <div className="relative mx-auto max-w-6xl px-4 pb-32 pt-14 text-center sm:pt-20">
+        아래 그라데이션은 캔버스가 뜨기 전(그리고 JS가 없을 때)의 바탕이다.
+      */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-forest-800 via-forest-700 to-river-700">
+        <HeroAtmosphere />
+
+        <div className="relative mx-auto max-w-6xl px-4 pb-44 pt-14 text-center sm:pb-52 sm:pt-20">
           <span className="inline-flex items-center gap-1.5 rounded-sm bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white ring-1 ring-white/25 backdrop-blur">
             <span className="h-1.5 w-1.5 bg-ember-400" />
             강원 홍천 · 캠핑 · 낚시 · 차박
