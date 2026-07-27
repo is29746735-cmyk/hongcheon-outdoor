@@ -35,8 +35,11 @@ const DPR_CAP = 2;
 
 // ── 파티클 타입 ───────────────────────────────────────────────────
 interface Flame {
+  /** 그려지는 좌표 — 매 프레임 `불기둥 축 + ox` 로 다시 계산한다 */
   x: number;
   y: number;
+  /** 불기둥 축에서 벗어난 정도. 난류·바람은 여기에만 쌓인다. */
+  ox: number;
   vx: number;
   vy: number;
   life: number;
@@ -195,7 +198,9 @@ export default function HeroAtmosphere() {
     let ground = 0; // 강둑 윗변 기준선
     let fireX = 0;
     let fireScale = 1;
-    /** 불티가 노는 가로 반폭 — 화면 폭의 1/4 안에서만 흩어진다 */
+    /** 가로만 따로 키우는 배율 — 불을 '넓게' 만들되 키를 같이 키우지는 않는다 */
+    let fireWide = 1;
+    /** 불티가 노는 가로 반폭 */
     let emberHalfWidth = 0;
     /** 불티가 오를 수 있는 가장 높은 y — 화면 중앙보다 조금 위 */
     let emberTop = 0;
@@ -444,8 +449,9 @@ export default function HeroAtmosphere() {
       ground = h - Math.max(84, Math.min(w < 640 ? 100 : 118, h * 0.145));
       fireX = w * 0.5;
       fireScale = w < 640 ? 1.05 : 1.35;
-      // 불티는 '화면 아래 가운데 1/4' 안에서 자유롭게 흩어지되 그 밖으로는 안 나간다
-      emberHalfWidth = Math.min(w * 0.25, 340) / 2;
+      fireWide = w < 640 ? 1.4 : 1.95;
+      // 불티는 화면 아래 가운데에서 자유롭게 흩어지되 그 밖으로는 안 나간다
+      emberHalfWidth = Math.min(w * 0.4, 560) / 2;
       emberTop = ground - Math.min(h * 0.46, 360);
 
       const buckets = Math.max(24, Math.round(w / 14));
@@ -479,8 +485,10 @@ export default function HeroAtmosphere() {
     // ── 스폰 ────────────────────────────────────────────────────
     function spawnFlame() {
       const s = fireScale;
+      const ox = (Math.random() - 0.5) * 26 * s * fireWide;
       flames.push({
-        x: fireX + (Math.random() - 0.5) * 26 * s,
+        x: fireX + ox,
+        ox,
         y: ground - 3 - Math.random() * 6,
         vx: (Math.random() - 0.5) * 12,
         vy: -(78 + Math.random() * 52) * s,
@@ -498,7 +506,7 @@ export default function HeroAtmosphere() {
     function spawnEmber(boost = 0) {
       const s = fireScale;
       embers.push({
-        x: fireX + (Math.random() - 0.5) * 20 * s,
+        x: fireX + (Math.random() - 0.5) * 20 * s * fireWide,
         y: ground - 8 - Math.random() * 10,
         vx: (Math.random() - 0.5) * (34 + boost * 110),
         vy: -(58 + Math.random() * 62 + boost * 50) * s,
@@ -603,7 +611,8 @@ export default function HeroAtmosphere() {
       // 비·눈이 오면 불은 사그라든다 — 비 오는데 활활 타면 그것도 거짓말이다.
       const wet = weatherRef.current;
       const damp = wet.precip === "none" ? 1 : 1 - 0.3 * wet.intensity;
-      const power = flicker * (0.8 + 0.42 * nightness) * (1 + fan * 0.35) * damp;
+      // 부채질하면 눈에 띄게 밝아진다(fan) — 반응이 '보여야' 반응이다
+      const power = flicker * (0.8 + 0.42 * nightness) * (1 + fan * 0.62) * damp;
 
       // 1) 둑을 비추는 빛웅덩이
       ctx!.save();
@@ -614,20 +623,28 @@ export default function HeroAtmosphere() {
         2,
         fireX,
         ground + 4,
-        150 * s
+        150 * s * fireWide
       );
       pool.addColorStop(0, `rgba(232,110,45,${0.3 * power})`);
       pool.addColorStop(0.45, `rgba(190,80,32,${0.12 * power})`);
       pool.addColorStop(1, "rgba(140,60,25,0)");
       ctx!.fillStyle = pool;
       ctx!.beginPath();
-      ctx!.ellipse(fireX, ground + 6, 165 * s, 46 * s, 0, 0, Math.PI * 2);
+      ctx!.ellipse(
+        fireX,
+        ground + 6,
+        165 * s * fireWide,
+        46 * s,
+        0,
+        0,
+        Math.PI * 2
+      );
       ctx!.fill();
 
       // 2) 공중으로 퍼지는 후광 — 세로로 늘려 불기둥을 따라가게
       ctx!.save();
       ctx!.translate(fireX + lean * 0.3, ground - 30 * s);
-      ctx!.scale(1, 1.45);
+      ctx!.scale(fireWide * 0.85, 1.45);
       const halo = ctx!.createRadialGradient(0, 0, 4, 0, 0, 104 * s);
       halo.addColorStop(0, `rgba(255,150,60,${0.17 * power})`);
       halo.addColorStop(0.5, `rgba(220,90,40,${0.07 * power})`);
@@ -641,12 +658,16 @@ export default function HeroAtmosphere() {
 
       // 3) 장작 — 엇갈려 세운 통나무 두 개 + 재 자리.
       //    각진 실루엣으로 그려 브랜드의 각짐을 여기서도 지킨다.
+      /*
+       * 가로 확대는 `scale(fireWide, 1)` 로 하면 안 된다 — 회전한 통나무가
+       * 평행사변형으로 찌그러지고 선 굵기까지 늘어난다. 길이만 늘린다.
+       */
       ctx!.save();
       ctx!.translate(fireX, ground + 2);
       ctx!.scale(s, s);
       // 재 자리
       ctx!.beginPath();
-      ctx!.ellipse(0, 0, 36, 5, 0, 0, Math.PI * 2);
+      ctx!.ellipse(0, 0, 36 * fireWide, 5, 0, 0, Math.PI * 2);
       ctx!.fillStyle = "#0d0a08";
       ctx!.fill();
       const log = (angle: number, len: number, thick: number, lift: number) => {
@@ -670,9 +691,9 @@ export default function HeroAtmosphere() {
         ctx!.stroke();
         ctx!.restore();
       };
-      log(-0.3, 30, 6, 3);
-      log(0.26, 32, 6.5, 6);
-      log(0.02, 26, 5.5, 11);
+      log(-0.24, 30 * fireWide, 6, 3);
+      log(0.2, 32 * fireWide, 6.5, 6);
+      log(0.02, 26 * fireWide, 5.5, 11);
       ctx!.restore();
 
       // 4) 불꽃 — 가산 합성으로 심이 하얗게 뜬다
@@ -888,14 +909,17 @@ export default function HeroAtmosphere() {
         const dx = fireX - pointer.x;
         const dy = ground - 42 - pointer.y;
         const d = Math.hypot(dx, dy);
-        const R = 300;
+        // 반응 범위를 넓게. 히어로 어디에 손이 있어도 불이 조금은 눕는다.
+        const R = 480;
         if (d < R) {
-          const near = (1 - d / R) ** 1.3;
+          const near = 1 - d / R;
           // 손 반대쪽으로 눕고, 손이 지나간 방향으로 한 번 훅 밀린다
-          bendTarget += Math.sign(dx) * near * 78 - pointer.vx * 0.07 * near;
+          bendTarget += Math.sign(dx) * near * 72 - pointer.vx * 0.12 * near;
         }
       }
-      bend += (bendTarget - bend) * Math.min(1, dt * 5);
+      // 붙는 속도도 올린다 — 손을 움직인 순간 바로 따라와야 '반응'으로 읽힌다
+      bend += (bendTarget - bend) * Math.min(1, dt * 9);
+      bend = Math.max(-190, Math.min(190, bend));
 
       const wantFlames = Math.round(64 * fireScale);
       while (flames.length < wantFlames) spawnFlame();
@@ -909,15 +933,21 @@ export default function HeroAtmosphere() {
         }
         // 0(바닥) → 1(꼭대기). 위로 갈수록 바람을 더 타고, 축에 덜 매인다.
         const rise = Math.min(1, (ground - f.y) / 130);
-        const axis = fireX + bend * rise;
-        const [gx, gy] = gust(f.x, f.y, 190, 110);
+        const [gx, gy] = gust(f.x, f.y, 280, 210);
+        // 난류·손바람은 '축에서 벗어난 정도'(ox)에만 쌓이고, 축으로 되돌아온다
         f.vx +=
-          (Math.sin(t * 2.6 + f.seed) * 22 + gx) * dt * (0.3 + rise * 1.6) +
-          (axis - f.x) * (3 - rise * 2.2) * dt;
+          (Math.sin(t * 2.6 + f.seed) * 22 + gx) * dt * (0.3 + rise * 1.6) -
+          f.ox * (3 - rise * 2.2) * dt;
         f.vy += (-30 + gy * 0.4) * dt;
         f.vx *= decay(0.96);
-        f.x += f.vx * dt;
+        f.ox += f.vx * dt;
         f.y += f.vy * dt;
+        /*
+         * 기울기는 **위치에 그대로** 반영한다.
+         * 예전처럼 '기울어진 축으로 끌어당기는 힘'으로 주면 수렴력·감쇠에 대부분
+         * 먹혀서 손을 움직여도 거의 안 눕는다(실측 좌우 20px). 위로 갈수록 크게 눕는다.
+         */
+        f.x = fireX + bend * rise + f.ox;
       }
 
       // ── 불티: 화면 아래 가운데 1/4 을 떠다니는 무리로 유지한다
@@ -931,7 +961,7 @@ export default function HeroAtmosphere() {
           embers.splice(i, 1);
           continue;
         }
-        const [gx, gy] = gust(e.x, e.y, 240, 340);
+        const [gx, gy] = gust(e.x, e.y, 320, 460);
         // 자유분방하게 — 여러 주기를 겹친 흐름을 탄다
         const wander =
           Math.sin(t * 0.8 + e.max * 3) * 13 + Math.sin(t * 0.31 + e.r * 9) * 9;
@@ -1145,7 +1175,7 @@ export default function HeroAtmosphere() {
         pointer.vy = pointer.vy * 0.6 + dy * 7;
         pointer.strength = Math.min(
           1,
-          pointer.strength + Math.hypot(dx, dy) / 90
+          pointer.strength + Math.hypot(dx, dy) / 55
         );
       }
       pointer.x = x;
