@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  mixHex,
   parseAtmos,
   resolveWhen,
   skyFor,
@@ -205,7 +206,10 @@ export default function HeroAtmosphere() {
     /** 불티가 오를 수 있는 가장 높은 y — 화면 중앙보다 조금 위 */
     let emberTop = 0;
     let branchTips: { x: number; y: number }[] = [];
-    let backdrop: HTMLCanvasElement | null = null; // 능선+가지(정적 레이어)
+    let backdrop: HTMLCanvasElement | null = null; // 계절 가지(정적 레이어)
+    // 능선은 좌표만 캐시하고 색은 매 프레임 하늘에서 뽑는다(대기원근)
+    let ridgeFar: [number, number][] = [];
+    let ridgeNear: [number, number][] = [];
 
     // 파티클
     const flames: Flame[] = [];
@@ -418,7 +422,7 @@ export default function HeroAtmosphere() {
       c.restore();
     }
 
-    /** 능선 + 가지를 한 번만 그려 두고 매 프레임 복사해 쓴다 */
+    /** 계절 가지는 한 번만 그려 두고 매 프레임 복사해 쓴다(획이 많아 비싸다) */
     function buildBackdrop() {
       const off = document.createElement("canvas");
       off.width = Math.max(1, Math.round(w * dpr));
@@ -426,10 +430,56 @@ export default function HeroAtmosphere() {
       const c = off.getContext("2d");
       if (!c) return null;
       c.scale(dpr, dpr);
-      fillRidge(c, ridgePath(ground - h * 0.19, h * 0.13, 20260727), "#16211c");
-      fillRidge(c, ridgePath(ground - h * 0.09, h * 0.09, 7717), "#101a15");
       drawBranch(c);
       return off;
+    }
+
+    /**
+     * 먼 산은 낮일수록 하늘빛에 뿌옇게 묻힌다(대기원근).
+     * 밤에는 거의 검게 가라앉는다.
+     */
+    function drawRidges() {
+      const k = sky.brightness;
+      fillRidge(ctx!, ridgeFar, mixHex("#16211c", sky.mid, 0.5 * k));
+      fillRidge(ctx!, ridgeNear, mixHex("#101a15", sky.mid, 0.28 * k));
+    }
+
+    /**
+     * 본문 뒤 스크림. 낮에 하늘이 밝아진 만큼만 진해진다.
+     * 하늘을 어둡게 눌러 대비를 버는 대신 여기서 번다 — 그래야 낮이 낮으로 보인다.
+     */
+    function drawScrim() {
+      const k = sky.brightness;
+      if (k < 0.02) return;
+      const a = k * 0.5;
+
+      // 1) 아주 옅은 전면 그늘 — 위쪽은 열어 두고 아래로 갈수록 조금 가라앉힌다
+      const base = ctx!.createLinearGradient(0, 0, 0, h);
+      base.addColorStop(0, `rgba(10,16,14,${a * 0.06})`);
+      base.addColorStop(0.6, `rgba(10,16,14,${a * 0.26})`);
+      base.addColorStop(1, `rgba(10,16,14,${a * 0.1})`);
+      ctx!.fillStyle = base;
+      ctx!.fillRect(0, 0, w, h);
+
+      /*
+       * 2) 본문이 놓인 가운데만 덮는 타원.
+       * 전면으로 깔면 모서리까지 눌려 한낮에도 하늘이 안 보인다 —
+       * 글자가 있는 곳에서만 대비를 벌고 좌우 여백은 하늘을 그대로 보여 준다.
+       */
+      const rx = Math.min(Math.max(w * 0.46, 400), 620);
+      const ry = h * 0.52;
+      ctx!.save();
+      ctx!.translate(w / 2, h * 0.42);
+      ctx!.scale(1, ry / rx);
+      const oval = ctx!.createRadialGradient(0, 0, 0, 0, 0, rx);
+      oval.addColorStop(0, `rgba(10,16,14,${a})`);
+      oval.addColorStop(0.52, `rgba(10,16,14,${a * 0.94})`);
+      oval.addColorStop(1, "rgba(10,16,14,0)");
+      ctx!.fillStyle = oval;
+      ctx!.beginPath();
+      ctx!.arc(0, 0, rx, 0, Math.PI * 2);
+      ctx!.fill();
+      ctx!.restore();
     }
 
     // ── 레이아웃 ────────────────────────────────────────────────
@@ -467,6 +517,9 @@ export default function HeroAtmosphere() {
       }
       pile = next;
 
+      ridgeFar = ridgePath(ground - h * 0.19, h * 0.13, 20260727);
+      ridgeNear = ridgePath(ground - h * 0.09, h * 0.09, 7717);
+
       stars = [];
       const rnd = seeded(424242);
       const count = Math.round((w * h) / 15000);
@@ -495,7 +548,9 @@ export default function HeroAtmosphere() {
         life: 0,
         max: 0.6 + Math.random() * 0.55,
         size: (6.5 + Math.random() * 6) * s,
-        seed: Math.random() * 10,
+        // 난류 위상 — **한 주기 전체**에 고르게 뿌린다.
+        // 예전엔 0~10(1.6주기)이라 위상이 치우쳐, 불꽃이 통째로 좌우로 쏠렸다.
+        seed: Math.random() * Math.PI * 2,
       });
     }
 
@@ -746,9 +801,11 @@ export default function HeroAtmosphere() {
       ctx!.lineTo(w, h);
       ctx!.lineTo(0, h);
       ctx!.closePath();
+      // 근경이라 역광으로 가라앉지만, 한낮에 새까만 띠로 보이지 않을 만큼만 띄운다
+      const k = sky.brightness;
       const g = ctx!.createLinearGradient(0, ground - 6, 0, h);
-      g.addColorStop(0, "#0e1712");
-      g.addColorStop(1, "#070c0a");
+      g.addColorStop(0, mixHex("#0e1712", sky.mid, 0.14 * k));
+      g.addColorStop(1, mixHex("#070c0a", sky.mid, 0.06 * k));
       ctx!.fillStyle = g;
       ctx!.fill();
 
@@ -913,13 +970,18 @@ export default function HeroAtmosphere() {
         const R = 480;
         if (d < R) {
           const near = 1 - d / R;
-          // 손 반대쪽으로 눕고, 손이 지나간 방향으로 한 번 훅 밀린다
-          bendTarget += Math.sign(dx) * near * 72 - pointer.vx * 0.12 * near;
+          /*
+           * 옆으로 얼마나 비켜 있느냐에 **비례**해 눕는다.
+           * 예전엔 `Math.sign(dx)` 였다 — 손이 1px만 왼쪽으로 가도 최대치로 꺾여서,
+           * 불이 통째로 홱 움직이는 것처럼 보였다(2026-07-27 지적).
+           * 손이 불 바로 위에 있으면 눕지 않는다. 대신 아래 gust 가 불을 갈라놓는다.
+           */
+          const lateral = Math.tanh(dx / 80);
+          bendTarget += lateral * near * 44 - pointer.vx * 0.08 * near;
         }
       }
-      // 붙는 속도도 올린다 — 손을 움직인 순간 바로 따라와야 '반응'으로 읽힌다
       bend += (bendTarget - bend) * Math.min(1, dt * 9);
-      bend = Math.max(-190, Math.min(190, bend));
+      bend = Math.max(-150, Math.min(150, bend));
 
       const wantFlames = Math.round(64 * fireScale);
       while (flames.length < wantFlames) spawnFlame();
@@ -933,21 +995,42 @@ export default function HeroAtmosphere() {
         }
         // 0(바닥) → 1(꼭대기). 위로 갈수록 바람을 더 타고, 축에 덜 매인다.
         const rise = Math.min(1, (ground - f.y) / 130);
-        const [gx, gy] = gust(f.x, f.y, 280, 210);
-        // 난류·손바람은 '축에서 벗어난 정도'(ox)에만 쌓이고, 축으로 되돌아온다
+        /*
+         * 손 둘레는 좁고 세게 **옆으로만** 밀어낸다.
+         * 손을 불 위에 얹으면 불길이 양옆으로 갈라져 그 사이로 올라온다.
+         * 세로로도 밀면 불이 눌려 꺼지는 것처럼 보여서 가로 성분만 쓴다.
+         */
+        let hand = 0;
+        let handK = 0;
+        if (pointer.active) {
+          const hx = f.x - pointer.x;
+          const hy = f.y - pointer.y;
+          const R = 135;
+          const hd = Math.hypot(hx, hy);
+          if (hd < R) {
+            handK = (1 - hd / R) ** 1.4;
+            // 손 바로 아래면 비킬 방향이 없다 — 알갱이마다 정해진 쪽으로 갈라진다
+            const dir =
+              Math.abs(hx) < 7 ? (f.seed < Math.PI ? -1 : 1) : Math.sign(hx);
+            hand = dir * handK * 900 + pointer.vx * 0.5 * handK;
+          }
+        }
+        // 난류·손바람은 '축에서 벗어난 정도'(ox)에만 쌓이고, 축으로 되돌아온다.
+        // 손 안에 있는 동안은 축으로 되돌리는 힘을 늦춰야 실제로 갈라진다.
         f.vx +=
-          (Math.sin(t * 2.6 + f.seed) * 22 + gx) * dt * (0.3 + rise * 1.6) -
-          f.ox * (3 - rise * 2.2) * dt;
-        f.vy += (-30 + gy * 0.4) * dt;
+          (Math.sin(t * 2.6 + f.seed) * 22) * dt * (0.3 + rise * 1.6) +
+          hand * dt -
+          f.ox * (3 - rise * 2.2) * (1 - 0.8 * handK) * dt;
+        f.vy += -30 * dt;
         f.vx *= decay(0.96);
         f.ox += f.vx * dt;
         f.y += f.vy * dt;
         /*
-         * 기울기는 **위치에 그대로** 반영한다.
-         * 예전처럼 '기울어진 축으로 끌어당기는 힘'으로 주면 수렴력·감쇠에 대부분
-         * 먹혀서 손을 움직여도 거의 안 눕는다(실측 좌우 20px). 위로 갈수록 크게 눕는다.
+         * 기울기는 위치에 반영하되 **올라온 만큼만**(rise^2.2) 휜다.
+         * 예전엔 높이에 비례(rise)해서 밑동까지 같이 움직였고, 그래서
+         * "불 자체가 움직여 어색하다"는 지적이 나왔다. 장작 위는 거의 붙박이다.
          */
-        f.x = fireX + bend * rise + f.ox;
+        f.x = fireX + bend * rise ** 2.2 + f.ox;
       }
 
       // ── 불티: 화면 아래 가운데 1/4 을 떠다니는 무리로 유지한다
@@ -1106,7 +1189,9 @@ export default function HeroAtmosphere() {
     function render(t: number) {
       drawSky();
       drawStars(t);
+      drawRidges();
       if (backdrop) ctx!.drawImage(backdrop, 0, 0, w, h);
+      drawScrim();
       drawFallers();
       drawBank();
       drawFire(t, sky.stars, bend);
@@ -1228,7 +1313,10 @@ export default function HeroAtmosphere() {
       for (let i = 0; i < 90; i++) update(1 / 60, i / 60);
       render(1.5);
     } else {
+      // 첫 프레임은 rAF 를 기다리지 않고 바로 그린다.
+      // (탭이 숨겨진 채 마운트되면 rAF 가 아예 안 돌아 빈 캔버스가 남는다)
       for (let i = 0; i < 45; i++) update(1 / 60, i / 60);
+      render(0.75);
       sync();
     }
     setReady(true);

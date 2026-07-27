@@ -26,6 +26,11 @@ export interface Sky {
   bottom: string;
   /** 0~1 — 별이 보이는 정도. 모닥불 밝기에도 쓴다(밤일수록 불빛이 살아난다). */
   stars: number;
+  /**
+   * 0(한밤) ~ 1(한낮) — 하늘이 실제로 얼마나 밝은지.
+   * 글자 뒤 스크림 세기와 먼 능선의 대기원근(뿌옇게 뜨는 정도)에 쓴다.
+   */
+  brightness: number;
   phase: SkyPhase;
 }
 
@@ -69,8 +74,17 @@ function mixRgb(a: RGB, b: RGB, t: number): RGB {
 }
 
 /** 두 hex 색을 t(0~1) 비율로 섞는다 */
-function mixHex(a: string, b: string, t: number): string {
+export function mixHex(a: string, b: string, t: number): string {
   return rgb2hex(mixRgb(hex2rgb(a), hex2rgb(b), t));
+}
+
+/** WCAG 상대휘도(0~1) */
+function relLum(hex: string): number {
+  const [r, g, b] = hex2rgb(hex).map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
 // ── KST 시각 ──────────────────────────────────────────────────────
@@ -147,20 +161,25 @@ export function sunTimes(dayOfYear: number): {
 
 // ── 하늘 팔레트 ────────────────────────────────────────────────────
 /**
- * 팔레트는 전부 **어둡고 채도가 낮은 쪽**으로만 둔다.
- * 히어로 위 글자가 흰색이라, 한낮이라고 하늘을 밝히면 본문이 읽히지 않는다.
- * 따뜻한 색은 하늘이 아니라 **모닥불 한 곳에만** 쓴다(대담함은 한 곳에만).
+ * 시간대별 하늘.
+ *
+ * 처음에는 흰 글자 대비를 지키려고 한낮까지 어둡게 눌러 뒀는데,
+ * 그랬더니 **오후 4시가 밤처럼 보인다**는 지적을 받았다(2026-07-27). 당연하다 —
+ * 시간대에 따라 바뀌는 게 요점인데 낮이 낮으로 안 보이면 기능이 없는 것과 같다.
+ * 그래서 낮은 실제로 밝히고, 글자 대비는 하늘이 아니라
+ * **본문 뒤 스크림**(`Sky.brightness` 로 세기 조절)으로 지킨다.
+ * 채도는 여전히 낮게 — 브랜드는 뮤트 그린이고, 강한 색은 모닥불 한 곳에만 쓴다.
  */
 const PALETTES: Record<
   SkyPhase,
   { top: string; mid: string; bottom: string; stars: number }
 > = {
   night: { top: "#0b1118", mid: "#0e1720", bottom: "#121e19", stars: 1 },
-  dawn: { top: "#18202e", mid: "#2a2f3d", bottom: "#463a38", stars: 0.3 },
-  morning: { top: "#1e2f3f", mid: "#26403d", bottom: "#2c4739", stars: 0 },
-  day: { top: "#22394b", mid: "#294544", bottom: "#2e4b3c", stars: 0 },
-  golden: { top: "#243444", mid: "#363a43", bottom: "#4a3c33", stars: 0.02 },
-  dusk: { top: "#141d2b", mid: "#232637", bottom: "#332c33", stars: 0.5 },
+  dawn: { top: "#2c3854", mid: "#4b4a5f", bottom: "#6e5648", stars: 0.35 },
+  morning: { top: "#4b6e8b", mid: "#59787d", bottom: "#618069", stars: 0 },
+  day: { top: "#5c809d", mid: "#6c8e91", bottom: "#73917b", stars: 0 },
+  golden: { top: "#4c6786", mid: "#6c6571", bottom: "#8b6046", stars: 0.02 },
+  dusk: { top: "#23314b", mid: "#3c3b53", bottom: "#56424b", stars: 0.5 },
 };
 
 /** 계절 틴트 — 같은 시간대라도 계절마다 공기 색이 다르다 */
@@ -249,7 +268,17 @@ export function skyFor(
     }
   }
 
-  return { top, mid, bottom, stars, phase: t < 0.5 ? a.phase : b.phase };
+  // 0(한밤) ~ 1(한낮). 스크림·대기원근에 쓴다.
+  const brightness = Math.max(0, Math.min(1, (relLum(mid) - 0.02) / 0.16));
+
+  return {
+    top,
+    mid,
+    bottom,
+    stars,
+    brightness,
+    phase: t < 0.5 ? a.phase : b.phase,
+  };
 }
 
 // ── 미리보기 오버라이드 ────────────────────────────────────────────
