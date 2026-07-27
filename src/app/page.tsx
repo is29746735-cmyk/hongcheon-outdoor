@@ -48,9 +48,14 @@ export default function HomePage() {
           {/*
             신뢰 안내. 길게 풀어 쓰니 히어로가 설명문이 됐다는 지적(2026-07-27)에 따라
             한 줄씩으로 줄였다.
-            "등"을 뺄 수 없는 이유: places.ts 의 sourceName 12개 중 문화관광포털·
-            한국관광공사는 5곳이고 나머지는 캠핑·낚시 전문 매체다. 두 곳만 적고
-            "모두"라고 하면 사실이 아니게 된다. 자세한 출처는 장소마다 링크로 붙는다.
+
+            ⚠️ 문구는 사용자가 직접 정한 것이다(2026-07-27).
+            다만 `places.ts` 의 sourceName 12개 중 홍천군 문화관광포털·한국관광공사는
+            5곳이고 나머지 7곳은 캠핑·낚시 전문 매체(땡큐캠핑·물반·BFG·월척·캠프위크 등)다.
+            즉 이 줄은 지금 데이터보다 넓게 말하고 있다. 둘 중 하나로 맞추면 된다 —
+            ① "…한국관광공사 등 출처로 검증"처럼 '등'을 넣거나
+            ② 나머지 7곳의 출처를 공식 자료로 교체하거나.
+            장소마다 실제 출처 링크는 상세 화면에 그대로 붙는다.
           */}
           <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] leading-relaxed text-white/85">
             <p className="inline-flex items-center gap-1.5">
@@ -59,8 +64,8 @@ export default function HomePage() {
                 strokeWidth={2.2}
               />
               <span>
-                <b className="font-bold tabular-nums text-white">{placeCount}곳</b> 모두
-                홍천군 문화관광포털·한국관광공사 등으로 확인
+                <b className="font-bold tabular-nums text-white">{placeCount}곳</b>{" "}
+                홍천군 문화관광포털·한국관광공사 출처로 검증됨
               </span>
             </p>
             <p className="inline-flex items-center gap-1.5">
