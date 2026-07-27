@@ -129,20 +129,35 @@ export default function HeroPicker() {
                     type="button"
                     onClick={() => pick(o.value)}
                     aria-pressed={current.multi ? on : undefined}
+                    /*
+                      고른 표시는 **채도 낮은 세이지**로. 예전엔 엠버(주황)였는데
+                      중복 선택이 되면서 서너 개가 동시에 켜지자 너무 강했다
+                      (2026-07-27 지적). 엠버는 모닥불·CTA 같은 한 곳에만 쓴다.
+                    */
                     className={`group flex min-h-[56px] flex-col items-center justify-center gap-0.5 rounded-sm px-3 py-2.5 ring-1 transition-colors ${
                       on
-                        ? "bg-ember-500 ring-ember-400"
-                        : "bg-white/12 ring-white/25 hover:bg-ember-500 hover:ring-ember-400"
+                        ? "bg-forest-100 ring-forest-200"
+                        : "bg-white/12 ring-white/25 hover:bg-white/25 hover:ring-white/40"
                     }`}
                   >
-                    <span className="inline-flex items-center gap-1 text-[15px] font-bold text-white">
+                    <span
+                      className={`inline-flex items-center gap-1 text-[15px] font-bold ${
+                        on ? "text-forest-800" : "text-white"
+                      }`}
+                    >
                       {current.multi && on && (
                         <Check className="h-3.5 w-3.5" strokeWidth={2.8} />
                       )}
                       {o.label}
                     </span>
                     {(drops.length > 0 || o.hint) && (
-                      <span className="text-[12px] font-medium text-white/60 group-hover:text-white/85">
+                      <span
+                        className={`text-[12px] font-medium ${
+                          on
+                            ? "text-forest-600"
+                            : "text-white/60 group-hover:text-white/85"
+                        }`}
+                      >
                         {drops.length > 0 ? `${drops.join("·")} 대신` : o.hint}
                       </span>
                     )}
