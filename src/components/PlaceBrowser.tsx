@@ -91,6 +91,12 @@ export default function PlaceBrowser() {
     [f.filtered]
   );
 
+  /**
+   * 연계 추천 펼침 상태. 기본은 접힘 —
+   * 캠핑·낚시 연계는 모두가 찾는 것이 아니라 궁금한 사람이 여는 것이다.
+   */
+  const [connectedOpen, setConnectedOpen] = useState(false);
+
   // 태그 줄 펼치기 — 접힌 상태에서도 이미 고른 태그는 보여준다(안 보이면 해제할 수 없다)
   const [tagsExpanded, setTagsExpanded] = useState(false);
   const visibleTags = useMemo(() => {
@@ -250,27 +256,58 @@ export default function PlaceBrowser() {
         />
       </div>
 
-      {/* 캠핑 + 낚시 연계 강조 */}
+      {/*
+        캠핑 + 낚시 연계 — **기본 접힘**(2026-07-27).
+        모두가 찾는 것이 아니라 "캠핑하면서 낚시도 되나?"가 궁금한 사람의 것이라,
+        펼쳐 둔 채로는 카드 6장이 목록 앞을 막고 정렬까지 밀어낸다.
+        접힌 줄에 제목·곳수·한 줄 설명을 남겨 무엇이 들었는지는 알 수 있게 한다.
+      */}
       {showConnectedSection && connected.length > 0 && (
-        <section className="mt-8 rounded-2xl border border-river-200 bg-river-50 p-5">
-          <h2 className="flex items-center gap-2 text-xl font-extrabold text-forest-800">
-            <Fish className="h-5 w-5 text-river-600" strokeWidth={2} />
-            캠핑하며 낚시까지 — 연계 추천
+        <section className="mt-8 overflow-hidden rounded-2xl border border-river-200 bg-river-50">
+          <h2>
+            <button
+              type="button"
+              onClick={() => setConnectedOpen((v) => !v)}
+              aria-expanded={connectedOpen}
+              className="flex min-h-[44px] w-full flex-wrap items-center gap-x-2.5 gap-y-1 px-5 py-4 text-left transition-colors hover:bg-river-100/60"
+            >
+              <Fish
+                className="h-5 w-5 shrink-0 text-river-600"
+                strokeWidth={2}
+              />
+              <span className="text-xl font-extrabold text-forest-800">
+                캠핑하며 낚시까지 — 연계 추천
+              </span>
+              <span className="rounded-sm bg-white px-2.5 py-0.5 text-xs font-bold tabular-nums text-river-700 ring-1 ring-river-200">
+                {connected.length}곳
+              </span>
+              <span className="ml-auto inline-flex shrink-0 items-center gap-1 text-[13px] font-bold text-forest-700">
+                {connectedOpen ? "접기" : "펼쳐 보기"}
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    connectedOpen ? "rotate-180" : ""
+                  }`}
+                  strokeWidth={2.4}
+                />
+              </span>
+            </button>
           </h2>
-          <p className="mt-1 text-sm text-neutral-600">
+          <p className="px-5 pb-4 text-sm leading-relaxed text-neutral-600">
             캠핑·차박을 베이스로 홍천강 낚시를 함께 즐길 수 있는 검증된
             장소입니다.
           </p>
-          <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {connected.map((place) => (
-              <PlaceCard
-                key={place.id}
-                place={place}
-                onSelect={openSpot}
-                impressionReferrer="home"
-              />
-            ))}
-          </div>
+          {connectedOpen && (
+            <div className="grid grid-cols-1 gap-6 border-t border-river-200 p-5 sm:grid-cols-2 lg:grid-cols-3">
+              {connected.map((place) => (
+                <PlaceCard
+                  key={place.id}
+                  place={place}
+                  onSelect={openSpot}
+                  impressionReferrer="home"
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
