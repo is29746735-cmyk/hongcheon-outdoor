@@ -746,9 +746,10 @@ export default function HeroAtmosphere() {
         ctx!.stroke();
         ctx!.restore();
       };
-      log(-0.24, 30 * fireWide, 6, 3);
-      log(0.2, 32 * fireWide, 6.5, 6);
-      log(0.02, 26 * fireWide, 5.5, 11);
+      // 길이를 fireWide 만큼 늘린 만큼 두께도 조금 올린다 — 안 그러면 성냥개비로 보인다
+      log(-0.24, 30 * fireWide, 6 * 1.35, 3);
+      log(0.2, 32 * fireWide, 6.5 * 1.35, 6);
+      log(0.02, 26 * fireWide, 5.5 * 1.35, 11);
       ctx!.restore();
 
       // 4) 불꽃 — 가산 합성으로 심이 하얗게 뜬다

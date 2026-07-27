@@ -151,12 +151,37 @@ export type PlaceSort =
   | "isolation"
   | "name";
 
-export const SORT_OPTIONS: { value: PlaceSort; label: string }[] = [
-  { value: "recommended", label: "추천순 (카테고리별)" },
-  { value: "distance", label: "가까운 순 (내 위치)" },
-  { value: "rating", label: "평점 높은 순" },
-  { value: "isolation", label: "한적한 순" },
-  { value: "name", label: "이름순" },
+export interface SortOption {
+  value: PlaceSort;
+  /** 목록 제목·설명에 쓰는 전체 라벨 */
+  label: string;
+  /** 버튼에 쓰는 짧은 라벨 */
+  short: string;
+  /** 버튼 아래 한 줄 — 고르면 무엇이 달라지는지 */
+  hint: string;
+}
+
+export const SORT_OPTIONS: SortOption[] = [
+  {
+    value: "recommended",
+    label: "추천순 (카테고리별)",
+    short: "추천순",
+    hint: "카테고리별",
+  },
+  {
+    value: "distance",
+    label: "가까운 순 (내 위치)",
+    short: "가까운 순",
+    hint: "내 위치",
+  },
+  { value: "rating", label: "평점 높은 순", short: "평점순", hint: "높은 순" },
+  {
+    value: "isolation",
+    label: "한적한 순",
+    short: "한적한 순",
+    hint: "사람 적은 곳",
+  },
+  { value: "name", label: "이름순", short: "이름순", hint: "가나다" },
 ];
 
 /**
@@ -165,9 +190,7 @@ export const SORT_OPTIONS: { value: PlaceSort; label: string }[] = [
  * "평점이 있다"는 잘못된 약속이 된다(브랜드 1번 원칙: 과장 금지).
  * 나중에 평점 데이터가 채워지면 자동으로 다시 나타난다.
  */
-export function availableSortOptions(
-  places: Place[]
-): { value: PlaceSort; label: string }[] {
+export function availableSortOptions(places: Place[]): SortOption[] {
   return SORT_OPTIONS.filter((o) => {
     if (o.value === "rating") return places.some((p) => p.rating != null);
     if (o.value === "isolation")

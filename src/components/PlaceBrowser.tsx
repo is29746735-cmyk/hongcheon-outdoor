@@ -13,13 +13,32 @@ import {
 } from "@/lib/search";
 import { CATEGORY_LABELS } from "@/constants";
 import { CategoryIcon } from "@/components/icons";
-import { ChevronDown, Fish, Navigation, X } from "lucide-react";
+import {
+  ArrowDownAZ,
+  ChevronDown,
+  Fish,
+  Navigation,
+  Sparkles,
+  Star,
+  TreePine,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { usePlaceFilters, ISOLATION_THRESHOLDS } from "@/lib/usePlaceFilters";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
 import EmptyState from "@/components/places/EmptyState";
 import SpotSlideOver from "@/components/places/SpotSlideOver";
 import KakaoMap from "@/components/KakaoMap";
+
+/** 정렬 버튼 아이콘 — 글자만 있는 줄보다 훑을 때 눈에 먼저 들어온다 */
+const SORT_ICONS: Record<PlaceSort, LucideIcon> = {
+  recommended: Sparkles,
+  distance: Navigation,
+  rating: Star,
+  isolation: TreePine,
+  name: ArrowDownAZ,
+};
 
 const ISOLATION_LABELS: Record<number, string> = {
   1: "전체",
@@ -206,8 +225,8 @@ export default function PlaceBrowser() {
         )}
       </div>
 
-      {/* 결과 수 + 정렬 */}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      {/* 결과 수 — 필터를 바꿨을 때 바로 보이도록 필터 패널 바로 아래에 둔다 */}
+      <div className="mt-3">
         <p className="text-sm text-neutral-600" aria-live="polite">
           <span className="text-base font-bold tabular-nums text-forest-800">
             {f.filtered.length}곳
@@ -219,63 +238,7 @@ export default function PlaceBrowser() {
             </span>
           )}
         </p>
-        <label className="inline-flex items-center gap-2 text-sm">
-          <span className="shrink-0 text-neutral-500">정렬</span>
-          <select
-            value={f.sort}
-            onChange={(e) => f.setSort(e.target.value as PlaceSort)}
-            className="min-h-[44px] rounded-sm border border-neutral-300 bg-white px-2.5 text-sm font-medium text-neutral-800 outline-none focus:border-forest-500"
-          >
-            {f.sortOptions.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </label>
       </div>
-
-      {/* 내 위치 안내 — 가까운 순은 위치 권한이 있어야 동작하므로 상태를 숨기지 않는다 */}
-      {(f.locationStatus !== "idle" || f.sort === "distance") && (
-        <p
-          className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium"
-          aria-live="polite"
-        >
-          {f.locationStatus === "asking" && (
-            <span className="text-neutral-600">내 위치를 확인하는 중…</span>
-          )}
-          {f.locationStatus === "granted" && (
-            <>
-              <span className="inline-flex items-center gap-1 text-forest-700">
-                <Navigation className="h-3.5 w-3.5" strokeWidth={2.4} />
-                내 위치 기준 거리 표시 중
-              </span>
-              <span className="text-neutral-500">
-                직선 거리이며 실제 차로 거리와 다릅니다
-              </span>
-            </>
-          )}
-          {f.locationStatus === "denied" && (
-            <>
-              <span className="text-[#c6461f]">
-                위치를 받지 못해 가까운 순을 쓸 수 없습니다.
-              </span>
-              <button
-                type="button"
-                onClick={() => f.requestLocation()}
-                className="font-bold text-forest-700 underline underline-offset-2 hover:text-forest-800"
-              >
-                다시 시도
-              </button>
-            </>
-          )}
-          {f.locationStatus === "unsupported" && (
-            <span className="text-neutral-600">
-              이 브라우저에서는 위치 기능을 쓸 수 없습니다.
-            </span>
-          )}
-        </p>
-      )}
 
       {/* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */}
       <div className="mt-4">
@@ -318,12 +281,119 @@ export default function PlaceBrowser() {
       */}
       {showConnectedSection && <GearPromoBand className="mt-12" />}
 
+      {/*
+        정렬 — 목록 **바로 위**에 둔다.
+        예전에는 필터 패널 밑의 작은 <select> 였는데, 거기서 지도·연계추천·용품배너를
+        지나 첫 카드까지 2,281px 이라 바꿔도 화면에서 달라지는 게 안 보였다.
+        기능이 멀쩡한데도 "안 바뀐다"로 읽히던 원인이다(2026-07-27 지적).
+        선택형 버튼으로 바꿔 무엇을 고를 수 있는지 자체가 보이게 한다.
+      */}
+      {f.filtered.length > 0 && (
+        <section
+          className="mt-12 rounded-2xl border border-sand-300 bg-white p-3.5"
+          aria-label="정렬 기준"
+        >
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            {/*
+              좁은 화면에서는 라벨과 버튼 줄을 각각 한 줄로 내린다.
+              라벨과 같은 줄에 두면 남는 폭이 260px 뿐이라 버튼이 한 줄에 하나씩
+              떨어져 패널이 255px까지 길어졌다.
+            */}
+            <span className="inline-flex w-full shrink-0 items-center gap-1.5 text-sm font-bold text-forest-800 sm:w-auto">
+              <ArrowDownAZ className="h-4 w-4 text-forest-600" strokeWidth={2.4} />
+              정렬
+            </span>
+            <div
+              role="group"
+              aria-label="정렬 기준"
+              className="flex w-full flex-wrap gap-1.5 sm:w-auto"
+            >
+              {f.sortOptions.map((o) => {
+                const Icon = SORT_ICONS[o.value];
+                const active = f.sort === o.value;
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => f.setSort(o.value)}
+                    aria-pressed={active}
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm border px-3 text-sm font-bold transition-colors ${
+                      active
+                        ? "border-forest-600 bg-forest-600 text-white"
+                        : "border-neutral-300 bg-white text-neutral-700 hover:border-forest-400 hover:text-forest-700"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" strokeWidth={2.2} />
+                    {o.short}
+                    {/*
+                      보조 설명은 좁은 화면에서 감춘다. 넣으면 버튼 하나가
+                      158~181px가 되어 한 줄에 하나씩 떨어진다(패널이 255px로 길어짐).
+                      '가까운 순'의 위치 안내는 고르는 즉시 아래 줄에 나오므로
+                      모바일에서도 설명이 사라지지는 않는다.
+                    */}
+                    <span
+                      className={`hidden font-medium sm:inline ${
+                        active ? "text-forest-100" : "text-neutral-500"
+                      }`}
+                    >
+                      {o.hint}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 내 위치 안내 — 가까운 순은 위치 권한이 있어야 동작하므로 상태를 숨기지 않는다 */}
+          {(f.locationStatus !== "idle" || f.sort === "distance") && (
+            <p
+              className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium"
+              aria-live="polite"
+            >
+              {f.locationStatus === "asking" && (
+                <span className="text-neutral-600">내 위치를 확인하는 중…</span>
+              )}
+              {f.locationStatus === "granted" && (
+                <>
+                  <span className="inline-flex items-center gap-1 text-forest-700">
+                    <Navigation className="h-3.5 w-3.5" strokeWidth={2.4} />
+                    내 위치 기준 거리 표시 중
+                  </span>
+                  <span className="text-neutral-500">
+                    직선 거리이며 실제 차로 거리와 다릅니다
+                  </span>
+                </>
+              )}
+              {f.locationStatus === "denied" && (
+                <>
+                  <span className="text-[#c6461f]">
+                    위치를 받지 못해 가까운 순을 쓸 수 없습니다.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => f.requestLocation()}
+                    className="font-bold text-forest-700 underline underline-offset-2 hover:text-forest-800"
+                  >
+                    다시 시도
+                  </button>
+                </>
+              )}
+              {f.locationStatus === "unsupported" && (
+                <span className="text-neutral-600">
+                  이 브라우저에서는 위치 기능을 쓸 수 없습니다.
+                </span>
+              )}
+            </p>
+          )}
+        </section>
+      )}
+
       {/* 목록 — 결과 0건이면 Empty State / 추천순이면 카테고리별 / 그 외는 정렬된 단일 목록 */}
       {f.filtered.length === 0 ? (
         <EmptyState onReset={f.reset} />
       ) : f.sort === "recommended" ? (
-        groups.map((group) => (
-          <section key={group.category} className="mt-12">
+        groups.map((group, gi) => (
+          <section key={group.category} className={gi === 0 ? "mt-6" : "mt-12"}>
             <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold text-forest-800">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest-50 text-forest-700">
                 <CategoryIcon category={group.category} className="h-5 w-5" />
@@ -339,7 +409,7 @@ export default function PlaceBrowser() {
           </section>
         ))
       ) : (
-        <section className="mt-12">
+        <section className="mt-6">
           <h2 className="mb-5 flex items-center gap-2.5 text-2xl font-extrabold text-forest-800">
             {sortLabel}
             <span className="rounded-sm bg-forest-50 px-2.5 py-0.5 text-xs font-bold tabular-nums text-forest-600">
