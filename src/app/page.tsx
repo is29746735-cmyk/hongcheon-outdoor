@@ -46,31 +46,29 @@ export default function HomePage() {
           <HeroPicker />
 
           {/*
-            신뢰 안내. "검증 12곳"·"무협찬 큐레이션"처럼 압축된 말은 무슨 뜻인지
-            전달되지 않는다는 지적(2026-07-27)에 따라, 무엇을 어디서 확인했는지
-            풀어서 적는다. 출처명은 places.ts 의 sourceName 에 실제로 있는 것들이다.
+            신뢰 안내. 길게 풀어 쓰니 히어로가 설명문이 됐다는 지적(2026-07-27)에 따라
+            한 줄씩으로 줄였다.
+            "등"을 뺄 수 없는 이유: places.ts 의 sourceName 12개 중 문화관광포털·
+            한국관광공사는 5곳이고 나머지는 캠핑·낚시 전문 매체다. 두 곳만 적고
+            "모두"라고 하면 사실이 아니게 된다. 자세한 출처는 장소마다 링크로 붙는다.
           */}
-          <div className="mx-auto mt-7 max-w-xl space-y-2 text-[13px] leading-relaxed text-white/85">
-            <p className="inline-flex items-start gap-1.5 text-left">
+          <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] leading-relaxed text-white/85">
+            <p className="inline-flex items-center gap-1.5">
               <ShieldCheck
-                className="mt-0.5 h-4 w-4 shrink-0 text-forest-300"
+                className="h-4 w-4 shrink-0 text-forest-300"
                 strokeWidth={2.2}
               />
               <span>
                 <b className="font-bold tabular-nums text-white">{placeCount}곳</b> 모두
-                공식·전문 출처로 확인했습니다 — 홍천군 문화관광포털, 한국관광공사(고캠핑
-                ·대한민국 구석구석), 캠핑·낚시 전문 매체. 장소마다 출처 링크를 답니다.
+                홍천군 문화관광포털·한국관광공사 등으로 확인
               </span>
             </p>
-            <p className="inline-flex items-start gap-1.5 text-left">
+            <p className="inline-flex items-center gap-1.5">
               <BadgeCheck
-                className="mt-0.5 h-4 w-4 shrink-0 text-forest-300"
+                className="h-4 w-4 shrink-0 text-forest-300"
                 strokeWidth={2.2}
               />
-              <span>
-                <b className="font-bold text-white">광고비나 협찬을 받지 않습니다.</b>{" "}
-                업체가 돈을 내고 순위를 올리거나 목록에 들어올 수 없습니다.
-              </span>
+              <b className="font-bold text-white">광고비나 협찬을 받지 않습니다</b>
             </p>
           </div>
         </div>

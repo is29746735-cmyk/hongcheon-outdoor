@@ -52,6 +52,8 @@ interface Ember {
   life: number;
   max: number;
   r: number;
+  /** 불티마다 다른 옆흐름(px/s) — 이게 없으면 다 같은 기둥으로 몰린다 */
+  drift: number;
 }
 interface Drop {
   x: number;
@@ -193,6 +195,10 @@ export default function HeroAtmosphere() {
     let ground = 0; // 강둑 윗변 기준선
     let fireX = 0;
     let fireScale = 1;
+    /** 불티가 노는 가로 반폭 — 화면 폭의 1/4 안에서만 흩어진다 */
+    let emberHalfWidth = 0;
+    /** 불티가 오를 수 있는 가장 높은 y — 화면 중앙보다 조금 위 */
+    let emberTop = 0;
     let branchTips: { x: number; y: number }[] = [];
     let backdrop: HTMLCanvasElement | null = null; // 능선+가지(정적 레이어)
 
@@ -437,7 +443,10 @@ export default function HeroAtmosphere() {
       // 좁은 화면은 히어로가 세로로 길어지므로 여백을 더 줄여 불을 아래에 붙인다.
       ground = h - Math.max(84, Math.min(w < 640 ? 100 : 118, h * 0.145));
       fireX = w * 0.5;
-      fireScale = w < 640 ? 0.82 : 1;
+      fireScale = w < 640 ? 1.05 : 1.35;
+      // 불티는 '화면 아래 가운데 1/4' 안에서 자유롭게 흩어지되 그 밖으로는 안 나간다
+      emberHalfWidth = Math.min(w * 0.25, 340) / 2;
+      emberTop = ground - Math.min(h * 0.46, 360);
 
       const buckets = Math.max(24, Math.round(w / 14));
       const next = new Float32Array(buckets);
@@ -471,27 +480,32 @@ export default function HeroAtmosphere() {
     function spawnFlame() {
       const s = fireScale;
       flames.push({
-        x: fireX + (Math.random() - 0.5) * 24 * s,
-        y: ground - 3 - Math.random() * 5,
-        vx: (Math.random() - 0.5) * 10,
-        vy: -(74 + Math.random() * 46) * s,
+        x: fireX + (Math.random() - 0.5) * 26 * s,
+        y: ground - 3 - Math.random() * 6,
+        vx: (Math.random() - 0.5) * 12,
+        vy: -(78 + Math.random() * 52) * s,
         life: 0,
-        max: 0.5 + Math.random() * 0.42,
-        size: (5.5 + Math.random() * 5.5) * s,
+        max: 0.6 + Math.random() * 0.55,
+        size: (6.5 + Math.random() * 6) * s,
         seed: Math.random() * 10,
       });
     }
 
+    /**
+     * 불티. 불꽃 기둥에서 떨어져 나와 **화면 아래 가운데 1/4** 을 자유롭게 떠다닌다.
+     * 위로는 화면 중앙보다 조금 높은 곳까지만 오르고, 옆으로도 그 범위를 넘지 않는다.
+     */
     function spawnEmber(boost = 0) {
       const s = fireScale;
       embers.push({
-        x: fireX + (Math.random() - 0.5) * 14 * s,
-        y: ground - 10,
-        vx: (Math.random() - 0.5) * (26 + boost * 90),
-        vy: -(52 + Math.random() * 48 + boost * 40) * s,
+        x: fireX + (Math.random() - 0.5) * 20 * s,
+        y: ground - 8 - Math.random() * 10,
+        vx: (Math.random() - 0.5) * (34 + boost * 110),
+        vy: -(58 + Math.random() * 62 + boost * 50) * s,
         life: 0,
-        max: 1.5 + Math.random() * 1.6,
-        r: 0.9 + Math.random() * 1.2,
+        max: 3.4 + Math.random() * 2.8,
+        r: 0.9 + Math.random() * 1.4,
+        drift: (Math.random() - 0.5) * 118,
       });
     }
 
@@ -549,8 +563,18 @@ export default function HeroAtmosphere() {
     }
 
     // ── 바람(포인터) ─────────────────────────────────────────────
-    /** (px,py) 지점이 포인터로부터 받는 힘 */
-    function gust(px: number, py: number, radius: number, power: number) {
+    /**
+     * (px,py) 지점이 포인터로부터 받는 힘.
+     * `power` 양수 = 손에서 **밀려난다**, 음수 = 손 쪽으로 끌린다.
+     * `velScale` 은 '손이 빠르게 지나갈 때' 성분의 비중 — 0 이면 위치에만 반응한다.
+     */
+    function gust(
+      px: number,
+      py: number,
+      radius: number,
+      power: number,
+      velScale = 1
+    ) {
       if (!pointer.active) return [0, 0] as const;
       const dx = px - pointer.x;
       const dy = py - pointer.y;
@@ -560,8 +584,8 @@ export default function HeroAtmosphere() {
       const d = Math.sqrt(d2) || 1;
       const f = (1 - d / radius) ** 1.5;
       return [
-        (dx / d) * power * f + pointer.vx * 0.42 * f,
-        (dy / d) * power * 0.35 * f + pointer.vy * 0.22 * f,
+        (dx / d) * power * f + pointer.vx * 0.42 * f * velScale,
+        (dy / d) * power * 0.35 * f + pointer.vy * 0.22 * f * velScale,
       ] as const;
     }
 
@@ -678,13 +702,16 @@ export default function HeroAtmosphere() {
         ctx!.fill();
       }
 
-      // 5) 불티
+      // 5) 불티 — 켜졌다 사그라들며 위로 흩어진다. 높이 오를수록 옅어진다.
       for (const e of embers) {
         const u = e.life / e.max;
-        const a = (1 - u) * 0.85;
-        ctx!.fillStyle = `rgba(255,${Math.round(150 + 70 * (1 - u))},90,${a})`;
+        const fade = Math.min(1, u * 7) * Math.min(1, (1 - u) * 3.4);
+        const high = 1 - Math.min(1, (ground - e.y) / 340) * 0.55;
+        const a = fade * high * 0.8 * (0.7 + 0.5 * nightness);
+        if (a <= 0.01) continue;
+        ctx!.fillStyle = `rgba(255,${Math.round(146 + 74 * (1 - u))},92,${a})`;
         ctx!.beginPath();
-        ctx!.arc(e.x, e.y, e.r * (1 - u * 0.4), 0, Math.PI * 2);
+        ctx!.arc(e.x, e.y, e.r * (1 - u * 0.35), 0, Math.PI * 2);
         ctx!.fill();
       }
       ctx!.restore();
@@ -784,8 +811,8 @@ export default function HeroAtmosphere() {
       ctx!.save();
       ctx!.globalCompositeOperation = "lighter";
       for (const f of flies) {
-        // 길게 켜졌다 잠깐 꺼지는 리듬
-        const pulse = Math.max(0, Math.sin(t * 1.5 + f.seed) ** 3);
+        // 천천히 켜졌다 사그라드는 리듬(약 9초 주기). 빠르게 깜빡이면 눈이 피로하다.
+        const pulse = Math.max(0, Math.sin(t * 0.7 + f.seed) ** 3);
         if (pulse < 0.02) continue;
         const g = ctx!.createRadialGradient(f.x, f.y, 0, f.x, f.y, 9);
         g.addColorStop(0, `rgba(226,244,150,${0.85 * pulse})`);
@@ -801,13 +828,14 @@ export default function HeroAtmosphere() {
 
     function drawRain() {
       ctx!.lineCap = "round";
+      // 기울기는 바탕 바람만 반영한다(포인터 무관 — 위 update 주석 참조)
+      const slant = 2.2;
       for (const d of drops) {
-        const slant = pointer.vx * 0.035;
         ctx!.strokeStyle = `rgba(198,220,230,${d.a})`;
         ctx!.lineWidth = 1.05;
         ctx!.beginPath();
         ctx!.moveTo(d.x, d.y);
-        ctx!.lineTo(d.x - slant - 2.2, d.y + d.len);
+        ctx!.lineTo(d.x - slant, d.y + d.len);
         ctx!.stroke();
       }
       for (const s of splashes) {
@@ -833,13 +861,19 @@ export default function HeroAtmosphere() {
     // ── 갱신 ────────────────────────────────────────────────────
     function update(dt: number, t: number) {
       const wx = weatherRef.current;
+      /*
+       * 감쇠는 **시간 기준**으로 계산한다.
+       * `v *= 0.96` 처럼 프레임마다 곱하면 144Hz 화면에서는 60Hz보다 2배 넘게
+       * 감쇠돼, 같은 코드가 모니터에 따라 다르게 움직인다(실제로 불티가 안 퍼졌다).
+       */
+      const decay = (perFrameAt60: number) => Math.pow(perFrameAt60, dt * 60);
       // 바탕 바람 — 포인터가 없어도 불은 늘 조금씩 눕는다
       const breeze = Math.sin(t * 0.23) * 7 + Math.sin(t * 0.07 + 1.3) * 4;
 
       // 포인터 속도 감쇠
-      const decay = Math.exp(-dt * 3.4);
-      pointer.vx *= decay;
-      pointer.vy *= decay;
+      const pointerDecay = Math.exp(-dt * 3.4);
+      pointer.vx *= pointerDecay;
+      pointer.vy *= pointerDecay;
       pointer.strength *= Math.exp(-dt * 2.2);
 
       // ── 불꽃
@@ -863,43 +897,64 @@ export default function HeroAtmosphere() {
       }
       bend += (bendTarget - bend) * Math.min(1, dt * 5);
 
-      const wantFlames = Math.round(62 * fireScale);
+      const wantFlames = Math.round(64 * fireScale);
       while (flames.length < wantFlames) spawnFlame();
       for (let i = flames.length - 1; i >= 0; i--) {
         const f = flames[i];
         f.life += dt;
-        if (f.life >= f.max || f.y < ground - 260) {
+        if (f.life >= f.max || f.y < ground - 300) {
           flames.splice(i, 1);
           spawnFlame();
           continue;
         }
-        // 0(바닥) → 1(꼭대기). 위로 갈수록 바람을 더 탄다.
-        const rise = Math.min(1, (ground - f.y) / 95);
+        // 0(바닥) → 1(꼭대기). 위로 갈수록 바람을 더 타고, 축에 덜 매인다.
+        const rise = Math.min(1, (ground - f.y) / 130);
         const axis = fireX + bend * rise;
         const [gx, gy] = gust(f.x, f.y, 190, 110);
         f.vx +=
-          (Math.sin(t * 2.6 + f.seed) * 16 + gx) * dt * (0.3 + rise) +
-          (axis - f.x) * 3 * dt;
-        f.vy += (-26 + gy * 0.4) * dt;
-        f.vx *= 0.96;
+          (Math.sin(t * 2.6 + f.seed) * 22 + gx) * dt * (0.3 + rise * 1.6) +
+          (axis - f.x) * (3 - rise * 2.2) * dt;
+        f.vy += (-30 + gy * 0.4) * dt;
+        f.vx *= decay(0.96);
         f.x += f.vx * dt;
         f.y += f.vy * dt;
       }
 
-      // ── 불티: 평소엔 드문드문, 부채질하면 많이
-      const emberRate = 2.2 + pointer.strength * 16;
-      if (Math.random() < emberRate * dt) spawnEmber(pointer.strength);
+      // ── 불티: 화면 아래 가운데 1/4 을 떠다니는 무리로 유지한다
+      const wantEmbers = Math.round(26 * fireScale + pointer.strength * 14);
+      if (embers.length < wantEmbers && Math.random() < 14 * dt)
+        spawnEmber(pointer.strength);
       for (let i = embers.length - 1; i >= 0; i--) {
         const e = embers[i];
         e.life += dt;
-        if (e.life >= e.max || e.y < -20) {
+        if (e.life >= e.max) {
           embers.splice(i, 1);
           continue;
         }
-        const [gx, gy] = gust(e.x, e.y, 220, 320);
-        e.vx += (breeze * 1.4 + bend * 0.5 + gx) * dt;
-        e.vy += (-14 + gy * 0.4) * dt;
-        e.vx *= 0.985;
+        const [gx, gy] = gust(e.x, e.y, 240, 340);
+        // 자유분방하게 — 여러 주기를 겹친 흐름을 탄다
+        const wander =
+          Math.sin(t * 0.8 + e.max * 3) * 13 + Math.sin(t * 0.31 + e.r * 9) * 9;
+
+        /*
+         * 옆으로는 '가속'이 아니라 **목표 속도를 좇게** 한다.
+         * 가속 모델은 감쇠와 싸우느라 결국 기둥으로 모였다.
+         * 가장자리(off=±1)에 가까울수록 제 옆흐름을 잃고 안쪽으로 꺾인다 —
+         * 덕분에 허용 범위를 꽉 채우면서도 밖으로는 안 나간다.
+         */
+        const off = (e.x - fireX) / emberHalfWidth;
+        const target =
+          e.drift * (1 - Math.min(1, Math.abs(off) ** 4)) - off * 26;
+        e.vx += (target - e.vx) * 1.6 * dt;
+        e.vx += (breeze * 1.4 + bend * 0.5 + wander + gx) * dt;
+        e.vy += (-18 + gy * 0.4) * dt;
+
+        // 위로도 정해진 높이까지만 — 천장에 가까울수록 세게 붙잡는다
+        if (e.y < emberTop + 110)
+          e.vy += ((emberTop + 110 - e.y) / 110) * 150 * dt;
+
+        e.vx *= decay(0.993);
+        e.vy *= decay(0.994);
         e.x += e.vx * dt;
         e.y += e.vy * dt;
       }
@@ -912,8 +967,9 @@ export default function HeroAtmosphere() {
           spawnDrop(drops.length > target * 0.6);
         for (let i = drops.length - 1; i >= 0; i--) {
           const d = drops[i];
-          const [gx] = gust(d.x, d.y, 150, 120);
-          d.x += (breeze * 0.6 + gx * 0.5 + pointer.vx * 0.02) * dt;
+          // 비는 포인터에 반응하지 않는다. 손을 빠르게 움직일 때 빗줄기까지
+          // 같이 흔들리면 화면이 어지럽다(2026-07-27 사용자 지적).
+          d.x += breeze * 0.6 * dt;
           d.y += d.vy * dt;
           if (d.y > bankTop(d.x)) {
             if (splashes.length < 26 && Math.random() < 0.5)
@@ -937,7 +993,8 @@ export default function HeroAtmosphere() {
           spawnFlake(flakes.length > target * 0.6);
         for (let i = flakes.length - 1; i >= 0; i--) {
           const f = flakes[i];
-          const [gx, gy] = gust(f.x, f.y, 150, 160);
+          // 눈은 천천히 내리므로 손을 따라가도 어지럽지 않다. 다만 속도 성분은 낮춘다.
+          const [gx, gy] = gust(f.x, f.y, 150, 160, 0.4);
           f.x +=
             (f.vx + Math.sin(t * 0.9 + f.seed) * 12 + breeze * 0.8 + gx) * dt;
           f.y += (f.vy + gy * 0.3) * dt;
@@ -978,10 +1035,10 @@ export default function HeroAtmosphere() {
       }
       for (let i = fallers.length - 1; i >= 0; i--) {
         const p = fallers[i];
-        const [gx, gy] = gust(p.x, p.y, 160, 200);
+        const [gx, gy] = gust(p.x, p.y, 160, 200, 0.6);
         p.vx += (Math.sin(t * 1.4 + p.rot) * 10 + breeze * 0.7 + gx) * dt;
         p.vy += (10 + gy * 0.3) * dt;
-        p.vx *= 0.97;
+        p.vx *= decay(0.97);
         p.vy = Math.min(p.vy, 70);
         p.x += p.vx * dt;
         p.y += p.vy * dt;
@@ -999,11 +1056,14 @@ export default function HeroAtmosphere() {
         flies.length = 0;
       }
       for (const f of flies) {
-        const [gx, gy] = gust(f.x, f.y, 120, -180); // 음수 = 손을 피해 달아난다
+        // 손이 다가오면 달아난다(양수 = 밀어냄). 다만 손 속도에는 거의 안 휩쓸린다 —
+        // 반딧불은 바람에 날리는 게 아니라 스스로 피하는 것이다.
+        const [gx, gy] = gust(f.x, f.y, 210, 560, 0.15);
         f.vx += (Math.sin(t * 0.6 + f.seed) * 9 + gx) * dt;
         f.vy += (Math.cos(t * 0.47 + f.seed * 1.7) * 7 + gy) * dt;
-        f.vx *= 0.96;
-        f.vy *= 0.96;
+        // 감쇠를 약하게 — 너무 세면 달아나려다 제자리에 멈춘다
+        f.vx *= decay(0.98);
+        f.vy *= decay(0.98);
         f.x += f.vx * dt;
         f.y += f.vy * dt;
         if (f.x < 10) f.vx += 30 * dt;
