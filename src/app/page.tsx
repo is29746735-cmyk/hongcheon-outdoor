@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Gauge,
-  BadgeCheck,
-  Camera,
-  ArrowRight,
-} from "lucide-react";
+import { ShieldCheck, BadgeCheck, Camera, ArrowRight } from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
-import HeroSearch from "@/components/HeroSearch";
+import HeroPicker from "@/components/HeroPicker";
 import { getAllPlaces } from "@/data/places";
 
 export const metadata: Metadata = {
@@ -57,24 +51,35 @@ export default function HomePage() {
             정리했습니다.
           </p>
 
-          <HeroSearch />
+          <HeroPicker />
 
-          {/* 신뢰 스탯 */}
-          <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-medium text-white/85">
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
-              검증 <span className="font-bold tabular-nums">{placeCount}</span>곳
-            </span>
-            <span className="h-3 w-px bg-white/25" />
-            <span className="inline-flex items-center gap-1.5">
-              <Gauge className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
-              실시간 아웃도어 지수
-            </span>
-            <span className="h-3 w-px bg-white/25" />
-            <span className="inline-flex items-center gap-1.5">
-              <BadgeCheck className="h-4 w-4 text-forest-300" strokeWidth={2.2} />
-              무협찬 큐레이션
-            </span>
+          {/*
+            신뢰 안내. "검증 12곳"·"무협찬 큐레이션"처럼 압축된 말은 무슨 뜻인지
+            전달되지 않는다는 지적(2026-07-27)에 따라, 무엇을 어디서 확인했는지
+            풀어서 적는다. 출처명은 places.ts 의 sourceName 에 실제로 있는 것들이다.
+          */}
+          <div className="mx-auto mt-7 max-w-xl space-y-2 text-[13px] leading-relaxed text-white/85">
+            <p className="inline-flex items-start gap-1.5 text-left">
+              <ShieldCheck
+                className="mt-0.5 h-4 w-4 shrink-0 text-forest-300"
+                strokeWidth={2.2}
+              />
+              <span>
+                <b className="font-bold tabular-nums text-white">{placeCount}곳</b> 모두
+                공식·전문 출처로 확인했습니다 — 홍천군 문화관광포털, 한국관광공사(고캠핑
+                ·대한민국 구석구석), 캠핑·낚시 전문 매체. 장소마다 출처 링크를 답니다.
+              </span>
+            </p>
+            <p className="inline-flex items-start gap-1.5 text-left">
+              <BadgeCheck
+                className="mt-0.5 h-4 w-4 shrink-0 text-forest-300"
+                strokeWidth={2.2}
+              />
+              <span>
+                <b className="font-bold text-white">광고비나 협찬을 받지 않습니다.</b>{" "}
+                업체가 돈을 내고 순위를 올리거나 목록에 들어올 수 없습니다.
+              </span>
+            </p>
           </div>
         </div>
       </section>

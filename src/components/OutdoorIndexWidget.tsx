@@ -5,6 +5,7 @@ import {
   ShieldCheck,
   TriangleAlert,
   OctagonAlert,
+  ChevronDown,
   RefreshCw,
   CloudRain,
   CloudSnow,
@@ -39,26 +40,33 @@ function dayIcon(d: DayForecast): LucideIcon {
   return Sun;
 }
 
-/** 지수 레벨별 스타일 */
+/**
+ * 지수 레벨별 스타일.
+ *
+ * 2026-07-27: 색을 낮췄다. 이 위젯이 홈 첫 화면에서 노란 덩어리로 시선을 아래로
+ * 끌어당긴다는 지적이 있었다. 카드 바탕은 흰색으로 두고 색은 **배지 하나에만** 쓴다.
+ * 단 `danger`(위험)만은 안전 정보라 강도를 유지한다 — 위험할 때까지 조용하면 안 된다.
+ */
 const LEVEL_STYLES: Record<
   OutdoorIndexLevel,
   { container: string; badge: string; icon: LucideIcon; iconColor: string }
 > = {
   safe: {
-    container: "border-emerald-200 bg-emerald-50",
-    badge: "bg-emerald-600",
+    container: "border-neutral-200 bg-white",
+    badge: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
     icon: ShieldCheck,
     iconColor: "text-emerald-600",
   },
   caution: {
-    container: "border-amber-200 bg-amber-50",
-    badge: "bg-amber-500",
+    container: "border-neutral-200 bg-white",
+    badge: "bg-amber-50 text-amber-800 ring-1 ring-amber-200",
     icon: TriangleAlert,
-    iconColor: "text-amber-500",
+    iconColor: "text-amber-600",
   },
   danger: {
+    // 위험은 예외 — 눈에 띄어야 한다
     container: "border-red-200 bg-red-50",
-    badge: "bg-red-600",
+    badge: "bg-red-600 text-white",
     icon: OctagonAlert,
     iconColor: "text-red-600",
   },
@@ -94,6 +102,8 @@ export default function OutdoorIndexWidget({
   );
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  /** 기본은 접힘 — 첫 화면을 날씨가 점령하지 않도록 */
+  const [expanded, setExpanded] = useState(false);
 
   // 동시 요청/언마운트 후 setState 방지용
   const inFlight = useRef(false);
@@ -166,25 +176,72 @@ export default function OutdoorIndexWidget({
   }
 
   const style = LEVEL_STYLES[data.index.level];
+  const today = data.days?.[0];
 
   return (
     <section
-      className={`rounded-2xl border p-5 ${style.container}`}
+      className={`rounded-2xl border ${style.container}`}
       aria-label="오늘의 홍천강 아웃도어 지수"
     >
-      {/* 지수 + 설명 */}
-      <p className="text-sm font-semibold text-neutral-600">
-        오늘의 홍천강 아웃도어 지수
-      </p>
-      <div className="mt-2 flex items-center gap-3">
-        <style.icon className={`h-7 w-7 ${style.iconColor}`} strokeWidth={2.2} />
+      {/*
+        접힌 줄 — 오늘 지수와 날씨만. 전체를 펼치는 토글이기도 하다.
+        기본을 접힌 상태로 두는 이유: 이 위젯이 첫 화면의 절반을 먹으면
+        정작 보러 온 장소 목록이 아래로 밀린다(2026-07-27 사용자 지적).
+      */}
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        className="flex min-h-[44px] w-full flex-wrap items-center gap-x-3 gap-y-1.5 rounded-2xl px-5 py-3.5 text-left transition-colors hover:bg-neutral-50/70"
+      >
+        <style.icon
+          className={`h-5 w-5 shrink-0 ${style.iconColor}`}
+          strokeWidth={2.2}
+        />
+        <span className="text-sm font-bold text-neutral-800">
+          오늘의 홍천강 아웃도어 지수
+        </span>
         <span
-          className={`rounded-sm px-4 py-1.5 text-xl font-bold text-white ${style.badge}`}
+          className={`rounded-sm px-2.5 py-1 text-xs font-bold ${style.badge}`}
         >
           {data.index.label}
         </span>
-      </div>
-      <p className="mt-3 text-[15px] leading-relaxed text-neutral-800">
+
+        {/* 오늘 날씨 요약 — 펼치지 않아도 이만큼은 보인다 */}
+        <span className="flex items-center gap-2 text-sm text-neutral-600">
+          {data.temperature != null && (
+            <span className="font-semibold tabular-nums text-neutral-800">
+              {data.temperature}°C
+            </span>
+          )}
+          {data.skyText && <span>{data.skyText}</span>}
+          {today?.precipProbability != null && (
+            <span className="tabular-nums text-sky-700">
+              강수 {today.precipProbability}%
+            </span>
+          )}
+        </span>
+
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1 text-[13px] font-bold text-forest-700">
+          {expanded ? "접기" : "자세히"}
+          <ChevronDown
+            className={`h-4 w-4 transition-transform ${
+              expanded ? "rotate-180" : ""
+            }`}
+            strokeWidth={2.4}
+          />
+        </span>
+      </button>
+
+      {!expanded && (
+        <p className="px-5 pb-4 text-[13px] leading-relaxed text-neutral-600">
+          {data.index.reason}
+        </p>
+      )}
+
+      {expanded && (
+        <div className="border-t border-black/5 px-5 pb-5 pt-4">
+      <p className="text-[15px] leading-relaxed text-neutral-800">
         {data.index.reason}
       </p>
 
@@ -298,6 +355,8 @@ export default function OutdoorIndexWidget({
           </button>
         </div>
       </div>
+        </div>
+      )}
     </section>
   );
 }
