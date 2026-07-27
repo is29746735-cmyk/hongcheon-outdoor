@@ -389,7 +389,38 @@ export default function PlaceBrowser() {
               aria-live="polite"
             >
               {f.locationStatus === "asking" && (
-                <span className="text-neutral-600">내 위치를 확인하는 중…</span>
+                <span className="text-neutral-600">
+                  내 위치를 확인하는 중…
+                  {/*
+                    첫 응답은 대개 IP 추정이라 오차가 크다. 더 정확해질 때까지
+                    최대 8초를 기다리므로, 기다리는 동안 지금 오차를 보여 준다.
+                  */}
+                  {f.pendingAccuracy != null && (
+                    <span className="text-neutral-500">
+                      {" "}
+                      (지금 오차 ±{formatDistance(f.pendingAccuracy)} — 더 정확한
+                      값을 기다리는 중)
+                    </span>
+                  )}
+                </span>
+              )}
+              {f.locationStatus === "blocked" && (
+                <>
+                  <span className="text-[#c6461f]">
+                    브라우저에서 이 사이트의 위치 권한이 차단돼 있습니다.
+                  </span>
+                  <span className="text-neutral-500">
+                    주소창의 자물쇠 아이콘 → 위치 → 허용으로 바꾼 뒤 다시
+                    눌러 주세요.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => f.requestLocation()}
+                    className="font-bold text-forest-700 underline underline-offset-2 hover:text-forest-800"
+                  >
+                    다시 시도
+                  </button>
+                </>
               )}
               {f.locationStatus === "granted" && (
                 <>

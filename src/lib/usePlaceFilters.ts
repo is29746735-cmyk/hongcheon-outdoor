@@ -27,6 +27,8 @@ export type LocationStatus =
   | "granted"
   | "denied"
   | "unsupported"
+  /** 브라우저 설정에서 이 사이트의 위치 권한이 차단된 상태(창조차 안 뜬다) */
+  | "blocked"
   /** 위치는 받았지만 오차가 너무 크거나 홍천에서 너무 멀어 쓸 수 없는 경우 */
   | "unreliable";
 
@@ -56,58 +58,123 @@ export function usePlaceFilters(all: Place[]) {
   /** 정상적으로 받은 위치의 오차(m) */
   const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
 
-  const requestLocation = useCallback((): Promise<GeoPoint | null> => {
+  /** 위치를 다듬는 중 현재까지의 오차(m) — "확인하는 중" 표시에 쓴다 */
+  const [pendingAccuracy, setPendingAccuracy] = useState<number | null>(null);
+
+  /**
+   * 내 위치 받기.
+   *
+   * `getCurrentPosition` 은 **가장 먼저 나온 값**을 준다. 그 첫 값은 보통
+   * IP·기지국 추정이라 오차가 수십 km다(홍천 장소가 4,900km로 뜨던 원인).
+   * 그래서 `watchPosition` 으로 잡고, 위치가 다듬어지는 동안 더 정확한 값이
+   * 오면 갈아치운다. 오차 1km 안으로 들어오면 그 자리에서 끝내고,
+   * 아니면 최대 8초까지 기다렸다가 그때까지 가장 정확한 값을 쓴다.
+   *
+   * 권한이 아예 차단돼 있으면 브라우저가 창을 띄우지 않고 즉시 실패한다.
+   * 그건 "거부"와 다른 상황이라(설정을 바꿔야 한다) 따로 알린다.
+   */
+  const requestLocation = useCallback(async (): Promise<GeoPoint | null> => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       setLocationStatus("unsupported");
-      return Promise.resolve(null);
+      return null;
     }
+
+    // 브라우저 설정에서 차단된 상태인지 미리 확인(지원하는 브라우저에서만)
+    try {
+      const st = await navigator.permissions?.query({
+        name: "geolocation" as PermissionName,
+      });
+      if (st?.state === "denied") {
+        setLocationIssue(null);
+        setLocationStatus("blocked");
+        return null;
+      }
+    } catch {
+      // Permissions API 미지원 — 그냥 요청해 본다
+    }
+
+    setLocationIssue(null);
+    setPendingAccuracy(null);
     setLocationStatus("asking");
-    return new Promise((resolve) => {
-      navigator.geolocation.getCurrentPosition(
+
+    return new Promise<GeoPoint | null>((resolve) => {
+      let best: { loc: GeoPoint; acc: number | null } | null = null;
+      let settled = false;
+      let watchId: number | null = null;
+      let timer: ReturnType<typeof setTimeout> | null = null;
+
+      const cleanup = () => {
+        if (watchId != null) navigator.geolocation.clearWatch(watchId);
+        if (timer) clearTimeout(timer);
+      };
+
+      /** 지금까지 가장 정확한 값으로 마무리 */
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        setPendingAccuracy(null);
+
+        if (!best) {
+          setLocationStatus("denied");
+          resolve(null);
+          return;
+        }
+        const issue = checkLocation(best.loc, HONGCHEON_RIVER_CENTER, best.acc);
+        if (issue) {
+          setLocationIssue(issue);
+          setLocationAccuracy(best.acc);
+          setUserLocation(null);
+          setLocationStatus("unreliable");
+          resolve(null);
+          return;
+        }
+        setLocationIssue(null);
+        setLocationAccuracy(best.acc);
+        setUserLocation(best.loc);
+        setLocationStatus("granted");
+        resolve(best.loc);
+      };
+
+      watchId = navigator.geolocation.watchPosition(
         (pos) => {
-          const loc = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          };
           const acc = Number.isFinite(pos.coords.accuracy)
             ? pos.coords.accuracy
             : null;
-
-          /*
-           * 받은 값을 그대로 믿지 않는다.
-           * IP로 추정된 위치는 수십~수천 km씩 틀리는데, 장소 12곳이 30km 안에
-           * 몰려 있어 원점이 조금만 어긋나도 '가까운 순'이 그냥 무작위가 된다.
-           * 틀린 순서를 정답처럼 보여주느니 못 쓴다고 말하는 편이 낫다.
-           */
-          const issue = checkLocation(loc, HONGCHEON_RIVER_CENTER, acc);
-          if (issue) {
-            setLocationIssue(issue);
-            setLocationAccuracy(acc);
-            setUserLocation(null);
-            setLocationStatus("unreliable");
+          const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          if (
+            !best ||
+            (acc != null && (best.acc == null || acc < best.acc)) ||
+            best.acc == null
+          ) {
+            best = { loc, acc };
+          }
+          setPendingAccuracy(acc);
+          // 충분히 정확하면 더 기다릴 이유가 없다
+          if (acc != null && acc <= 1000) finish();
+        },
+        (err) => {
+          // 1 = PERMISSION_DENIED. 사용자가 창에서 거부한 경우 즉시 끝낸다.
+          if (err.code === 1) {
+            if (settled) return;
+            settled = true;
+            cleanup();
+            setPendingAccuracy(null);
+            setLocationIssue(null);
+            setLocationStatus("denied");
             resolve(null);
             return;
           }
-
-          setLocationIssue(null);
-          setLocationAccuracy(acc);
-          setUserLocation(loc);
-          setLocationStatus("granted");
-          resolve(loc);
-        },
-        () => {
-          // 거부·시간초과·위치 불가를 구분해봐야 화면에서 할 말은 같다
-          setLocationIssue(null);
-          setLocationStatus("denied");
-          resolve(null);
+          // 위치 못 잡음·시간초과는 기다렸다가 그때까지 받은 값으로 판단한다
         },
         /*
-         * `enableHighAccuracy: true` — 예전엔 false 였는데, 그러면 브라우저가
-         * 곧장 IP/기지국 추정으로 가서 오차가 수십 km씩 나온다.
-         * 거리 정렬은 오차가 곧 정확도라 조금 느려도 정밀 위치를 요청한다.
+         * `maximumAge: 0` — 캐시된(=대개 부정확한) 이전 값을 받지 않는다.
+         * 이 값이 5분이었을 때 브라우저가 예전 IP 추정치를 그대로 돌려줬다.
          */
-        { enableHighAccuracy: true, timeout: 12000, maximumAge: 5 * 60 * 1000 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
+
+      timer = setTimeout(finish, 8000);
     });
   }, []);
 
@@ -234,6 +301,7 @@ export function usePlaceFilters(all: Place[]) {
     locationStatus,
     locationIssue,
     locationAccuracy,
+    pendingAccuracy,
     requestLocation,
     distances,
   };
