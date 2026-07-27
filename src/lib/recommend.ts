@@ -16,11 +16,23 @@ import type { Place } from "@/types/place";
  */
 
 export type PickerKey = "who" | "what" | "mood";
-export type Answers = Partial<Record<PickerKey, string>>;
+/** 단계마다 **여러 개**를 고를 수 있으므로 값은 배열이다 */
+export type Answers = Partial<Record<PickerKey, string[]>>;
 
 export interface PickerStep {
   key: PickerKey;
   question: string;
+  /** 여러 개를 고를 수 있는 단계인지. 없으면 하나만 고른다. */
+  multi?: boolean;
+  /**
+   * 함께 고를 수 없는 값 묶음. 한 묶음 안에서는 마지막에 고른 하나만 남는다.
+   * 예: 캠핑과 차박은 잠자는 방식이 달라 동시에 성립하지 않는다.
+   */
+  exclusiveGroups?: string[][];
+  /** 다른 무엇과도 함께 고를 수 없는 값(예: "상관없어요") */
+  soloValues?: string[];
+  /** 선택 규칙 안내 한 줄 */
+  note?: string;
   options: { value: string; label: string; hint?: string }[];
 }
 
@@ -38,6 +50,10 @@ export const PICKER_STEPS: PickerStep[] = [
   {
     key: "what",
     question: "무엇을 하고 싶으신가요?",
+    multi: true,
+    // 캠핑(텐트)과 차박(차에서 잠)은 같은 밤을 두 가지로 보낼 수 없다
+    exclusiveGroups: [["camping", "carcamping"]],
+    note: "여러 개 고를 수 있어요 · 캠핑과 차박은 함께 고를 수 없습니다",
     options: [
       { value: "camping", label: "캠핑" },
       { value: "fishing", label: "낚시" },
@@ -48,6 +64,9 @@ export const PICKER_STEPS: PickerStep[] = [
   {
     key: "mood",
     question: "어떤 곳이 좋으신가요?",
+    multi: true,
+    soloValues: ["any"],
+    note: "여러 개 고를 수 있어요",
     options: [
       { value: "quiet", label: "한적한 곳" },
       { value: "amenity", label: "편의시설 갖춘 곳" },
@@ -55,6 +74,46 @@ export const PICKER_STEPS: PickerStep[] = [
     ],
   },
 ];
+
+/**
+ * 한 값을 눌렀을 때의 다음 선택 상태.
+ *
+ * - 단일 선택 단계는 그 값 하나로 바꾼다.
+ * - "상관없어요"처럼 단독 값은 누르면 나머지를 지우고, 다른 값을 누르면 그것이 빠진다.
+ * - 함께 고를 수 없는 값(캠핑↔차박)은 **밀어낸다.** 눌렀는데 아무 일도 안 일어나는 것보다
+ *   방금 누른 쪽이 켜지고 충돌하는 쪽이 꺼지는 편이 무슨 일이 벌어졌는지 분명하다.
+ */
+export function toggleAnswer(
+  step: PickerStep,
+  current: string[],
+  value: string
+): string[] {
+  if (!step.multi) return [value];
+
+  if (step.soloValues?.includes(value)) {
+    return current.includes(value) ? [] : [value];
+  }
+
+  let next = current.filter((v) => !step.soloValues?.includes(v));
+  if (next.includes(value)) return next.filter((v) => v !== value);
+
+  const group = step.exclusiveGroups?.find((g) => g.includes(value));
+  if (group) next = next.filter((v) => !group.includes(v));
+  return [...next, value];
+}
+
+/** `value` 를 고르면 지금 켜져 있는 것 중 무엇이 꺼지는지 */
+export function conflictsWith(
+  step: PickerStep,
+  current: string[],
+  value: string
+): string[] {
+  if (!step.multi || current.includes(value)) return [];
+  if (step.soloValues?.includes(value)) return current;
+  const group = step.exclusiveGroups?.find((g) => g.includes(value));
+  const out = group ? current.filter((v) => group.includes(v)) : [];
+  return [...out, ...current.filter((v) => step.soloValues?.includes(v))];
+}
 
 export interface Recommendation {
   place: Place;
@@ -142,14 +201,18 @@ export function recommendPlaces(
     const tags = tagSet(place);
     let score = 0;
     const reasons: string[] = [];
+    // 한 단계에서 여러 개를 골랐으면 고른 것마다 규칙을 더한다(가중치 합산).
+    // 많이 해당할수록 점수가 올라가는 게 맞다 — 캠핑도 낚시도 되는 곳이 위로 온다.
     (Object.keys(RULES) as PickerKey[]).forEach((key) => {
-      const answer = answers[key];
-      if (!answer) return;
-      (RULES[key][answer] ?? []).forEach((rule) => {
-        if (rule.when(place, tags)) {
-          score += rule.score;
-          if (!reasons.includes(rule.reason)) reasons.push(rule.reason);
-        }
+      const chosen = answers[key];
+      if (!chosen?.length) return;
+      chosen.forEach((value) => {
+        (RULES[key][value] ?? []).forEach((rule) => {
+          if (rule.when(place, tags)) {
+            score += rule.score;
+            if (!reasons.includes(rule.reason)) reasons.push(rule.reason);
+          }
+        });
       });
     });
     return { place, score, reasons };
