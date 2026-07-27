@@ -10,7 +10,8 @@ import {
   countByIsolation,
   type PlaceSort,
 } from "@/lib/search";
-import { distanceMeters } from "@/lib/geo";
+import { checkLocation, distanceMeters, type LocationIssue } from "@/lib/geo";
+import { HONGCHEON_RIVER_CENTER } from "@/constants";
 
 /** 고립도 칩의 임계값 — 카운트 계산과 UI가 같은 값을 쓰도록 여기서 단일 정의 */
 export const ISOLATION_THRESHOLDS = [1, 3, 4, 5];
@@ -25,7 +26,9 @@ export type LocationStatus =
   | "asking"
   | "granted"
   | "denied"
-  | "unsupported";
+  | "unsupported"
+  /** 위치는 받았지만 오차가 너무 크거나 홍천에서 너무 멀어 쓸 수 없는 경우 */
+  | "unreliable";
 
 /**
  * 장소 필터·정렬 상태 + 실시간 필터링 훅.
@@ -48,6 +51,10 @@ export function usePlaceFilters(all: Place[]) {
   // ── 내 위치 (가까운 순 정렬용) ───────────────────────────────────
   const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+  /** 위치를 못 쓰는 이유(오차가 큼 / 너무 멂) — 화면에 숫자까지 밝힌다 */
+  const [locationIssue, setLocationIssue] = useState<LocationIssue | null>(null);
+  /** 정상적으로 받은 위치의 오차(m) */
+  const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
 
   const requestLocation = useCallback((): Promise<GeoPoint | null> => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -62,16 +69,44 @@ export function usePlaceFilters(all: Place[]) {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
           };
+          const acc = Number.isFinite(pos.coords.accuracy)
+            ? pos.coords.accuracy
+            : null;
+
+          /*
+           * 받은 값을 그대로 믿지 않는다.
+           * IP로 추정된 위치는 수십~수천 km씩 틀리는데, 장소 12곳이 30km 안에
+           * 몰려 있어 원점이 조금만 어긋나도 '가까운 순'이 그냥 무작위가 된다.
+           * 틀린 순서를 정답처럼 보여주느니 못 쓴다고 말하는 편이 낫다.
+           */
+          const issue = checkLocation(loc, HONGCHEON_RIVER_CENTER, acc);
+          if (issue) {
+            setLocationIssue(issue);
+            setLocationAccuracy(acc);
+            setUserLocation(null);
+            setLocationStatus("unreliable");
+            resolve(null);
+            return;
+          }
+
+          setLocationIssue(null);
+          setLocationAccuracy(acc);
           setUserLocation(loc);
           setLocationStatus("granted");
           resolve(loc);
         },
         () => {
           // 거부·시간초과·위치 불가를 구분해봐야 화면에서 할 말은 같다
+          setLocationIssue(null);
           setLocationStatus("denied");
           resolve(null);
         },
-        { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 }
+        /*
+         * `enableHighAccuracy: true` — 예전엔 false 였는데, 그러면 브라우저가
+         * 곧장 IP/기지국 추정으로 가서 오차가 수십 km씩 나온다.
+         * 거리 정렬은 오차가 곧 정확도라 조금 느려도 정밀 위치를 요청한다.
+         */
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 5 * 60 * 1000 }
       );
     });
   }, []);
@@ -197,6 +232,8 @@ export function usePlaceFilters(all: Place[]) {
     // 내 위치 / 거리
     userLocation,
     locationStatus,
+    locationIssue,
+    locationAccuracy,
     requestLocation,
     distances,
   };

@@ -25,6 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { usePlaceFilters, ISOLATION_THRESHOLDS } from "@/lib/usePlaceFilters";
+import { formatDistance } from "@/lib/geo";
 import PlaceFilterBar from "@/components/SearchSidebar";
 import PlaceCard from "@/components/places/PlaceCard";
 import EmptyState from "@/components/places/EmptyState";
@@ -398,7 +399,40 @@ export default function PlaceBrowser() {
                   </span>
                   <span className="text-neutral-500">
                     직선 거리이며 실제 차로 거리와 다릅니다
+                    {/* 오차가 1km를 넘으면 숨기지 않는다 — 순서가 그만큼 흔들린다 */}
+                    {f.locationAccuracy != null && f.locationAccuracy >= 1000 && (
+                      <> · 위치 오차 ±{formatDistance(f.locationAccuracy)}</>
+                    )}
                   </span>
+                </>
+              )}
+              {/*
+                받은 위치가 못 미더울 때. 그냥 정렬해 버리면 홍천 장소들이
+                4,900km로 뜨는 화면이 나온다(2026-07-27 실제 사례) —
+                왜 못 쓰는지 숫자까지 밝히고 추천순으로 되돌린다.
+              */}
+              {f.locationStatus === "unreliable" && f.locationIssue && (
+                <>
+                  <span className="text-[#c6461f]">
+                    {f.locationIssue.kind === "far"
+                      ? `받은 위치가 홍천에서 ${formatDistance(
+                          f.locationIssue.distanceM
+                        )} 떨어져 있습니다. 가까운 순으로 정렬할 수 없어 추천순으로 되돌렸습니다.`
+                      : `받은 위치의 오차가 ±${formatDistance(
+                          f.locationIssue.accuracyM ?? 0
+                        )}로 커서 가까운 순을 신뢰할 수 없습니다. 추천순으로 되돌렸습니다.`}
+                  </span>
+                  <span className="text-neutral-500">
+                    기기의 위치 서비스를 켜고 브라우저에 &lsquo;정확한 위치&rsquo;를
+                    허용하면 나아집니다.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => f.requestLocation()}
+                    className="font-bold text-forest-700 underline underline-offset-2 hover:text-forest-800"
+                  >
+                    다시 시도
+                  </button>
                 </>
               )}
               {f.locationStatus === "denied" && (
