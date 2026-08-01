@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck, BadgeCheck, Camera, ArrowRight } from "lucide-react";
+import { ShieldCheck, Camera, ArrowRight } from "lucide-react";
 import OutdoorIndexWidget from "@/components/OutdoorIndexWidget";
 import PlaceBrowser from "@/components/PlaceBrowser";
 import HeroPicker from "@/components/HeroPicker";
@@ -39,8 +39,7 @@ export default function HomePage() {
             <br className="sm:hidden" /> 어디로 떠날까요?
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-river-50/85 sm:text-base">
-            검증된 캠핑장·낚시터·차박지를 지도와 함께. 과장 없이, 협찬 없이
-            정리했습니다.
+            검증된 캠핑장·낚시터·차박지를 지도와 함께. 과장 없이 정리했습니다.
           </p>
 
           <HeroPicker />
@@ -68,6 +67,11 @@ export default function HomePage() {
             확인할 수 있는 약속이라 기관명을 나열하는 것보다 오히려 강하다.
             ⚠️ 장소를 추가할 땐 sourceName·sourceUrl 을 반드시 채울 것.
             비면 이 줄이 다시 거짓이 된다.
+
+            "광고비나 협찬을 받지 않습니다" 뱃지는 사용자 요청으로 뺐다(2026-08-01).
+            히어로 부제의 "협찬 없이"도 같은 주장이라 함께 뺐다("과장 없이"는 남김).
+            제휴(쿠팡 파트너스·유료 파트너 tier)를 열 여지를 막지 않기 위한 것이니,
+            **되살리지 말 것.** 지금 이 줄이 히어로에 남은 유일한 신뢰 표시다.
           */}
           <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] leading-relaxed text-white/85">
             <p className="inline-flex items-center gap-1.5">
@@ -79,13 +83,6 @@ export default function HomePage() {
                 <b className="font-bold tabular-nums text-white">{placeCount}곳</b>{" "}
                 모두 출처를 밝히고 원문을 링크합니다
               </span>
-            </p>
-            <p className="inline-flex items-center gap-1.5">
-              <BadgeCheck
-                className="h-4 w-4 shrink-0 text-forest-300"
-                strokeWidth={2.2}
-              />
-              <b className="font-bold text-white">광고비나 협찬을 받지 않습니다</b>
             </p>
           </div>
         </div>
