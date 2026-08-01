@@ -9,10 +9,30 @@ import {
   Search,
   X,
   LayoutGrid,
+  ArrowDownAZ,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  Flame,
+  type LucideIcon,
 } from "lucide-react";
-import { getGearByCategory, type GearCategory } from "@/data/gear";
+import {
+  getAllGear,
+  getGearByCategory,
+  availableGearSortOptions,
+  sortGear,
+  type GearCategory,
+  type GearSort,
+} from "@/data/gear";
 import { textMatches } from "@/lib/search";
 import GearGrid from "@/components/gear/GearGrid";
+
+/** 정렬 버튼 아이콘 — 장소 목록 정렬과 같은 패턴(글자만 있는 줄보다 눈에 먼저 든다) */
+const SORT_ICONS: Record<GearSort, LucideIcon> = {
+  recommended: Sparkles,
+  popular: Flame,
+  "price-asc": ArrowUpNarrowWide,
+  "price-desc": ArrowDownWideNarrow,
+};
 
 const SECTIONS: { key: GearCategory; label: string; Icon: typeof Fish }[] = [
   { key: "camping", label: "캠핑용품", Icon: Tent },
@@ -61,6 +81,10 @@ function FilterPill({
 export default function GearCatalog() {
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState<CatFilter>("all");
+  const [sort, setSort] = useState<GearSort>("recommended");
+
+  // 데이터가 뒷받침하는 정렬만 노출 (availableGearSortOptions 주석 참고)
+  const sortOptions = useMemo(() => availableGearSortOptions(getAllGear()), []);
 
   // 다른 페이지(홈·상세)에서 /gear#fishing 처럼 넘어오면 해당 종류만 선택
   useEffect(() => {
@@ -83,16 +107,20 @@ export default function GearCatalog() {
     history.replaceState(null, "", url);
   };
 
-  // 검색어로 필터링한 종류별 아이템 (검색 대상: 이름·설명·태그)
+  // 검색어로 필터링 → 고른 기준으로 정렬. 정렬은 종류 안에서 이뤄진다
+  // (종류 구분은 목록의 뼈대라 정렬이 그걸 흐트러뜨리면 훑기 어려워진다).
   const filtered = useMemo(
     () =>
       SECTIONS.map((s) => ({
         ...s,
-        items: getGearByCategory(s.key).filter((g) =>
-          textMatches([g.name, g.summary, ...(g.tags ?? [])].join(" "), query),
+        items: sortGear(
+          getGearByCategory(s.key).filter((g) =>
+            textMatches([g.name, g.summary, ...(g.tags ?? [])].join(" "), query),
+          ),
+          sort,
         ),
       })),
-    [query],
+    [query, sort],
   );
 
   const searching = query.trim().length > 0;
@@ -170,6 +198,70 @@ export default function GearCatalog() {
         <p className="mt-6 rounded-2xl border border-dashed border-neutral-200 py-10 text-center text-sm text-neutral-400">
           '{query.trim()}'에 맞는 용품이 없어요. 다른 검색어를 입력해 보세요.
         </p>
+      )}
+
+      {/*
+        정렬 — 목록 바로 위에 둔다. 장소 목록에서 정렬을 필터 패널 밑에 뒀다가
+        "바꿔도 안 바뀐다"는 오해를 샀던 적이 있다(2026-07-27). 화면에서 결과가
+        바로 보이는 자리여야 정렬이 작동한다는 걸 알 수 있다.
+      */}
+      {totalResults > 0 && (
+        <section
+          className="mt-6 rounded-2xl border border-sand-300 bg-white p-3.5"
+          aria-label="정렬 기준"
+        >
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="inline-flex w-full shrink-0 items-center gap-1.5 text-sm font-bold text-forest-800 sm:w-auto">
+              <ArrowDownAZ className="h-4 w-4 text-forest-600" strokeWidth={2.4} />
+              정렬
+            </span>
+            <div
+              role="group"
+              aria-label="정렬 기준"
+              className="flex w-full flex-wrap gap-1.5 sm:w-auto"
+            >
+              {sortOptions.map((o) => {
+                const Icon = SORT_ICONS[o.value];
+                const active = sort === o.value;
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => setSort(o.value)}
+                    aria-pressed={active}
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm border px-3 text-sm font-bold transition-colors ${
+                      active
+                        ? "border-forest-600 bg-forest-600 text-white"
+                        : "border-neutral-300 bg-white text-neutral-700 hover:border-forest-400 hover:text-forest-700"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" strokeWidth={2.2} />
+                    {o.short}
+                    {/* 보조 설명은 좁은 화면에서 감춘다(버튼이 한 줄에 하나씩 떨어진다) */}
+                    <span
+                      className={`hidden font-medium sm:inline ${
+                        active ? "text-forest-100" : "text-neutral-500"
+                      }`}
+                    >
+                      {o.hint}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/*
+            ⚠️ 이 줄을 빼지 말 것. 인기·가격은 아직 제휴를 연결하기 전의 예시 값이라
+            사실처럼 보이면 안 된다. 실제 데이터로 갈아끼울 때 이 문장도 같이 지운다.
+          */}
+          {sort !== "recommended" && (
+            <p className="mt-2.5 text-[13px] leading-relaxed text-neutral-600">
+              인기·가격대는 제휴 연결 전 <b className="font-bold">예시 값</b>입니다.
+              가격은 정확한 금액이 아니라 구간으로만 적었습니다.
+            </p>
+          )}
+        </section>
       )}
 
       {visible.map(({ key, label, Icon, items }) => {

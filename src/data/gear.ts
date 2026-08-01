@@ -18,11 +18,34 @@ export interface ShopLink {
   url?: string;
 }
 
+/**
+ * 가격대. **정확한 금액을 적지 않는 이유** — 쿠팡 시세는 매일 바뀌는데 우리에겐
+ * 시세 피드가 없다. "12,900원"이라고 적으면 하루 만에 거짓말이 된다.
+ * 틀릴 수 없는 굵기('대')로만 말하고, 정렬은 이 값으로 한다.
+ */
+export type PriceBand = 1 | 2 | 3 | 4;
+
+export const PRICE_BAND_LABELS: Record<PriceBand, string> = {
+  1: "1만원 미만",
+  2: "1~3만원대",
+  3: "3~10만원대",
+  4: "10만원 이상",
+};
+
 export interface GearItem {
   /** 고유 식별자 */
   id: string;
   name: string;
   category: GearCategory;
+  /** 가격대(구간). 정확한 금액이 아니라 구간이다 — PriceBand 주석 참고 */
+  priceBand?: PriceBand;
+  /**
+   * 인기 지표(0~100). ⚠️ **제휴 연결 전이라 지금은 예시 값이다.**
+   * 실제 클릭·구매 데이터가 쌓이면 그 값으로 갈아끼운다.
+   * 화면에서는 숫자를 노출하지 않고 정렬에만 쓴다 —
+   * 근거 없는 숫자를 사실처럼 보이게 두지 않기 위해서다.
+   */
+  popularity?: number;
   /** 한 줄 설명 (카드용) */
   summary: string;
   /** 분류/검색용 태그 */
@@ -46,6 +69,8 @@ const GEAR: GearItem[] = [
     id: "leisure-mat",
     name: "레저 돗자리",
     category: "camping",
+    priceBand: 1,
+    popularity: 72,
     summary: "강변·잔디에 까는 방수 돗자리. 가볍고 자주 쓰는 필수품.",
     tags: ["소모품", "돗자리"],
     shops: shops(),
@@ -63,6 +88,8 @@ const GEAR: GearItem[] = [
     id: "butane-gas",
     name: "부탄가스",
     category: "camping",
+    priceBand: 1,
+    popularity: 88,
     summary: "버너·토치용 연료. 넉넉히 챙기는 소모품.",
     tags: ["소모품", "연료"],
     shops: shops(),
@@ -77,6 +104,8 @@ const GEAR: GearItem[] = [
     id: "charcoal-wood",
     name: "참숯·장작",
     category: "camping",
+    priceBand: 1,
+    popularity: 81,
     summary: "바비큐·불멍용 연료. 사용량이 많은 소모품.",
     tags: ["소모품", "불멍"],
     shops: shops(),
@@ -94,6 +123,8 @@ const GEAR: GearItem[] = [
     id: "self-inflating-mat",
     name: "자충 매트",
     category: "camping",
+    priceBand: 3,
+    popularity: 64,
     summary: "밸브만 열면 부푸는 매트. 바닥 냉기·요철 차단.",
     tags: ["수면"],
     shops: shops(),
@@ -109,6 +140,8 @@ const GEAR: GearItem[] = [
     id: "camping-chair",
     name: "캠핑 의자",
     category: "camping",
+    priceBand: 2,
+    popularity: 79,
     summary: "접이식 경량 체어. 휴대·수납이 간편합니다.",
     tags: ["편의"],
     shops: shops(),
@@ -124,6 +157,8 @@ const GEAR: GearItem[] = [
     id: "folding-table",
     name: "접이식 테이블",
     category: "camping",
+    priceBand: 2,
+    popularity: 61,
     summary: "높이 조절이 되는 캠핑 테이블.",
     tags: ["편의"],
     shops: shops(),
@@ -138,6 +173,8 @@ const GEAR: GearItem[] = [
     id: "led-lantern",
     name: "LED 랜턴",
     category: "camping",
+    priceBand: 2,
+    popularity: 74,
     summary: "충전식 캠핑 조명. 텐트 안팎에서 사용.",
     tags: ["조명"],
     shops: shops(),
@@ -152,6 +189,8 @@ const GEAR: GearItem[] = [
     id: "cooler-box",
     name: "아이스박스",
     category: "camping",
+    priceBand: 3,
+    popularity: 83,
     summary: "식자재·음료 보냉용 아이스박스.",
     tags: ["주방"],
     shops: shops(),
@@ -166,6 +205,8 @@ const GEAR: GearItem[] = [
     id: "stove-set",
     name: "코펠·버너 세트",
     category: "camping",
+    priceBand: 3,
+    popularity: 58,
     summary: "취사에 필요한 코펠과 버너 구성.",
     tags: ["주방"],
     shops: shops(),
@@ -183,6 +224,8 @@ const GEAR: GearItem[] = [
     id: "fire-pit",
     name: "화로대",
     category: "camping",
+    priceBand: 3,
+    popularity: 69,
     summary: "불멍·바비큐용 화로대. 직화 자리에서만 사용.",
     tags: ["불멍"],
     shops: shops(),
@@ -200,6 +243,8 @@ const GEAR: GearItem[] = [
     id: "sleeping-bag",
     name: "침낭",
     category: "camping",
+    priceBand: 3,
+    popularity: 76,
     summary: "3계절용 머미형 침낭.",
     tags: ["수면"],
     shops: shops(),
@@ -215,6 +260,8 @@ const GEAR: GearItem[] = [
     id: "tarp",
     name: "타프",
     category: "camping",
+    priceBand: 3,
+    popularity: 55,
     summary: "햇빛·비를 가리는 그늘막. 강변 캠핑에 유용.",
     tags: ["그늘막"],
     shops: shops(),
@@ -232,6 +279,8 @@ const GEAR: GearItem[] = [
     id: "dome-tent",
     name: "돔 텐트 (3~4인)",
     category: "camping",
+    priceBand: 4,
+    popularity: 90,
     summary: "가족 오토캠핑에 적당한 크기의 돔 텐트.",
     tags: ["텐트", "가족"],
     shops: shops(),
@@ -252,6 +301,8 @@ const GEAR: GearItem[] = [
     id: "soft-bait-set",
     name: "웜·지그헤드 세트",
     category: "fishing",
+    priceBand: 1,
+    popularity: 66,
     summary: "쏘가리·배스용 소프트베이트. 자주 잃어버리는 소모품.",
     tags: ["소모품", "루어"],
     shops: shops(),
@@ -267,6 +318,8 @@ const GEAR: GearItem[] = [
     id: "tackle-small",
     name: "낚시 소품 세트",
     category: "fishing",
+    priceBand: 1,
+    popularity: 59,
     summary: "바늘·도래·봉돌 등 자주 쓰는 채비 소모품.",
     tags: ["소모품", "채비"],
     shops: shops(),
@@ -282,6 +335,8 @@ const GEAR: GearItem[] = [
     id: "head-lamp",
     name: "헤드랜턴",
     category: "fishing",
+    priceBand: 2,
+    popularity: 71,
     summary: "야간 쏘가리 낚시용 충전식 헤드랜턴.",
     tags: ["야간", "조명"],
     shops: shops(),
@@ -300,6 +355,8 @@ const GEAR: GearItem[] = [
     id: "life-vest",
     name: "구명조끼",
     category: "fishing",
+    priceBand: 2,
+    popularity: 85,
     summary: "강변·보트 낚시 안전을 위한 필수 장비.",
     tags: ["안전"],
     shops: shops(),
@@ -317,6 +374,8 @@ const GEAR: GearItem[] = [
     id: "landing-net",
     name: "다용도 뜰채",
     category: "fishing",
+    priceBand: 2,
+    popularity: 48,
     summary: "랜딩과 다슬기 채집에 두루 쓰는 뜰채.",
     tags: ["편의"],
     shops: shops(),
@@ -332,6 +391,8 @@ const GEAR: GearItem[] = [
     id: "fishing-chair",
     name: "접이식 낚시 의자",
     category: "fishing",
+    priceBand: 2,
+    popularity: 57,
     summary: "노지·좌대에서 쓰는 휴대용 의자.",
     tags: ["편의"],
     shops: shops(),
@@ -346,6 +407,8 @@ const GEAR: GearItem[] = [
     id: "spinning-reel",
     name: "스피닝 릴",
     category: "fishing",
+    priceBand: 3,
+    popularity: 73,
     summary: "루어 낚시용 릴. 로드와 함께 맞추면 좋습니다.",
     tags: ["루어", "릴"],
     shops: shops(),
@@ -361,6 +424,8 @@ const GEAR: GearItem[] = [
     id: "lure-rod",
     name: "루어 로드",
     category: "fishing",
+    priceBand: 3,
+    popularity: 68,
     summary: "쏘가리·배스 루어 낚시에 쓰는 낚싯대.",
     tags: ["루어", "쏘가리"],
     shops: shops(),
@@ -379,6 +444,8 @@ const GEAR: GearItem[] = [
     id: "gyeonji-rod-set",
     name: "견지대 세트",
     category: "fishing",
+    priceBand: 3,
+    popularity: 41,
     summary: "홍천강 견지낚시 입문용 견지대·줄 기본 구성.",
     tags: ["견지낚시", "입문"],
     shops: shops(),
@@ -399,6 +466,8 @@ const GEAR: GearItem[] = [
     id: "aurora-fire-powder",
     name: "오로라 불멍 가루",
     category: "aesthetic",
+    priceBand: 1,
+    popularity: 62,
     summary: "불꽃 색을 무지개빛으로 바꿔주는 불멍 가루.",
     tags: ["감성", "불멍", "소모품"],
     shops: shops(),
@@ -415,6 +484,8 @@ const GEAR: GearItem[] = [
     id: "string-lights",
     name: "스트링 무드등",
     category: "aesthetic",
+    priceBand: 1,
+    popularity: 77,
     summary: "텐트·타프에 두르는 감성 조명 가랜드.",
     tags: ["감성", "조명"],
     shops: shops(),
@@ -430,6 +501,8 @@ const GEAR: GearItem[] = [
     id: "oil-lantern",
     name: "감성 오일 랜턴",
     category: "aesthetic",
+    priceBand: 2,
+    popularity: 53,
     summary: "빈티지 분위기를 내는 오일/무드 랜턴.",
     tags: ["감성", "조명"],
     shops: shops(),
@@ -444,6 +517,8 @@ const GEAR: GearItem[] = [
     id: "bt-speaker",
     name: "미니 블루투스 스피커",
     category: "aesthetic",
+    priceBand: 2,
+    popularity: 65,
     summary: "잔잔한 음악으로 분위기를 더하는 방수 스피커.",
     tags: ["감성", "음악"],
     shops: shops(),
@@ -457,6 +532,8 @@ const GEAR: GearItem[] = [
     id: "camp-mug",
     name: "감성 캠핑 머그·티포트",
     category: "aesthetic",
+    priceBand: 2,
+    popularity: 44,
     summary: "커피·차 한 잔의 여유를 위한 감성 머그 세트.",
     tags: ["감성", "커피"],
     shops: shops(),
@@ -468,6 +545,8 @@ const GEAR: GearItem[] = [
     id: "photo-garland",
     name: "포토 스트링·집게",
     category: "aesthetic",
+    priceBand: 1,
+    popularity: 38,
     summary: "찍은 사진을 걸어두는 감성 포토 라인.",
     tags: ["감성", "사진"],
     shops: shops(),
@@ -482,6 +561,8 @@ const GEAR: GearItem[] = [
     id: "bbq-kit",
     name: "바베큐 밀키트",
     category: "food",
+    priceBand: 2,
+    popularity: 80,
     summary: "손질된 고기·채소가 든 캠핑 바베큐 세트.",
     tags: ["먹거리", "바베큐"],
     shops: shops(),
@@ -500,6 +581,8 @@ const GEAR: GearItem[] = [
     id: "snack-set",
     name: "캠핑 간식 세트",
     category: "food",
+    priceBand: 1,
+    popularity: 70,
     summary: "과자·스낵 모음. 수요가 꾸준한 스테디 아이템.",
     tags: ["먹거리", "간식"],
     shops: shops(),
@@ -511,6 +594,8 @@ const GEAR: GearItem[] = [
     id: "smore-set",
     name: "마시멜로·스모어 세트",
     category: "food",
+    priceBand: 1,
+    popularity: 75,
     summary: "불멍 옆에서 굽는 마시멜로·스모어 재료.",
     tags: ["먹거리", "불멍"],
     shops: shops(),
@@ -526,6 +611,8 @@ const GEAR: GearItem[] = [
     id: "instant-soup",
     name: "즉석 국·라면",
     category: "food",
+    priceBand: 1,
+    popularity: 67,
     summary: "물만 부으면 되는 간편식. 든든한 한 끼.",
     tags: ["먹거리", "간편식"],
     shops: shops(),
@@ -537,6 +624,8 @@ const GEAR: GearItem[] = [
     id: "drinks",
     name: "캔음료·커피",
     category: "food",
+    priceBand: 1,
+    popularity: 60,
     summary: "물놀이·불멍과 어울리는 음료.",
     tags: ["먹거리", "음료"],
     shops: shops(),
@@ -550,6 +639,8 @@ const GEAR: GearItem[] = [
     id: "sausage-bacon",
     name: "소시지·베이컨",
     category: "food",
+    priceBand: 2,
+    popularity: 63,
     summary: "바베큐 곁들이. 간편하고 실패 없는 부재료.",
     tags: ["먹거리", "바베큐"],
     shops: shops(),
@@ -568,4 +659,62 @@ export function getAllGear(): GearItem[] {
 
 export function getGearByCategory(category: GearCategory): GearItem[] {
   return GEAR.filter((g) => g.category === category);
+}
+
+// ── 정렬 ────────────────────────────────────────────────────
+export type GearSort = "recommended" | "popular" | "price-asc" | "price-desc";
+
+export interface GearSortOption {
+  value: GearSort;
+  short: string;
+  hint: string;
+}
+
+export const GEAR_SORT_OPTIONS: GearSortOption[] = [
+  { value: "recommended", short: "추천순", hint: "큐레이션" },
+  { value: "popular", short: "인기순", hint: "많이 찾는" },
+  { value: "price-asc", short: "낮은 가격순", hint: "저렴한 것부터" },
+  { value: "price-desc", short: "높은 가격순", hint: "비싼 것부터" },
+];
+
+/**
+ * 데이터가 뒷받침하는 정렬만 남긴다 — `availableSortOptions`(lib/search.ts)와 같은 원칙.
+ * 값이 한 곳도 없는 기준을 메뉴에 두면 고르는 순간 아무것도 안 바뀌어
+ * "그 데이터가 있다"는 잘못된 약속이 된다.
+ */
+export function availableGearSortOptions(items: GearItem[]): GearSortOption[] {
+  return GEAR_SORT_OPTIONS.filter((o) => {
+    if (o.value === "popular") return items.some((g) => g.popularity != null);
+    if (o.value === "price-asc" || o.value === "price-desc")
+      return items.some((g) => g.priceBand != null);
+    return true;
+  });
+}
+
+/**
+ * 정렬된 새 배열을 반환한다(입력 배열은 건드리지 않음).
+ * 값이 없는 항목은 0으로 치지 않고 **항상 뒤로** 보낸다 —
+ * "가격 미정"이 "0원"으로, "지표 없음"이 "인기 0"으로 오해되지 않도록.
+ * 같은 값끼리는 원래 큐레이션 순서를 지킨다(sort 가 안정 정렬).
+ */
+export function sortGear(items: GearItem[], sort: GearSort): GearItem[] {
+  if (sort === "recommended") return items;
+
+  const missingLast =
+    (pick: (g: GearItem) => number | undefined, dir: 1 | -1) =>
+    (a: GearItem, b: GearItem) => {
+      const av = pick(a);
+      const bv = pick(b);
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      return (av - bv) * dir;
+    };
+
+  const cmp =
+    sort === "popular"
+      ? missingLast((g) => g.popularity, -1)
+      : missingLast((g) => g.priceBand, sort === "price-asc" ? 1 : -1);
+
+  return [...items].sort(cmp);
 }

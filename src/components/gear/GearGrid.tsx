@@ -9,8 +9,22 @@ import {
   AlertTriangle,
   ChevronRight,
 } from "lucide-react";
-import type { GearItem, ShopLink } from "@/data/gear";
+import { PRICE_BAND_LABELS, type GearItem, type ShopLink } from "@/data/gear";
 import { useFocusTrap } from "@/lib/useFocusTrap";
+
+/**
+ * 가격대 배지. 정확한 금액이 아니라 구간이라는 걸 드러내려고 '대략' 기호(~)를
+ * 라벨에 그대로 두고, 핵심 수치 규칙대로 고정폭 숫자를 쓴다.
+ * 가격순 정렬을 켰을 때 순서가 왜 그런지 화면에서 보이게 하는 역할도 한다.
+ */
+function PriceBadge({ item }: { item: GearItem }) {
+  if (item.priceBand == null) return null;
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-sm bg-sand-100 px-2 py-0.5 text-xs font-bold tabular-nums text-neutral-700">
+      {PRICE_BAND_LABELS[item.priceBand]}
+    </span>
+  );
+}
 
 /** 쇼핑몰 버튼 — url이 있으면 활성 링크, 없으면 '준비 중' 예시 버튼. */
 function ShopButton({ shop }: { shop: ShopLink }) {
@@ -96,9 +110,14 @@ function GearModal({ item, onClose }: { item: GearItem; onClose: () => void }) {
           <X className="h-4 w-4" strokeWidth={2.2} />
         </button>
 
-        <h2 className="pr-8 text-xl font-extrabold text-neutral-900">
-          {item.name}
-        </h2>
+        <div className="flex items-start gap-2 pr-8">
+          <h2 className="text-xl font-extrabold text-neutral-900">
+            {item.name}
+          </h2>
+          <span className="mt-1">
+            <PriceBadge item={item} />
+          </span>
+        </div>
         {item.tags && item.tags.length > 0 && (
           <div className="mt-2">
             <Tags tags={item.tags} />
@@ -198,7 +217,12 @@ export default function GearGrid({
             aria-haspopup="dialog"
             className="group flex h-full flex-col rounded-2xl bg-white p-5 text-left shadow-card transition hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
           >
-            <h3 className="text-base font-bold text-neutral-900">{item.name}</h3>
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="text-base font-bold text-neutral-900">
+                {item.name}
+              </h3>
+              <PriceBadge item={item} />
+            </div>
             <p className="mt-1 flex-1 text-sm leading-relaxed text-neutral-600">
               {item.summary}
             </p>
