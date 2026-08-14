@@ -29,7 +29,6 @@ import ReservationBox from "@/components/ReservationBox";
 import FishingGuide from "@/components/FishingGuide";
 import SpotTracker from "@/components/SpotTracker";
 import PhoneLink from "@/components/PhoneLink";
-import TransitInfoBox, { TransitChip } from "@/components/places/TransitInfoBox";
 import ExperienceSection from "@/components/ExperienceSection";
 import { buildPlaceJsonLd } from "@/lib/place-jsonld";
 
@@ -139,8 +138,6 @@ export default function SpotDetailPage({ params }: PageProps) {
               {formatRating(place.rating)}
             </span>
           )}
-          {/* 대중교통 한 줄 요약 — 상세는 아래 방문 정보 카드에 */}
-          <TransitChip place={place} />
         </div>
         <h1 className="mt-3 text-3xl font-extrabold text-forest-800 sm:text-4xl">
           {place.name}
@@ -200,11 +197,6 @@ export default function SpotDetailPage({ params }: PageProps) {
                   </dd>
                 </div>
               )}
-              {/*
-                대중교통 — 소재지·전화와 같은 '가기 전에 정하는' 정보라 이 카드에 둔다.
-                모바일에서 이 카드가 본문보다 위에 오므로 스크롤 없이 보인다.
-              */}
-              <TransitInfoBox place={place} />
             </dl>
 
             <div className="mt-4 space-y-2.5">
