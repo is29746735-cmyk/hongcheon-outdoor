@@ -26,6 +26,12 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "캠핑장이 자리한 북방면 굴지리 일대 홍천강은 붕어·잉어·쏘가리가 나오는 노지 낚시터로도 알려져 있어, 캠핑과 낚시를 함께 즐기기 좋습니다.",
+    transit: {
+      stop: "굴지리",
+      route: "홍천터미널 → 동산 → 장항 방면",
+      runsPerDay: "하루 2회",
+      level: "sparse",
+    },
     sourceName: "홍천군 문화관광포털",
     sourceUrl: "https://www.hongcheon.go.kr/tour/contents.do?key=1879",
     tags: ["오토캠핑", "공공운영", "홍천강", "수상레포츠"],
@@ -48,6 +54,12 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "도보 3분 거리 1급수 홍천강에서 아이들과 다슬기·물고기 낚시를 즐길 수 있어, 가족 단위 캠핑+낚시에 잘 맞습니다.",
+    transit: {
+      stop: "개야리",
+      route: "홍천터미널 → 반곡·모곡 방면",
+      runsPerDay: "하루 2회",
+      level: "sparse",
+    },
     sourceName: "땡큐캠핑",
     sourceUrl: "https://m.thankqcamping.com/resv/view.hbb?cseq=4052",
     tags: ["가족", "차박가능", "리버뷰", "1급수"],
@@ -70,6 +82,13 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "캠핑·차박을 하면서 바로 앞 홍천강에서 견지·플라잉 낚시까지 즐길 수 있는 복합 명소입니다.",
+    transit: {
+      stop: "밤벌유원지",
+      route: "홍천터미널 → 반곡·모곡 방면",
+      runsPerDay: "하루 2회",
+      level: "sparse",
+      note: "정류장 이름이 유원지와 같지만, 내린 자리에서 강변까지는 지도로 확인하세요.",
+    },
     sourceName: "대한민국 구석구석(한국관광공사)",
     sourceUrl:
       "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=0316b12d-b70f-417a-8370-29dd59caee18",
@@ -94,6 +113,12 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "캠핑장이 홍천강에 접해 있어 강변 낚시를 함께 즐기기 좋고, 서면 일대 홍천강은 쏘가리 낚시 포인트로도 알려져 있습니다.",
+    transit: {
+      stop: "팔봉산관광지",
+      route: "홍천터미널 → 반곡·모곡 방면",
+      runsPerDay: "하루 2회",
+      level: "sparse",
+    },
     sourceName: "홍천군 문화관광포털",
     sourceUrl: "https://www.hongcheon.go.kr/tour/contents.do?key=1886",
     tags: ["오토캠핑", "공공운영", "팔봉산", "홍천강"],
@@ -115,6 +140,12 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "캠핑장이 위치한 남노일 홍천강변은 견지 낚시터로 유명해, 캠핑과 낚시를 함께 즐길 수 있습니다.",
+    transit: {
+      stop: "남노일",
+      route: "홍천터미널 → 시동·유치·남노일 순환",
+      runsPerDay: "하루 8~9회",
+      level: "moderate",
+    },
     sourceName: "한국관광공사 고캠핑",
     sourceUrl:
       "https://www.gocamping.or.kr/bsite/camp/info/read.do?c_no=100360",
@@ -138,6 +169,13 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "인접한 홍천강오토캠핑장과 같은 굴지리 권역으로, 캠핑↔낚시 이동 동선이 짧습니다.",
+    transit: {
+      stop: "굴지리",
+      route: "홍천터미널 → 동산 → 장항 방면",
+      runsPerDay: "하루 2회",
+      level: "sparse",
+      note: "강변 노지 포인트라 정류장에서 내린 뒤 더 걸어야 합니다.",
+    },
     sourceName: "물반(낚시터 정보)",
     sourceUrl: "https://www.moolban.com/company/9906",
     tags: ["노지낚시", "붕어", "쏘가리"],
@@ -158,6 +196,13 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "모곡밤벌유원지와 인접해, 캠핑·차박을 베이스로 쏘가리 루어 낚시를 즐기기 좋습니다.",
+    transit: {
+      stop: "모곡1리",
+      route: "홍천터미널 → 길곡 방면 (길곡에서 용수·모곡 연결)",
+      runsPerDay: "하루 3~7회",
+      level: "moderate",
+      note: "여울 구간이 길어 포인트마다 내리는 자리가 다릅니다.",
+    },
     sourceName: "BFG 낚시 포인트",
     sourceUrl: "https://www.bfg-fishing.com/fishing-spots/gangwon-hongcheon",
     tags: ["쏘가리", "루어", "여울"],
@@ -175,6 +220,12 @@ const PLACES: Place[] = [
     region: "강원특별자치도 홍천군 화촌면 굴운리",
     mapQuery: "홍천 굴운낚시터",
     location: { lat: 37.724769, lng: 127.966003 },
+    transit: {
+      stop: "굴운리",
+      route: "홍천터미널 → 와동·송정 방면",
+      runsPerDay: "하루 3회 안팎",
+      level: "sparse",
+    },
     sourceName: "낚시 전문지(굴운지)",
     sourceUrl:
       "https://fishingseasons.co.kr/fishplace/fishplace_view.asp?b_no=741",
@@ -193,6 +244,12 @@ const PLACES: Place[] = [
     region: "강원특별자치도 홍천군 남면 유치리",
     mapQuery: "홍천 유치지",
     location: { lat: 37.577873, lng: 127.851681 },
+    transit: {
+      stop: "유치리종점",
+      route: "홍천터미널 → 유치 방면",
+      runsPerDay: "하루 6회",
+      level: "moderate",
+    },
     sourceName: "낚시 전문지(얼음붕어 유망터)",
     sourceUrl: "http://fishingseasons.co.kr/contents_view_detail.asp?b_no=14064",
     tags: ["저수지", "붕어", "얼음낚시"],
@@ -210,6 +267,12 @@ const PLACES: Place[] = [
     mapQuery: "홍천 시동낚시터",
     location: { lat: 37.592794, lng: 127.824525 },
     phone: "033-432-3637",
+    transit: {
+      stop: "시동편의점",
+      route: "홍천터미널 → 시동 방면",
+      runsPerDay: "하루 10회",
+      level: "moderate",
+    },
     sourceName: "월척(유료터 정보)",
     sourceUrl: "https://www.wolchuck.co.kr/__priceinfo/homeview.php?no=1249",
     tags: ["유료터", "붕어", "남면"],
@@ -233,6 +296,12 @@ const PLACES: Place[] = [
     connectedFishing: true,
     connectionNote:
       "강변이 견지 낚시터로 유명해, 차박·물놀이와 낚시를 함께 즐기기 좋습니다.",
+    transit: {
+      stop: "남노일",
+      route: "홍천터미널 → 시동·유치·남노일 순환",
+      runsPerDay: "하루 8~9회",
+      level: "moderate",
+    },
     sourceName: "홍천군 문화관광포털",
     sourceUrl:
       "https://www.hongcheon.go.kr/tour/selectTourCntntsWebView.do?tourNo=8&key=2037&ctgry=8&searchShowAt=Y",
