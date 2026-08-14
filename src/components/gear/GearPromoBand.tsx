@@ -10,8 +10,8 @@ import { Tent, Fish, Sparkles, Utensils, ArrowRight } from "lucide-react";
  * (구매 유도가 열람을 방해하지 않는다는 기존 원칙과도 맞다)
  */
 
-/** 홈 → 용품 진입용 카테고리 바로가기 */
-const GEAR_CATS = [
+/** 홈 → 용품 진입용 카테고리 바로가기 (플로팅 도크 GearDock 와 공유) */
+export const GEAR_CATS = [
   { key: "camping", label: "캠핑용품", Icon: Tent },
   { key: "fishing", label: "낚시용품", Icon: Fish },
   { key: "aesthetic", label: "감성 아이템", Icon: Sparkles },

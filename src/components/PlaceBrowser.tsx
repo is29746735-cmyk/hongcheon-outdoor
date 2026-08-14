@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-  useCallback,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { useMemo, useState, useCallback, type ReactNode } from "react";
 import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
 import GearPromoBand from "@/components/gear/GearPromoBand";
+import GearDock from "@/components/gear/GearDock";
 import {
   groupByCategory,
   getConnectedPlaces,
@@ -91,22 +86,6 @@ export default function PlaceBrowser() {
    * 캠핑·낚시 연계는 모두가 찾는 것이 아니라 궁금한 사람이 여는 것이다.
    */
   const [connectedOpen, setConnectedOpen] = useState(false);
-
-  /**
-   * ★검토용 배치안 전환 — `/?layout=b|c` (계절 미리보기 `/?atmos=`와 같은 패턴).
-   * 데스크톱에서 첫 카드가 2.9화면 아래인 게 지도·연계추천·용품밴드가 목록 위에
-   * 있는 구조 때문이라는 리뷰 관찰(2026-08-14)을 실물로 비교하기 위한 것.
-   *   a(기본) = 현재: 지도 → 연계추천 → 용품밴드 → 정렬 → 목록
-   *   b       = 목록 우선: 정렬 → 목록 → 지도 → 연계추천 → 용품밴드
-   *   c       = 절충: 지도 → 정렬 → 목록 → 연계추천 → 용품밴드
-   * 기본값 a 라 일반 방문자 화면은 그대로다. 논의로 한 안을 고르면
-   * 그 순서를 본문에 박고 이 파라미터는 지운다.
-   */
-  const [layout, setLayout] = useState<"a" | "b" | "c">("a");
-  useEffect(() => {
-    const v = new URLSearchParams(window.location.search).get("layout");
-    if (v === "b" || v === "c") setLayout(v);
-  }, []);
 
   /**
    * 모바일 상세 필터 접힘. 기본 접힘 —
@@ -297,11 +276,20 @@ export default function PlaceBrowser() {
         </p>
       </div>
 
-      {/* ── 아래 다섯 블록(지도·연계·용품·정렬·목록)은 검토용 layout 안에 따라 순서가 바뀐다 ── */}
+      {/*
+        ── 블록 순서: 정렬 → 목록 → 지도 → 연계추천 → 용품밴드(모바일) ──
+        2026-08-14 배치안 비교(/?layout=a|b|c 실측) 후 사용자 결정.
+        지도·연계추천·용품밴드가 목록 위에 있던 예전 배치는 첫 장소 카드가
+        데스크톱 2.8화면(2,503px)·모바일 2,694px 아래였다 → 목록 우선으로
+        1,562px/1,688px. 지도는 "어디쯤이지?" 할 때 찾는 보조 도구라
+        목록 뒤에서도 역할을 잃지 않는다.
+        용품 진입: PC(lg+)는 우하단 플로팅 도크(GearDock), 모바일은 흐름 끝의
+        인플로우 밴드 — 고정 오버레이가 좁은 화면을 가리지 않게 한 분기다.
+      */}
       {(() => {
-      /* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */
+      /* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정. 목록 뒤라 여백을 넉넉히 */
       const mapBlock = (
-      <div className="mt-4">
+      <div className="mt-12">
         <KakaoMap
           places={allPlaces}
           activeCategory={f.category}
@@ -367,10 +355,11 @@ export default function PlaceBrowser() {
       );
 
       /*
-        용품 진입 배너 — a안에서는 연계 추천과 장소 목록 사이(2026-07-25 사용자
-        지정 위치), 필터를 걸면 목록 뒤. b·c안에서는 항상 목록 뒤.
+        용품 진입 배너 — **모바일 전용**(lg 미만). PC 는 플로팅 도크(GearDock)가
+        대신한다. 좁은 화면에서 고정 오버레이는 콘텐츠·엄지 영역을 가리므로
+        모바일은 흐름 끝의 인플로우로 남긴다.
       */
-      const gearBlock = <GearPromoBand className="mt-12" />;
+      const gearBlock = <GearPromoBand className="mt-12 lg:hidden" />;
 
       /*
         정렬 — 목록 **바로 위**에 둔다.
@@ -381,9 +370,7 @@ export default function PlaceBrowser() {
       */
       const sortBlock = f.filtered.length > 0 && (
         <section
-          className={`${
-            layout === "a" ? "mt-12" : "mt-6"
-          } rounded-2xl border border-sand-300 bg-white p-3.5`}
+          className="mt-6 rounded-2xl border border-sand-300 bg-white p-3.5"
           aria-label="정렬 기준"
         >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -579,39 +566,19 @@ export default function PlaceBrowser() {
         </section>
       );
 
-      // ── 배치안별 렌더 순서 ──
-      if (layout === "b")
-        return (
-          <>
-            {sortBlock}
-            {listBlock}
-            {mapBlock}
-            {connectedBlock}
-            {gearBlock}
-          </>
-        );
-      if (layout === "c")
-        return (
-          <>
-            {mapBlock}
-            {sortBlock}
-            {listBlock}
-            {connectedBlock}
-            {gearBlock}
-          </>
-        );
-      // a(현재 운영 배치): 필터 중이면 배너를 목록 뒤로 (gearBlock 주석 참조)
       return (
         <>
-          {mapBlock}
-          {connectedBlock}
-          {showConnectedSection && gearBlock}
           {sortBlock}
           {listBlock}
-          {!showConnectedSection && gearBlock}
+          {mapBlock}
+          {connectedBlock}
+          {gearBlock}
         </>
       );
       })()}
+
+      {/* PC 전용 용품 플로팅 도크 — 우하단에서 스크롤을 따라온다 */}
+      <GearDock />
 
       {/* 우측 슬라이드오버 상세 보기 */}
       <SpotSlideOver place={selected} open={slideOpen} onClose={closeSpot} />
