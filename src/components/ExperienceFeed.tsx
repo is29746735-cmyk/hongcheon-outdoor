@@ -84,10 +84,11 @@ export default function ExperienceFeed({ places }: { places: PlacePick[] }) {
             className="h-8 w-8 text-neutral-300"
             strokeWidth={1.8}
           />
-          <p className="text-sm text-neutral-400">
+          {/* neutral-400은 흰 배경에서 2.52:1(AA 미달) — 빈 상태도 본문이다 */}
+          <p className="text-sm text-neutral-600">
             아직 등록된 경험담이 없어요.
           </p>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-neutral-600">
             위에서 첫 이야기를 남겨보세요.
           </p>
         </div>

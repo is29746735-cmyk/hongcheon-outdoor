@@ -48,7 +48,7 @@ export default function LogoutButton({ name }: { name: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-3 py-1.5 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-200"
+        className="inline-flex min-h-[44px] items-center gap-1 rounded-sm bg-neutral-100 px-3 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-200"
       >
         <LogOut className="h-4 w-4" strokeWidth={2} />
         로그아웃

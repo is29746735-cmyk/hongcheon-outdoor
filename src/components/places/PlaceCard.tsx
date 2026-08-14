@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Fish, MapPin, Navigation, Trees } from "lucide-react";
+import { ChevronRight, Fish, MapPin, Navigation, Trees } from "lucide-react";
 import type { Place } from "@/types/place";
 import { CATEGORY_LABELS } from "@/constants";
 import PlaceImage from "@/components/PlaceImage";
-import MapLinkButtons from "@/components/MapLinkButtons";
 import { trackListingEvent } from "@/lib/listing-events";
 import { getSessionId } from "@/lib/session-id";
 import { formatDistance } from "@/lib/geo";
@@ -60,24 +59,26 @@ export default function PlaceCard({
     return () => observer.disconnect();
   }, [place.id, impressionReferrer]);
 
-  // onSelect 가 있으면 버튼(슬라이드오버), 없으면 상세 페이지 링크
-  const Trigger = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) =>
+  /**
+   * 카드 전체를 하나의 클릭 대상으로 만든다(after:inset-0 스트레치 패턴).
+   * 예전에는 커버와 제목만 눌렸는데(제목은 21px 높이), 502px 카드에서
+   * 본문·여백을 눌러도 무반응이라 "안 열린다"로 읽혔다.
+   * 탭 순서도 카드당 2개(커버·제목) → 1개로 준다.
+   */
+  const Trigger = ({ children }: { children: React.ReactNode }) =>
     onSelect ? (
       <button
         type="button"
         onClick={() => onSelect(place)}
-        className={`w-full text-left ${className ?? ""}`}
+        className="w-full text-left after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-forest-600"
       >
         {children}
       </button>
     ) : (
-      <Link href={`/spots/${place.id}`} className={className}>
+      <Link
+        href={`/spots/${place.id}`}
+        className="block after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-forest-600"
+      >
         {children}
       </Link>
     );
@@ -85,9 +86,9 @@ export default function PlaceCard({
   return (
     <div
       ref={rootRef}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-sand-300 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-400 hover:shadow-card-hover"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-sand-300 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-400 hover:shadow-card-hover"
     >
-      <Trigger className="relative block">
+      <div className="relative">
         <PlaceImage place={place} className="aspect-[4/3]" />
         {/* 하단 그라디언트 */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
@@ -100,10 +101,10 @@ export default function PlaceCard({
             캠핑+낚시
           </span>
         )}
-      </Trigger>
+      </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <Trigger className="block">
+        <Trigger>
           <h3 className="text-[15px] font-bold leading-snug text-neutral-900 transition-colors group-hover:text-forest-700">
             {place.name}
             {place.official && (
@@ -142,9 +143,14 @@ export default function PlaceCard({
           ))}
         </div>
 
-        <div className="mt-auto border-t border-neutral-100 pt-3.5">
-          {place.isolationScore != null && (
-            <div className="mb-2.5 flex items-center gap-1.5 text-xs">
+        {/*
+          지도 3사 버튼(30px)은 카드에서 뺐다 — 목록 단계에서 제공사 선택은 이르고,
+          터치 타깃도 작았다. 지도 링크는 한 번 눌러 들어간 슬라이드오버·상세에 있다.
+          대신 "자세히 보기"로 카드가 눌린다는 것을 말해 준다(용품 카드와 같은 어포던스).
+        */}
+        <div className="mt-auto flex items-center justify-between border-t border-neutral-100 pt-3.5">
+          {place.isolationScore != null ? (
+            <div className="flex items-center gap-1.5 text-xs">
               <Trees className="h-3.5 w-3.5 shrink-0 text-forest-500" strokeWidth={2} />
               <span className="text-neutral-500">한적함</span>
               <span className="font-bold tabular-nums text-neutral-800">
@@ -152,8 +158,17 @@ export default function PlaceCard({
                 <span className="font-normal text-neutral-400">/5</span>
               </span>
             </div>
+          ) : (
+            <span />
           )}
-          <MapLinkButtons place={place} compact referrer={impressionReferrer} />
+          <span className="inline-flex items-center gap-0.5 text-sm font-semibold text-forest-600">
+            자세히 보기
+            <ChevronRight
+              size={15}
+              strokeWidth={2.4}
+              className="transition-transform group-hover:translate-x-0.5"
+            />
+          </span>
         </div>
       </div>
     </div>

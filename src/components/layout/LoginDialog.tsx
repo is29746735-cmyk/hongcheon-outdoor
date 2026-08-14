@@ -79,7 +79,7 @@ export default function LoginDialog({ kakao, google, naver }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-sm bg-forest-600 px-3.5 py-2 text-sm font-bold text-white transition hover:bg-forest-700"
+        className="inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-forest-600 px-3.5 text-sm font-bold text-white transition hover:bg-forest-700"
       >
         <LogIn className="h-4 w-4" strokeWidth={2.2} />
         로그인

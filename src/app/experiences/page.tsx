@@ -46,9 +46,10 @@ export default function ExperiencesPage() {
             경험담 · 사진 모아보기
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-600">
+            {/* 이 페이지에도 작성 폼이 있다(ExperienceFeed 안 Composer) — "상세에서만 가능" 표현은 사실과 달랐다 */}
             홍천강을 다녀온 분들이 남긴 사진과 후기입니다. 사진을 누르면 해당
-            장소로 이동해요. 경험담 작성은 각 장소 상세 페이지에서 할 수
-            있습니다.
+            장소로 이동해요. 경험담은 로그인 후 바로 아래에서, 또는 각 장소
+            상세 페이지에서 남길 수 있습니다.
           </p>
         </div>
       </header>

@@ -212,7 +212,7 @@ export default function ExperienceSection({ placeId }: { placeId: string }) {
             <p className="text-sm text-neutral-500">
               사진과 경험담을 남기려면 로그인하세요.
             </p>
-            <LoginPromptButton />
+            <LoginPromptButton label="로그인하고 경험담 남기기" />
           </div>
         ))}
 

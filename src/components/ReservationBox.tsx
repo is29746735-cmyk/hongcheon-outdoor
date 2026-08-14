@@ -3,12 +3,20 @@ import type { Place } from "@/types/place";
 import PhoneLink from "@/components/PhoneLink";
 
 /**
- * 예약 칸 (현재 비작동 — 준비 중 상태).
- * 온라인 예약 기능은 업체 제휴 후 활성화 예정이라, 지금은 의도적으로 동작하지 않습니다.
- * 브랜드 원칙(검증된 사실만·과장 금지)에 따라 "준비 중"임을 명확히 표기하고,
- * 전화번호가 있으면 전화 문의로 안전하게 폴백합니다. (가짜 예약 가능 상태를 만들지 않음)
+ * 예약 칸. 온라인 예약은 업체 제휴 후 활성화 예정이라 아직 없다.
+ *
+ * 예전에는 비활성 날짜·인원 폼 + 죽은 "예약하기" 버튼을 미리보기로 보여줬는데,
+ * 사이드바 맨 위(모바일에서는 본문보다 위)에서 처음 만나는 인터랙션이
+ * 눌리지 않는 버튼인 것은 신뢰 비용이었다(2026-08-14 디자인 리뷰).
+ * → 지금 실제로 되는 행동(전화 문의)을 주인공으로 바꾸고,
+ *   온라인 예약은 "준비 중" 한 줄로만 정직하게 말한다.
+ *
+ * 전화번호가 없는 곳(노지 유원지 등)은 원격으로 예약을 잡을 방법 자체가 없으므로
+ * 칸을 그리지 않는다 — 소재지·지도는 바로 아래 방문 정보 카드에 있다.
  */
 export default function ReservationBox({ place }: { place: Place }) {
+  if (!place.phone) return null;
+
   return (
     <section
       aria-labelledby="reservation-heading"
@@ -24,63 +32,22 @@ export default function ReservationBox({ place }: { place: Place }) {
           </span>
           예약
         </h2>
-        <span className="inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-500">
+        <span className="inline-flex items-center gap-1 rounded-sm bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600">
           <Lock className="h-3 w-3" strokeWidth={2.2} />
-          준비 중
+          온라인 준비 중
         </span>
       </div>
 
-      {/* 비작동 미리보기 폼 (입력 불가) */}
-      <div className="mt-4 grid grid-cols-2 gap-3" aria-hidden="true">
-        <div>
-          <span className="block text-xs font-semibold text-neutral-400">
-            체크인
-          </span>
-          <div className="mt-1 cursor-not-allowed select-none rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-300">
-            날짜 선택
-          </div>
-        </div>
-        <div>
-          <span className="block text-xs font-semibold text-neutral-400">
-            체크아웃
-          </span>
-          <div className="mt-1 cursor-not-allowed select-none rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-300">
-            날짜 선택
-          </div>
-        </div>
-      </div>
-      <div className="mt-3" aria-hidden="true">
-        <span className="block text-xs font-semibold text-neutral-400">인원</span>
-        <div className="mt-1 cursor-not-allowed select-none rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-300">
-          인원 선택
-        </div>
-      </div>
+      <PhoneLink
+        placeId={place.id}
+        phone={place.phone}
+        className="mt-4 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-forest-600 text-base font-bold text-white transition-colors hover:bg-forest-700"
+        iconClassName="h-4 w-4"
+      />
 
-      <button
-        type="button"
-        disabled
-        aria-disabled="true"
-        className="mt-4 w-full cursor-not-allowed rounded-2xl bg-forest-600/40 py-3.5 text-base font-bold text-white"
-      >
-        예약하기
-      </button>
-
-      <p className="mt-3 text-center text-xs leading-relaxed text-neutral-500">
-        온라인 예약 기능을 준비 중입니다.
-        {place.phone ? (
-          <>
-            {" "}
-            지금은 전화로 문의해 주세요.{" "}
-            <PhoneLink
-              placeId={place.id}
-              phone={place.phone}
-              className="inline-flex items-center gap-1 font-semibold text-forest-700 underline underline-offset-2"
-              iconClassName="h-3 w-3"
-            />
-          </>
-        ) : (
-          <> 운영 여부와 예약은 방문 전 확인해 주세요.</>
-        )}
+      <p className="mt-3 text-center text-xs leading-relaxed text-neutral-600">
+        전화로 예약·자리 여부를 확인할 수 있습니다. 온라인 예약 기능은 준비
+        중입니다.
       </p>
     </section>
   );

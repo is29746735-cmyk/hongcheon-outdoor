@@ -34,7 +34,7 @@ function ShopButton({ shop }: { shop: ShopLink }) {
         href={shop.url}
         target="_blank"
         rel="noopener noreferrer sponsored nofollow"
-        className="inline-flex items-center gap-1.5 rounded-xl bg-ember-500 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-ember-600"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-ember-600 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-ember-700"
       >
         <ShoppingBag size={15} strokeWidth={2.2} />
         {shop.store} 최저가 보기

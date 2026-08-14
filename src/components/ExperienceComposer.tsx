@@ -107,7 +107,8 @@ export default function ExperienceComposer({
         <p className="text-sm text-neutral-500">
           사진과 경험담을 남기려면 로그인하세요.
         </p>
-        <LoginPromptButton />
+        {/* 기본 라벨("저장 시작")은 저장 페이지용 — 여기선 경험담 맥락으로 */}
+        <LoginPromptButton label="로그인하고 경험담 남기기" />
       </div>
     );
   }

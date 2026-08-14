@@ -195,7 +195,7 @@ export default function GearCatalog() {
       )}
 
       {searching && totalResults === 0 && (
-        <p className="mt-6 rounded-2xl border border-dashed border-neutral-200 py-10 text-center text-sm text-neutral-400">
+        <p className="mt-6 rounded-2xl border border-dashed border-neutral-200 py-10 text-center text-sm text-neutral-600">
           '{query.trim()}'에 맞는 용품이 없어요. 다른 검색어를 입력해 보세요.
         </p>
       )}

@@ -50,9 +50,10 @@ export default function GearPromoBand({
               주의사항을 함께 정리했어요.
             </p>
           </div>
+          {/* CTA는 ember-600 — 500(#e8552b)은 흰 15px 텍스트와 3.64:1로 AA 미달, 600은 4.9:1 */}
           <Link
             href="/gear"
-            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-sm bg-ember-500 px-5 text-sm font-bold text-white transition-colors hover:bg-ember-600"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-sm bg-ember-600 px-5 text-sm font-bold text-white transition-colors hover:bg-ember-700"
           >
             용품 전체 보기
             <ArrowRight size={16} strokeWidth={2.4} />
@@ -65,7 +66,7 @@ export default function GearPromoBand({
               href={`/gear#${key}`}
               className="group flex min-h-[44px] items-center gap-2.5 rounded-sm border border-white/10 bg-white/[0.06] px-4 py-3.5 transition-colors hover:border-ember-400/60 hover:bg-white/[0.1]"
             >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10 text-white transition-colors group-hover:bg-ember-500 group-hover:text-white">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10 text-white transition-colors group-hover:bg-ember-600 group-hover:text-white">
                 <Icon size={18} strokeWidth={2} />
               </span>
               <span className="text-sm font-bold text-white">{label}</span>

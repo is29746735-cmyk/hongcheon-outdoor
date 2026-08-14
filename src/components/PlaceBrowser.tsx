@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Fish,
   Navigation,
+  SlidersHorizontal,
   Sparkles,
   Star,
   TreePine,
@@ -85,6 +86,15 @@ export default function PlaceBrowser() {
    */
   const [connectedOpen, setConnectedOpen] = useState(false);
 
+  /**
+   * 모바일 상세 필터 접힘. 기본 접힘 —
+   * 펼친 채로는 첫 장소 카드가 모바일 y=3,057px(3.8화면)까지 밀렸다.
+   * 12곳뿐인 목록이라 필터보다 목록이 먼저 보이는 게 맞다.
+   * 데스크톱(sm+)은 공간이 충분해 항상 펼침. 홈의 접기 패턴
+   * (지수 위젯·태그 줄·연계 추천)과 같은 문법: 버튼+ChevronDown+aria-expanded.
+   */
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
   // 태그 줄 펼치기 — 접힌 상태에서도 이미 고른 태그는 보여준다(안 보이면 해제할 수 없다)
   const [tagsExpanded, setTagsExpanded] = useState(false);
   const visibleTags = useMemo(() => {
@@ -140,8 +150,39 @@ export default function PlaceBrowser() {
         onCategoryChange={f.setCategory}
       />
 
+      {/* 모바일 전용 상세 필터 토글 — 적용 중인 개수를 접힌 채로도 보여준다 */}
+      <button
+        type="button"
+        onClick={() => setMobileFiltersOpen((v) => !v)}
+        aria-expanded={mobileFiltersOpen}
+        aria-controls="detail-filters"
+        className="mt-3 flex min-h-[44px] w-full items-center gap-2 rounded-2xl border border-sand-300 bg-white px-3.5 text-sm font-bold text-forest-800 sm:hidden"
+      >
+        <SlidersHorizontal className="h-4 w-4 text-forest-600" strokeWidth={2.2} />
+        상세 필터
+        <span className="font-medium text-neutral-500">
+          한적함 · 낚시 종류 · 태그
+        </span>
+        {f.activeCount > 0 && (
+          <span className="rounded-sm bg-forest-600 px-1.5 py-0.5 text-xs font-bold tabular-nums text-white">
+            {f.activeCount}
+          </span>
+        )}
+        <ChevronDown
+          className={`ml-auto h-4 w-4 shrink-0 text-neutral-500 transition-transform ${
+            mobileFiltersOpen ? "rotate-180" : ""
+          }`}
+          strokeWidth={2.2}
+        />
+      </button>
+
       {/* 상세 필터 메뉴 — 칩 옆 괄호 숫자는 그 칩을 골랐을 때 남는 장소 수 */}
-      <div className="mt-3 space-y-2 rounded-2xl border border-sand-300 bg-white p-3.5">
+      <div
+        id="detail-filters"
+        className={`mt-3 space-y-2 rounded-2xl border border-sand-300 bg-white p-3.5 sm:block ${
+          mobileFiltersOpen ? "block" : "hidden"
+        }`}
+      >
         {/* 한적함(고립도) */}
         <FacetRow label="한적함">
           {ISOLATION_THRESHOLDS.map((v) => (

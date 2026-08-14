@@ -39,7 +39,7 @@ export default function MobileNav() {
         aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="grid h-10 w-10 place-items-center rounded-xl text-neutral-700 transition-colors hover:bg-forest-50 hover:text-forest-700"
+        className="grid h-11 w-11 place-items-center rounded-xl text-neutral-700 transition-colors hover:bg-forest-50 hover:text-forest-700"
       >
         {open ? (
           <X size={20} strokeWidth={2.2} />
