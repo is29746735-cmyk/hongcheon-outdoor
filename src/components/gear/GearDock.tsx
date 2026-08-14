@@ -123,7 +123,14 @@ export default function GearDock() {
 
   return (
     <>
-      {/* ── PC(lg+): 우하단 런처 + 논모달 패널 ── */}
+      {/*
+        ── PC(lg+): 우하단 런처 + 논모달 패널 ──
+        런처·FAB 는 clay-600(뮤트 테라코타) — ember-600 은 상시 떠 있기엔 너무
+        강했다(2026-08-14 사용자 피드백 "색을 조금만 죽여줘").
+        주황 계열은 유지해 커머스 진입점으로는 읽히게 하고, 선명한 엠버는
+        패널 안의 진짜 CTA("용품 전체 보기")에만 남긴다.
+        흰 텍스트 대비: clay-600 6.0:1 · hover(ember-700) 7.5:1 — AA 통과.
+      */}
       <div ref={deskRef} className="fixed bottom-6 right-6 z-40 hidden lg:block">
         {open ? (
           <section
@@ -150,7 +157,7 @@ export default function GearDock() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="gear-dock-panel"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-sm bg-ember-600 px-4 text-sm font-bold text-white shadow-card-hover transition-colors hover:bg-ember-700"
+            className="inline-flex min-h-[48px] items-center gap-2 rounded-sm bg-clay-600 px-4 text-sm font-bold text-white shadow-card-hover transition-colors hover:bg-ember-700"
           >
             <ShoppingBag size={16} strokeWidth={2.2} />
             용품 준비
@@ -158,13 +165,13 @@ export default function GearDock() {
         )}
       </div>
 
-      {/* ── 모바일(<lg): 아이콘 FAB — 우하단 점유를 48px 로 최소화 ── */}
+      {/* ── 모바일(<lg): 아이콘 FAB — 우하단 점유를 48px 로 최소화. 색은 런처와 동일 이유로 clay ── */}
       {!open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label="용품 준비 열기"
-          className="fixed bottom-5 right-4 z-40 grid h-12 w-12 place-items-center rounded-sm bg-ember-600 text-white shadow-card-hover transition-colors hover:bg-ember-700 lg:hidden"
+          className="fixed bottom-5 right-4 z-40 grid h-12 w-12 place-items-center rounded-sm bg-clay-600 text-white shadow-card-hover transition-colors hover:bg-ember-700 lg:hidden"
         >
           <ShoppingBag size={20} strokeWidth={2.2} />
         </button>
