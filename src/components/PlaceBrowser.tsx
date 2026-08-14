@@ -3,7 +3,6 @@
 import { useMemo, useState, useCallback, type ReactNode } from "react";
 import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
-import GearPromoBand from "@/components/gear/GearPromoBand";
 import GearDock from "@/components/gear/GearDock";
 import {
   groupByCategory,
@@ -119,8 +118,8 @@ export default function PlaceBrowser() {
 
   /**
    * 카드 셀 만들기 — 장소 카드만. 예전에는 3번째 자리에 인피드 용품 카드를 한 장
-   * 끼웠는데, 장소를 훑는 흐름을 끊는다는 판단으로 2026-07-25에 없애고
-   * 용품 진입은 목록 앞의 배너(GearPromoBand) 하나로 모았다.
+   * 끼웠는데, 장소를 훑는 흐름을 끊는다는 판단으로 2026-07-25에 없앴다.
+   * 용품 진입은 이제 플로팅 도크(GearDock) 하나다(2026-08-14).
    */
   const cellsFor = useCallback(
     (items: Place[]): ReactNode[] => {
@@ -277,14 +276,13 @@ export default function PlaceBrowser() {
       </div>
 
       {/*
-        ── 블록 순서: 정렬 → 목록 → 지도 → 연계추천 → 용품밴드(모바일) ──
+        ── 블록 순서: 정렬 → 목록 → 지도 → 연계추천 ──
         2026-08-14 배치안 비교(/?layout=a|b|c 실측) 후 사용자 결정.
         지도·연계추천·용품밴드가 목록 위에 있던 예전 배치는 첫 장소 카드가
         데스크톱 2.8화면(2,503px)·모바일 2,694px 아래였다 → 목록 우선으로
-        1,562px/1,688px. 지도는 "어디쯤이지?" 할 때 찾는 보조 도구라
+        1,585px/1,688px. 지도는 "어디쯤이지?" 할 때 찾는 보조 도구라
         목록 뒤에서도 역할을 잃지 않는다.
-        용품 진입: PC(lg+)는 우하단 플로팅 도크(GearDock), 모바일은 흐름 끝의
-        인플로우 밴드 — 고정 오버레이가 좁은 화면을 가리지 않게 한 분기다.
+        용품 진입은 인플로우가 아니라 플로팅 도크(GearDock, 아래) 하나다.
       */}
       {(() => {
       /* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정. 목록 뒤라 여백을 넉넉히 */
@@ -353,13 +351,6 @@ export default function PlaceBrowser() {
           )}
         </section>
       );
-
-      /*
-        용품 진입 배너 — **모바일 전용**(lg 미만). PC 는 플로팅 도크(GearDock)가
-        대신한다. 좁은 화면에서 고정 오버레이는 콘텐츠·엄지 영역을 가리므로
-        모바일은 흐름 끝의 인플로우로 남긴다.
-      */
-      const gearBlock = <GearPromoBand className="mt-12 lg:hidden" />;
 
       /*
         정렬 — 목록 **바로 위**에 둔다.
@@ -572,12 +563,14 @@ export default function PlaceBrowser() {
           {listBlock}
           {mapBlock}
           {connectedBlock}
-          {gearBlock}
         </>
       );
       })()}
 
-      {/* PC 전용 용품 플로팅 도크 — 우하단에서 스크롤을 따라온다 */}
+      {/*
+        용품 플로팅 도크 — PC 는 우하단 패널, 모바일은 FAB+바텀시트.
+        인플로우 밴드는 폐기했다(모바일에서 9.7화면 아래 = 노출 0이었다).
+      */}
       <GearDock />
 
       {/* 우측 슬라이드오버 상세 보기 */}

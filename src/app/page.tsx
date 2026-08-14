@@ -96,8 +96,8 @@ export default function HomePage() {
       </div>
 
       {/*
-        장소 목록. 용품 진입 배너(GearPromoBand)는 여기 안쪽 —
-        연계 추천과 장소 목록 사이 — 로 옮겼다(2026-07-25).
+        장소 목록. 용품 진입은 이 안의 플로팅 도크(GearDock) 하나다 —
+        인플로우 배너는 2026-08-14 배치 개편 때 폐기(목록 우선이 되며 노출 0).
       */}
       <div className="mx-auto mt-12 max-w-6xl px-4">
         <PlaceBrowser />
@@ -105,7 +105,7 @@ export default function HomePage() {
 
       {/*
         경험담 안내 — 목록을 다 훑고 내려온 사람에게 "다녀온 사람들의 이야기"를 권한다.
-        커머스 배너(GearPromoBand)와 톤이 겹치지 않게 흰 카드 + 그린 계열로 조용히 둔다.
+        커머스 톤(엠버 도크)과 겹치지 않게 흰 카드 + 그린 계열로 조용히 둔다.
       */}
       <section className="mx-auto mt-16 max-w-6xl px-4" aria-label="경험담 안내">
         <div className="flex flex-wrap items-center justify-between gap-5 rounded-3xl border border-forest-200 bg-white p-6 sm:p-7">
