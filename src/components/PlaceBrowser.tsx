@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useState, useCallback, type ReactNode } from "react";
+import {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react";
 import type { Place } from "@/types/place";
 import { getAllPlaces } from "@/data/places";
 import GearPromoBand from "@/components/gear/GearPromoBand";
@@ -85,6 +91,22 @@ export default function PlaceBrowser() {
    * 캠핑·낚시 연계는 모두가 찾는 것이 아니라 궁금한 사람이 여는 것이다.
    */
   const [connectedOpen, setConnectedOpen] = useState(false);
+
+  /**
+   * ★검토용 배치안 전환 — `/?layout=b|c` (계절 미리보기 `/?atmos=`와 같은 패턴).
+   * 데스크톱에서 첫 카드가 2.9화면 아래인 게 지도·연계추천·용품밴드가 목록 위에
+   * 있는 구조 때문이라는 리뷰 관찰(2026-08-14)을 실물로 비교하기 위한 것.
+   *   a(기본) = 현재: 지도 → 연계추천 → 용품밴드 → 정렬 → 목록
+   *   b       = 목록 우선: 정렬 → 목록 → 지도 → 연계추천 → 용품밴드
+   *   c       = 절충: 지도 → 정렬 → 목록 → 연계추천 → 용품밴드
+   * 기본값 a 라 일반 방문자 화면은 그대로다. 논의로 한 안을 고르면
+   * 그 순서를 본문에 박고 이 파라미터는 지운다.
+   */
+  const [layout, setLayout] = useState<"a" | "b" | "c">("a");
+  useEffect(() => {
+    const v = new URLSearchParams(window.location.search).get("layout");
+    if (v === "b" || v === "c") setLayout(v);
+  }, []);
 
   /**
    * 모바일 상세 필터 접힘. 기본 접힘 —
@@ -275,7 +297,10 @@ export default function PlaceBrowser() {
         </p>
       </div>
 
-      {/* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */}
+      {/* ── 아래 다섯 블록(지도·연계·용품·정렬·목록)은 검토용 layout 안에 따라 순서가 바뀐다 ── */}
+      {(() => {
+      /* 동적 지도 — 확대/축소·이동 잠금, 범례는 우상단 고정 */
+      const mapBlock = (
       <div className="mt-4">
         <KakaoMap
           places={allPlaces}
@@ -284,14 +309,15 @@ export default function PlaceBrowser() {
           className="h-[300px] sm:h-[440px]"
         />
       </div>
+      );
 
-      {/*
+      /*
         캠핑 + 낚시 연계 — **기본 접힘**(2026-07-27).
         모두가 찾는 것이 아니라 "캠핑하면서 낚시도 되나?"가 궁금한 사람의 것이라,
         펼쳐 둔 채로는 카드 6장이 목록 앞을 막고 정렬까지 밀어낸다.
         접힌 줄에 제목·곳수·한 줄 설명을 남겨 무엇이 들었는지는 알 수 있게 한다.
-      */}
-      {showConnectedSection && connected.length > 0 && (
+      */
+      const connectedBlock = showConnectedSection && connected.length > 0 && (
         <section className="mt-8 overflow-hidden rounded-2xl border border-river-200 bg-river-50">
           <h2>
             <button
@@ -338,25 +364,26 @@ export default function PlaceBrowser() {
             </div>
           )}
         </section>
-      )}
+      );
 
-      {/*
-        용품 진입 배너 — 연계 추천과 장소 목록 사이(2026-07-25 사용자 지정 위치).
-        필터를 걸면 연계 추천이 사라지므로 이 배너가 결과보다 먼저 나오게 되는데,
-        그때는 찾는 걸 먼저 보여줘야 하니 목록 아래로 내린다.
-      */}
-      {showConnectedSection && <GearPromoBand className="mt-12" />}
+      /*
+        용품 진입 배너 — a안에서는 연계 추천과 장소 목록 사이(2026-07-25 사용자
+        지정 위치), 필터를 걸면 목록 뒤. b·c안에서는 항상 목록 뒤.
+      */
+      const gearBlock = <GearPromoBand className="mt-12" />;
 
-      {/*
+      /*
         정렬 — 목록 **바로 위**에 둔다.
         예전에는 필터 패널 밑의 작은 <select> 였는데, 거기서 지도·연계추천·용품배너를
         지나 첫 카드까지 2,281px 이라 바꿔도 화면에서 달라지는 게 안 보였다.
         기능이 멀쩡한데도 "안 바뀐다"로 읽히던 원인이다(2026-07-27 지적).
         선택형 버튼으로 바꿔 무엇을 고를 수 있는지 자체가 보이게 한다.
-      */}
-      {f.filtered.length > 0 && (
+      */
+      const sortBlock = f.filtered.length > 0 && (
         <section
-          className="mt-12 rounded-2xl border border-sand-300 bg-white p-3.5"
+          className={`${
+            layout === "a" ? "mt-12" : "mt-6"
+          } rounded-2xl border border-sand-300 bg-white p-3.5`}
           aria-label="정렬 기준"
         >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -516,10 +543,10 @@ export default function PlaceBrowser() {
             </p>
           )}
         </section>
-      )}
+      );
 
-      {/* 목록 — 결과 0건이면 Empty State / 추천순이면 카테고리별 / 그 외는 정렬된 단일 목록 */}
-      {f.filtered.length === 0 ? (
+      /* 목록 — 결과 0건이면 Empty State / 추천순이면 카테고리별 / 그 외는 정렬된 단일 목록 */
+      const listBlock = f.filtered.length === 0 ? (
         <EmptyState onReset={f.reset} />
       ) : f.sort === "recommended" ? (
         groups.map((group, gi) => (
@@ -550,10 +577,41 @@ export default function PlaceBrowser() {
             {cellsFor(f.filtered)}
           </div>
         </section>
-      )}
+      );
 
-      {/* 필터·정렬 중이면 배너를 목록 뒤로 (위 주석 참조) */}
-      {!showConnectedSection && <GearPromoBand className="mt-12" />}
+      // ── 배치안별 렌더 순서 ──
+      if (layout === "b")
+        return (
+          <>
+            {sortBlock}
+            {listBlock}
+            {mapBlock}
+            {connectedBlock}
+            {gearBlock}
+          </>
+        );
+      if (layout === "c")
+        return (
+          <>
+            {mapBlock}
+            {sortBlock}
+            {listBlock}
+            {connectedBlock}
+            {gearBlock}
+          </>
+        );
+      // a(현재 운영 배치): 필터 중이면 배너를 목록 뒤로 (gearBlock 주석 참조)
+      return (
+        <>
+          {mapBlock}
+          {connectedBlock}
+          {showConnectedSection && gearBlock}
+          {sortBlock}
+          {listBlock}
+          {!showConnectedSection && gearBlock}
+        </>
+      );
+      })()}
 
       {/* 우측 슬라이드오버 상세 보기 */}
       <SpotSlideOver place={selected} open={slideOpen} onClose={closeSpot} />
