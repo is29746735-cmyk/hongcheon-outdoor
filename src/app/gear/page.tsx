@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
 import GearCatalog from "@/components/gear/GearCatalog";
+import GearSpotlight from "@/components/gear/GearSpotlight";
+import { getStarterPicks } from "@/data/gear";
 
 export const metadata: Metadata = {
   title: "낚시·캠핑 용품",
@@ -45,13 +47,20 @@ export default function GearPage() {
         </div>
       </header>
 
-      <p className="mt-4 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs leading-relaxed text-neutral-500">
+      {/*
+        시선 고정점 — 헤더 다음이 곧장 34장 격자라 눈이 멈출 데가 없었다
+        (2026-08-14). 면책 문구가 있던 자리다: 필요한 고지지만 목록 진입 전
+        첫 인상을 3줄 회색 박스가 차지할 이유는 없어서 목록 아래로 내렸다.
+      */}
+      <GearSpotlight items={getStarterPicks()} />
+
+      <GearCatalog />
+
+      <p className="mt-10 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs leading-relaxed text-neutral-600">
         쇼핑 버튼은 쿠팡 파트너스 링크로 운영될 예정입니다. 이 페이지는 쿠팡
         파트너스 활동의 일환으로, 구매 시 일정 수수료를 받을 수 있습니다. 현재는
         예시로, 실제 링크는 아직 연결되어 있지 않습니다.
       </p>
-
-      <GearCatalog />
     </main>
   );
 }

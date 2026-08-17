@@ -215,7 +215,7 @@ export default function GearGrid({
             type="button"
             onClick={() => setSelected(item)}
             aria-haspopup="dialog"
-            className="group flex h-full flex-col rounded-2xl bg-white p-5 text-left shadow-card transition hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
+            className="group flex h-full flex-col rounded-2xl border border-sand-300 bg-white p-5 text-left shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-forest-400 hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
           >
             <div className="flex items-start justify-between gap-2">
               <h3 className="text-base font-bold text-neutral-900">
@@ -223,22 +223,55 @@ export default function GearGrid({
               </h3>
               <PriceBadge item={item} />
             </div>
-            <p className="mt-1 flex-1 text-sm leading-relaxed text-neutral-600">
+            <p className="mt-1 text-sm leading-relaxed text-neutral-600">
               {item.summary}
             </p>
+
+            {/*
+              ★구매 팁 한 줄을 카드 표면으로 꺼낸다.
+              이 사이트가 쿠팡 목록과 다른 유일한 이유가 팁·주의사항인데,
+              예전에는 전부 모달 안에 있어서 **누르기 전에는 있는 줄도 몰랐다**
+              (2026-08-14 리뷰: "시선을 끌 요소가 없다"의 실제 원인).
+              항목마다 팁 길이가 달라 카드 높이에 자연스러운 변주도 생긴다.
+            */}
+            {item.tips && item.tips.length > 0 && (
+              <p className="mt-3 flex gap-1.5 rounded-sm bg-forest-50 px-2.5 py-2 text-[13px] leading-relaxed text-forest-900">
+                <Lightbulb
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-forest-600"
+                  strokeWidth={2.2}
+                />
+                <span className="line-clamp-2">{item.tips[0]}</span>
+              </p>
+            )}
+
             {item.tags && item.tags.length > 0 && (
               <div className="mt-3">
                 <Tags tags={item.tags} />
               </div>
             )}
-            <span className="mt-4 inline-flex items-center gap-0.5 text-sm font-semibold text-forest-600">
-              자세히 보기
-              <ChevronRight
-                size={15}
-                strokeWidth={2.4}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
-            </span>
+
+            {/* 더 있다는 신호 — 눌러야 할 이유를 숫자로 말한다 */}
+            <div className="mt-auto flex items-center justify-between gap-2 pt-4">
+              <span className="text-xs font-medium tabular-nums text-neutral-500">
+                {item.tips && item.tips.length > 0 && (
+                  <>구매 팁 {item.tips.length}</>
+                )}
+                {item.tips?.length && item.cautions?.length ? " · " : null}
+                {item.cautions && item.cautions.length > 0 && (
+                  <span className="text-[#9a5b00]">
+                    주의 {item.cautions.length}
+                  </span>
+                )}
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-0.5 text-sm font-semibold text-forest-600">
+                자세히 보기
+                <ChevronRight
+                  size={15}
+                  strokeWidth={2.4}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </span>
+            </div>
           </button>
         ))}
       </div>

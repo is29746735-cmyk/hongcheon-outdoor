@@ -661,6 +661,29 @@ export function getGearByCategory(category: GearCategory): GearItem[] {
   return GEAR.filter((g) => g.category === category);
 }
 
+/**
+ * 처음 오는 사람에게 권하는 기본 준비물 — **편집 큐레이션**.
+ *
+ * 인기순 데이터(popularity)는 아직 예시라 "많이 사는 것"이라고 말할 수 없다.
+ * 대신 "홍천강에서 1박 하려면 없으면 곤란한 것"이라는 편집 판단으로 고른다 —
+ * 이건 우리가 실제로 내릴 수 있는 판단이라 거짓이 되지 않는다.
+ * 연료·조명·바닥·보냉처럼 현장에서 대체하기 어려운 것 위주.
+ */
+const STARTER_PICK_IDS = [
+  "butane-gas",
+  "led-lantern",
+  "leisure-mat",
+  "cooler-box",
+  "charcoal-wood",
+  "life-vest",
+] as const;
+
+export function getStarterPicks(): GearItem[] {
+  return STARTER_PICK_IDS.map((id) => GEAR.find((g) => g.id === id)).filter(
+    (g): g is GearItem => g != null,
+  );
+}
+
 // ── 정렬 ────────────────────────────────────────────────────
 export type GearSort = "recommended" | "popular" | "price-asc" | "price-desc";
 
