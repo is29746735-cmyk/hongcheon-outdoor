@@ -135,8 +135,20 @@ export default function GearCatalog() {
 
   return (
     <>
+      {/*
+        ── 찾기 도구 한 덩어리 ──
+        예전에는 검색 입력·종류 칩 줄·정렬 패널이 **각각 따로 떠 있는 세 블록**
+        이었다. 셋 다 "찾기"라는 같은 일을 하는데 생김새만 달라(입력 / 맨 줄 /
+        테두리 패널) 시선이 세 번 멈췄고, 전부 순백이라 우열도 없었다
+        (2026-08-14 리뷰: "상단-중단 대비감 부족·시선 이동 불편").
+        하나의 패널로 묶어 리듬을 만든다: 매스트헤드 → 스포트라이트 → 찾기 → 목록.
+      */}
+      <section
+        aria-label="용품 찾기"
+        className="mt-4 rounded-2xl border border-sand-300 bg-white p-4"
+      >
       {/* 검색 */}
-      <div className="relative mt-5">
+      <div className="relative">
         <Search
           className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
           strokeWidth={2}
@@ -163,7 +175,7 @@ export default function GearCatalog() {
 
       {/* 종류 필터 (검색 중이 아닐 때만) — 누르면 그 종류만 표시 */}
       {!searching && (
-        <nav className="mt-4 flex flex-wrap gap-2">
+        <nav className="mt-3 flex flex-wrap gap-2">
           <FilterPill
             active={activeCat === "all"}
             onClick={() => selectCat("all")}
@@ -184,30 +196,14 @@ export default function GearCatalog() {
         </nav>
       )}
 
-      {searching && (
-        <p className="mt-4 text-sm text-neutral-500">
-          '{query.trim()}' 검색 결과{" "}
-          <span className="font-semibold tabular-nums text-neutral-700">
-            {totalResults}
-          </span>
-          건
-        </p>
-      )}
-
-      {searching && totalResults === 0 && (
-        <p className="mt-6 rounded-2xl border border-dashed border-neutral-200 py-10 text-center text-sm text-neutral-600">
-          '{query.trim()}'에 맞는 용품이 없어요. 다른 검색어를 입력해 보세요.
-        </p>
-      )}
-
       {/*
-        정렬 — 목록 바로 위에 둔다. 장소 목록에서 정렬을 필터 패널 밑에 뒀다가
+        정렬 — 같은 패널 안, 목록 바로 위. 장소 목록에서 정렬을 멀리 뒀다가
         "바꿔도 안 바뀐다"는 오해를 샀던 적이 있다(2026-07-27). 화면에서 결과가
         바로 보이는 자리여야 정렬이 작동한다는 걸 알 수 있다.
       */}
       {totalResults > 0 && (
-        <section
-          className="mt-6 rounded-2xl border border-sand-300 bg-white p-3.5"
+        <div
+          className="mt-3 border-t border-neutral-100 pt-3"
           aria-label="정렬 기준"
         >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -261,7 +257,24 @@ export default function GearCatalog() {
               가격은 정확한 금액이 아니라 구간으로만 적었습니다.
             </p>
           )}
-        </section>
+        </div>
+      )}
+      </section>
+
+      {searching && (
+        <p className="mt-4 text-sm text-neutral-600">
+          '{query.trim()}' 검색 결과{" "}
+          <span className="font-semibold tabular-nums text-neutral-800">
+            {totalResults}
+          </span>
+          건
+        </p>
+      )}
+
+      {searching && totalResults === 0 && (
+        <p className="mt-6 rounded-2xl border border-dashed border-neutral-200 py-10 text-center text-sm text-neutral-600">
+          '{query.trim()}'에 맞는 용품이 없어요. 다른 검색어를 입력해 보세요.
+        </p>
       )}
 
       {visible.map(({ key, label, Icon, items }) => {

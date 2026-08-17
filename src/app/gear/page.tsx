@@ -14,33 +14,41 @@ export const metadata: Metadata = {
 export default function GearPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
-      {/* ── 커머스 헤더 — 엠버 강조 + 등고선 시그니처 ── */}
-      <header className="relative overflow-hidden rounded-3xl border border-ember-100 bg-gradient-to-br from-sand-50 to-ember-50 p-6 sm:p-8">
-        {/* 등고선 텍스처(시그니처, 엠버 톤으로 옅게) */}
-        <svg
+      {/*
+        ── 커머스 매스트헤드 ──
+        2026-08-14 리뷰: "위쪽 빨간색, 상단-중단 대비감 부족".
+        원인이 둘이었다 —
+        ① 솔리드 엠버 배지(#c6461f)가 첫 화면에서 유일하게 짙은 색이라, 정작
+           제목이 아니라 13px 설명 라벨이 시선을 다 가져갔다.
+        ② 헤더 그라디언트가 **페이지 배경과 똑같은 sand-50 에서 시작**해
+           위쪽 가장자리가 아예 안 보였다. 그 아래 블록들도 전부 순백(휘도 1.0)
+           이라 페이지 배경과 1.19:1 — 상단부터 중단까지 값이 평평했다.
+        → 헤더를 moss-700 매스트헤드로 세워 명암을 만들고(흰 글자 9.7:1),
+          배지는 채움을 걷어 조용한 칩으로 낮춘다. 이제 이 구역에서 제일 강한
+          것은 제목이다. moss-700 은 폐기한 용품 배너가 쓰던 색이라
+          '용품 = 그레이-그린' 정체성은 그대로 이어진다.
+      */}
+      <header className="relative overflow-hidden rounded-3xl bg-moss-700 p-6 text-white sm:p-8">
+        {/* 등고선/그리드 시그니처(옅게) */}
+        <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full text-ember-300 opacity-[0.16]"
-          viewBox="0 0 1200 320"
-          preserveAspectRatio="none"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <path d="M-20 90 C 250 50, 500 130, 760 80 S 1180 60, 1230 100" />
-          <path d="M-20 160 C 280 120, 520 200, 780 150 S 1180 130, 1230 170" />
-          <path d="M-20 230 C 240 190, 540 270, 800 220 S 1180 210, 1230 240" />
-        </svg>
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-sm bg-ember-100/50 blur-2xl" />
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg,transparent 0 33px,#fff 33px 34px),repeating-linear-gradient(90deg,transparent 0 33px,#fff 33px 34px)",
+          }}
+        />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-sm bg-clay-500/20 blur-3xl" />
 
         <div className="relative">
-          <span className="inline-flex items-center gap-1.5 rounded-sm bg-ember-600 px-2.5 py-1 text-xs font-bold text-white">
+          <span className="inline-flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.12em] text-white/60">
             <ShoppingBag className="h-3.5 w-3.5" strokeWidth={2.4} />
             준비물 · 쿠팡 최저가
           </span>
-          <h1 className="mt-2.5 text-2xl font-extrabold text-forest-900 sm:text-[1.9rem]">
+          <h1 className="mt-2.5 text-2xl font-extrabold text-white sm:text-[1.9rem]">
             떠나기 전, 용품 준비하기
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-600">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/75">
             홍천강 낚시와 캠핑에 필요한 용품을 한곳에 모았습니다. 품목을 누르면
             설명과 구매 팁·주의사항을 함께 볼 수 있습니다.
           </p>
